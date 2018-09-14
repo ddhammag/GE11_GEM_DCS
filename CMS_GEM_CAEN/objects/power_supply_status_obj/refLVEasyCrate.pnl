@@ -1,0 +1,128 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 129 50 N "_3DFace" 4
+"$dpEcCellName"
+"$dpEcCellNo"
+"$dpEcLabel"
+"$dpLvEasyCrateName"
+"main()
+{
+	LvEasyCrateName=$dpLvEasyCrateName;	
+	EcCellName=$dpEcCellName;
+	EcLabel=$dpEcLabel;
+	EcCellNo=$dpEcCellNo;
+	EASY_CRATE.text=EcLabel;
+	
+	if (!isDollarDefined(\"$dpLvEasyCrateName\")) return; // no LvEasy Crate name defined
+
+//	DebugN(\"EcCellName=\",EcCellName,\"LvEasyCrateName =\",LvEasyCrateName);
+	dpConnect(\"status\",LvEasyCrateName);
+	//CAEN/GEM_CAEN_LV.PWstatus.ACstatus
+}" 0
+ E E E E 1 -1 -1 0  14.18443591128465 12.44736842105272
+""0  1
+E "string LvEasyCrateName,EcCellName,EcLabel;
+int EcCellNo;
+
+status(string dpl,int val)
+{
+   	string tag; 
+	tag=EcCellName; 
+	int i=1;
+    
+    if(val==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+    if(val==1)  
+      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==3)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val==5)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val>8)  
+      	setValue(tag,\"backCol\",\"FwStateAttention3\");
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE533"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.7823696963239518 0 0.8947368421052631 -447.4136849198469 -460.8684210526315 1 E 590 529 704 548
+2 2
+"EASY_CRATE"
+""
+1 1289.80985461907 543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.135059036067152 0 1 -1405.010330293835 -527.0526315789473 0 E 1271 543 1309 553
+0 2 2 "0s" 0 0 0 193 0 0  1289.80985461907 543 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 7 CRATE 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+2 0 
+1 2 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

@@ -1,0 +1,263 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 81 N "_3DFace" 3
+"$dpEndcapName"
+"$dpHvCellNo"
+"$dpHvbrdClicked"
+"main()
+{
+  	HvbrdClicked=$dpHvbrdClicked;
+	HvCellNo= $dpHvCellNo;
+	Endcap= $dpEndcapName;
+	
+	dyn_string ChmbrInOrExDps;
+	
+	if (!isDollarDefined(\"$dpHvbrdClicked\")) return; // ho Hvbrd name defined
+	HvbrdBdStatusDp= HvbrdClicked+\".BdStatus\";
+	
+	ChmbrInOrExDps=chmbrInOrExDps();
+	dpConnect(\"HvInOrExState\",ChmbrInOrExDps);	
+	dpConnect(\"gemstsHV\",HvbrdBdStatusDp);	
+}" 0
+ E E E E 1 -1 -1 0  17 72
+""0  1
+E "string HvbrdClicked,HvbrdBdStatusDp,Hvchannel, Endcap,HvCellName;
+int HvCellNo;
+bool HvInOrExStatus;
+
+gemstsHV(string dpl,int sval)
+{
+	string tag = Endcap+\"HV_\";   
+
+	tag=tag+HvCellNo;
+	if(HvInOrExStatus)
+	{    
+		if(sval==0)
+			setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+		if(sval==1)  
+			setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+		if(sval==3)  
+			setValue(tag,\"backCol\",\"FwStateAttention1\");
+		if(sval==5)  
+			setValue(tag,\"backCol\",\"FwStateAttention1\");
+		if(sval > 8)  
+			setValue(tag,\"backCol\",\"FwStateAttention3\");  
+	}
+	else
+	{
+		setValue(tag,\"backCol\",\"FwEquipmentDisabled\"); 
+	}	
+}
+HvInOrExState(dyn_string dp,dyn_bool ChmbrInOrExStatus)
+{
+	HvInOrExStatus=FALSE;
+	for(int i=1;i<=4;i++)
+	{
+		HvInOrExStatus= HvInOrExStatus || ChmbrInOrExStatus[i];
+	}
+	dpConnect(\"gemstsHV\",HvbrdBdStatusDp);	
+}
+string singleChmbrInOrExDp(int cellNo, string Layer)
+{
+	string GEMINIno,ChmbrInOrExDpN,EndcapType;
+//---------------------------------------------------------	
+	if(Endcap== \"+\")
+		EndcapType= \"Plus\";
+	else if(Endcap== \"-\")
+		EndcapType= \"Minus\";
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+//---------------------------------------------------------	
+	if(cellNo<=9)
+		GEMINIno=\"0\"+cellNo;
+	else
+		GEMINIno=cellNo;
+	ChmbrInOrExDpN=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI\"+GEMINIno+\".\"+Layer+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDpN);
+	return(ChmbrInOrExDpN);
+}
+dyn_string chmbrInOrExDps()
+{
+	int i,j;
+	dyn_string ChmbrInOrExDpNams;
+	j=1;
+	for(i=0;i<=1;i++)
+	{
+		ChmbrInOrExDpNams[j]=singleChmbrInOrExDp((HvCellNo*2-i),\"Layer1\");
+		ChmbrInOrExDpNams[j+1]=singleChmbrInOrExDp((HvCellNo*2-i),\"Layer2\");
+		j=j+2;
+	}
+	return(ChmbrInOrExDpNams);
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 1
+"HV_1"
+""
+1 1366.149593858441 423.3147897985272 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E "main(mapping event)
+{
+	removeSymbol(myModuleName(), \"\", \"refName\");
+  	if(HvInOrExStatus)
+	{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);		
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl\");
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupHVBoard.pnl\");
+//		DebugN(targetPnlXY);
+//		DebugN(mouseX, mouseY);
+		edgeX=mouseX+popupPnlXY[1];
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>(targetPnlXY[1]-15))//15 just used for adjustment
+			mouseX1=mouseX-popupPnlXY[1]+15; //15 just used for adjustment
+		else
+			mouseX1=mouseX+15; //15 just used for adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/2;
+			edgeY=mouseY+popupPnlXY[2];
+		}
+		mouseY1=mouseY-15; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), \"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupHVBoard.pnl\",\"refName\",
+            makeDynString(\"$dpHvBrdClicked:\"+HvbrdClicked,\"$dpCellNo:\"+HvCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+	}
+}" 0
+ 0 1 3 2 1 E 0.01165794595092171 0.1332509319617998 -0.1332510453333127 0.01165795586964386 57.48064011962993 -114.9756917193104 1 E 85 900.4376880240623 317.982577654682
+906.5712380539615 316.4885747545743
+912.1424761079227 314.9771495091486
+917.9948701498531 313.4744354363818
+923.8472641917831 311.971721363615
+929.6692866210232 310.4374284211074
+935.4913090502628 308.9031354785996
+941.3133314795026 307.368842536092
+947.1353539087422 305.8345495935842
+956.4042034735248 303.6924880292423
+965.6730530383073 301.5504264649004
+965.6730530383073 301.5504264649004
+965.6730530383073 301.5504264649004
+970.7998816972047 300.392571593896
+975.926710356102 299.2347167228915
+981.0535390149996 298.0768618518872
+986.1803676738966 296.9190069808826
+992.3354161302231 295.8337058704643
+998.4904645865494 294.748404760046
+1004.15310916637 293.7499277384612
+1009.81575374619 292.7514507168763
+1018.700729545508 291.3117180870005
+1027.585705344826 289.8719854571247
+1036.470681144145 288.4322528272488
+1045.355656943463 286.9925201973729
+1052.292723258965 286.0231848919575
+1059.229789574467 285.053849586542
+1066.16685588997 284.0845142811265
+1073.103922205472 283.115178975711
+1080.431997450562 282.203826572797
+1087.760072695652 281.292474169883
+1095.088147940742 280.381121766969
+1102.416223185832 279.4697693640549
+1110.13530736051 278.6163998636422
+1117.854391535188 277.7630303632296
+1122.865254389083 277.3871933514012
+1127.876117242977 277.0113563395727
+1133.379383973378 276.5486952389107
+1144.939691986689 275.2743476194553
+1144.939691986689 275.2743476194553
+1156.5 274
+1163 274
+1187 271.9999999999999
+1206 271
+1227 270
+1239.5 270
+1251 270
+1287 270.5
+1315 271.4999999999999
+1344.5 272.9999999999999
+1360 273.9999999999999
+1370 275
+1381 276
+1368 426
+1354 424
+1336 422.9999999999999
+1317 421.9999999999999
+1293 420.9999999999999
+1267 420
+1243 420
+1219 420.9999999999999
+1195 421.9999999999999
+1171 423.9999999999999
+1161.632429966616 424.6668358362957
+1152.129398758326 425.4127649173059
+1145.060074115907 426.2953528904063
+1137.992771667154 426.5260823810626
+1129.042677801211 427.5965121035587
+1120.092583935268 428.6669418260549
+1110.650086192818 429.8241956373847
+1101.207588450369 430.9814494487144
+1089.303071325389 432.5728237042115
+1077.398554200409 434.1641979597086
+1064.509229322417 435.9292203928727
+1051.619904444425 437.6942428260367
+1042 440
+1027 443
+1016.253649424818 444.4379810985521
+1004.522780477505 447.0141631070614
+992.7919115301925 449.5903451155706
+981.0610425828794 452.1665271240799
+969.4169977243998 455.2351130090952
+957.7729528659204 458.3036988941106
+948.5438232804655 460.6884796879184
+939.3146936950107 463.0732604817261
+ 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

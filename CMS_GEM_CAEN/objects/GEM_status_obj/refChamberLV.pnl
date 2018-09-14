@@ -1,0 +1,261 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 108 N "_3DFace" 4
+"$dpEndcapName"
+"$dpLvCellName"
+"$dpLvCellNo"
+"$dpLvbrdClicked"
+"main()
+{
+  	LvbrdClicked=$dpLvbrdClicked;
+	LvCellNo= $dpLvCellNo;
+	LvCellName=$dpLvCellName;
+	Endcap= $dpEndcapName;
+	
+	dyn_string ChmbrInOrExDps;
+	if (!isDollarDefined(\"$dpLvbrdClicked\")) return; // ho Lvbrd name defined
+	LvBrdStatusDp=LvbrdClicked+\".Actual.Status\";
+	
+	ChmbrInOrExDps=chmbrInOrExDps();
+	dpConnect(\"LvInOrExState\",ChmbrInOrExDps);
+	dpConnect(\"gemstsLV\",LvBrdStatusDp);		
+}" 0
+ E E E E 1 -1 -1 0  28 102
+""0  1
+E "string LvbrdClicked,LvBrdStatusDp;
+string Endcap,LvCellName;
+int LvCellNo;
+bool LvInOrExStatus;
+
+gemstsLV(string dpl,int sval)
+{
+  string tag = Endcap+\"LV_\";   
+
+    tag=tag+LvCellNo;  
+	if(LvInOrExStatus)
+	{
+	    if(sval==0)
+	      setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	    if(sval==1)  
+	      setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+	    if(sval==3)  
+	      setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(sval==5)  
+	      setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(sval > 8)  
+	      setValue(tag,\"backCol\",\"FwStateAttention3\"); 
+		}
+	else
+	{
+		setValue(tag,\"backCol\",\"FwEquipmentDisabled\"); 
+	}	 
+}
+LvInOrExState(dyn_string dp,dyn_bool ChmbrInOrExStatus)
+{
+	LvInOrExStatus=FALSE;
+	for(int i=1;i<=6;i++)
+	{
+		LvInOrExStatus= LvInOrExStatus || ChmbrInOrExStatus[i];
+	}
+	dpConnect(\"gemstsLV\",LvBrdStatusDp);	
+}
+string singleChmbrInOrExDp(int cellNo, string Layer)
+{
+	string GEMINIno,ChmbrInOrExDpN,EndcapType;
+//---------------------------------------------------------	
+	if(Endcap== \"+\")
+		EndcapType= \"Plus\";
+	else if(Endcap== \"-\")
+		EndcapType= \"Minus\";
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+//---------------------------------------------------------	
+	if(cellNo<=9)
+		GEMINIno=\"0\"+cellNo;
+	else
+		GEMINIno=cellNo;
+	ChmbrInOrExDpN=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI\"+GEMINIno+\".\"+Layer+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDpN);
+	return(ChmbrInOrExDpN);
+}
+dyn_string chmbrInOrExDps()
+{
+	int i,j;
+	dyn_string ChmbrInOrExDpNams;
+	j=1;
+	for(i=0;i<=2;i++)
+	{
+		ChmbrInOrExDpNams[j]=singleChmbrInOrExDp((LvCellNo*3-i),\"Layer1\");
+		ChmbrInOrExDpNams[j+1]=singleChmbrInOrExDp((LvCellNo*3-i),\"Layer2\");
+		j=j+2;
+	}
+	return(ChmbrInOrExDpNams);
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 1
+"LV_1"
+""
+1 1623.813356952079 315.3216708055118 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E "main(mapping event)
+{
+	removeSymbol(myModuleName(), \"\", \"refName\");	
+  	if(LvInOrExStatus)
+	{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);	
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl\");
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLVEasyBoard.pnl\");
+//		DebugN(targetPnlXY);
+//		DebugN(mouseX, mouseY);
+		edgeX=mouseX+popupPnlXY[1];
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>targetPnlXY[1]-15)//15 just used for adjustment
+			mouseX1=mouseX-popupPnlXY[1]+15; //15 just used for adjustment
+		else
+			mouseX1=mouseX+15; //15 just used for adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/2;
+			edgeY=mouseY+popupPnlXY[2];
+		}
+		mouseY1=mouseY-15; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), \"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupLVEasyBoard.pnl\",\"refName\",
+            makeDynString(\"$dpLvBrdClicked:\"+LvbrdClicked,\"$dpCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+
+	}
+}" 0
+ 0 1 3 2 1 E 0.03461961706425164 0.1292021698223655 -0.1292022797491424 0.03461964651904272 12.27448212088279 -118.9377317609151 1 E 80 872.7004406028178 212.7203138813401
+891.5 208
+913.5 203
+935.5 198
+965.5 191
+998.5 185
+1024.5 181
+1052.5 176
+1086.5 172
+1112.5 169
+1129.910851805407 167.3674285049896
+1169 164
+1214 162
+1249 162
+1279 162
+1311 163
+1341 164
+1367 166
+1391.089148194592 167.3674285049906
+1406.5 169
+1424.5 171
+1436.5 172
+1461.5 175
+1487.5 179
+1511.5 183
+1534.5 187
+1549.5 190
+1561.5 192
+1574.5 195
+1593.5 199
+1611.5 203
+1634.5 209
+1648.299559397183 212.7203138813408
+1620.5 318
+1609.294745291541 315.0635716931171
+1599.620315939086 312.3422821634355
+1584.529443945063 308.6659276565858
+1570.133765721383 305.3660112212394
+1555.738087497703 302.0660947858931
+1542.037603044366 299.14261642205
+1528.337118591029 296.219138058207
+1510.653991081226 292.8472689219491
+1492.970863571422 289.4753997856913
+1481.645574411782 287.4784457425217
+1468.5 285
+1459.5 284
+1448.480866508206 282.6460395436917
+1439.038368765757 281.4887857323619
+1429.595871023307 280.3315319210321
+1417.604529809494 279.2325615420413
+1405.613188595681 278.1335911630503
+1393.586368640324 276.9544965156719
+1381.559548684967 275.7754018682934
+1360 273.9999999999999
+1329 271.9999999999999
+1301 271
+1273 270
+1251 270
+1228 270
+1208 271
+1186 271.9999999999999
+1157 274
+1133.879383973378 276.5486952389107
+1118.354391535188 277.7630303632297
+1102.916223185832 279.4697693640549
+1088.260072695652 281.292474169883
+1073.603922205472 283.115178975711
+1059.729789574467 285.053849586542
+1045.855656943463 286.9925201973729
+1028.085705344826 289.8719854571247
+1010.31575374619 292.7514507168764
+998.9904645865495 294.7484047600461
+986.680367673897 296.9190069808827
+976.4267103561022 299.2347167228916
+966.1730530383073 301.5504264649004
+947.6353539087423 305.8345495935843
+935.9913090502629 308.9031354785997
+924.3472641917833 311.9717213636151
+912.6424761079228 314.9771495091486
+901.5000000000001 318
+ 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

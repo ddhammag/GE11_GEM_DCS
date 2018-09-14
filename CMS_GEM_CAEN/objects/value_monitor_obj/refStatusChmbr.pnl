@@ -1,0 +1,133 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 135 N "_3DFace" 5
+"$dpChmbrInOrEx"
+"$dpEndcapName"
+"$dpGfChmbrName"
+"$dpGfChmbrNo"
+"$dpHVBoardName"
+"main()
+{    
+	HvbrdClicked=$dpHVBoardName;
+	ChmbrInOrExDp=$dpChmbrInOrEx;
+	Endcap=$dpEndcapName;
+	GfChmbrNo=$dpGfChmbrNo;
+	GfChmbrName=$dpGfChmbrName;
+
+	drawGemFoils();   
+}
+drawGemFoils()
+{
+	int i;
+	float k1,y;
+	float scale;
+	int refRec_x,refRec_y; 
+	string HvchClicked,RECTANGLE;
+	string GfCellName;
+	int GfCellNo,GfCellWidth,GfCellVspace,channelNo,ChStartNo;
+ 
+	scale=1;
+	GfCellWidth=15;
+	GfCellVspace=3;
+	
+	RECTANGLE=\"RECTANGLE1\"; //Rectangle 1 name
+	getValue(RECTANGLE,\"position\",refRec_x,refRec_y); // get ref point of ellipse1-ellipse7
+//	DebugN(\"position=\",refRec_x,refRec_y);
+   
+//--------------------------------GEM_FOIL_CELL -------------------------
+	if(GfChmbrNo%2==1)
+		ChStartNo=0;  //channel starting no. e.g /channel000 to /channel006
+	else if(GfChmbrNo%2==0)
+		ChStartNo=7;	//channel starting no. e.g /channel007 to /channel013
+	for (i=1; i<=7; i++)
+	{  				
+		GfCellNo=i;
+		GfCellName=GfChmbrName+\"_\"+GfCellNo;  
+//		DebugN(\"GfCellName=\",GfCellName); 
+		if(i==1)
+			y=0;
+		if((i==2)||(i==4)||(i==6))
+			y=y+GfCellWidth+GfCellVspace;
+		if((i==3)||(i==5)||(i==7))
+			y=y+GfCellWidth-1;
+//      DebugN(\"y=\",y);
+		channelNo=ChStartNo + (7-GfCellNo);  //channel number  e.g /channel000 to /channel013
+		//(7-GfCellNo) :- this is due to drift(GfCellNo1) connected to channel006 and G3Bot(GfCellNo7)connected to channel000
+		if(channelNo<=9)
+			HvchClicked = HvbrdClicked+\"/channel0\"+\"0\"+channelNo;
+		else
+			HvchClicked = HvbrdClicked+\"/channel0\"+channelNo;
+		
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/value_monitor_obj/refStatusHVSquare.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			GfCellName,makeDynString(\"$dpHVChannelName:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpGfCellName:\"+GfCellName,\"$dpGfCellNo:\"+GfCellNo,\"$dpEndcapName:\"+Endcap),
+			refRec_x,refRec_y+y,0,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		//return -- //CAEN/GEM_CAEN_HV_01/board00/channel000
+		//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status	
+	}  
+}" 0
+ E E E E 1 -1 -1 0  18 14.38531779361483
+""0  1
+E "string HvbrdClicked;
+string Endcap,GfChmbrName;
+int GfChmbrNo;
+string ChmbrInOrExDp;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE1"
+""
+1 839.7106643356653 641.4410450767031 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 0.07417168735726097 0 3.866076709040775 -43.28275686566288 -2463.860284593815 1 E 839.7106643356653 641.2820512820513 1379 670
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

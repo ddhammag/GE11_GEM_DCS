@@ -1,0 +1,167 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 170 36 N {198,195,198} 4
+"$dpBcCellName"
+"$dpBcCellNo"
+"$dpBcLabel"
+"$dpLvBranchConName"
+"main()
+{
+	LvBranchConDp=$dpLvBranchConName;
+	BcCellName=$dpBcCellName;
+	BcLabel=$dpBcLabel;
+	BcCellNo= $dpBcCellNo;
+//	Debug(\"HvBrdClicked=\",HvBrdClicked);
+	if (!isDollarDefined(\"$dpLvBranchConName\")) return; // no chamber name defined
+		
+	displayDeviceName();
+	dpConnect(\"displayBcStatus\",LvBranchConDp);
+}" 0
+ E E E E 1 -1 -1 0  3 27
+""0  1
+E "string LvBranchConDp,BcCellName,BcLabel;
+int BcCellNo;
+
+displayDeviceName()
+{	
+	string DeviceName,tag;	
+	tag=\"PopupDeviceName\";
+	DeviceName=\"GE\"+\"1/1 MAO_0\"+BcCellNo;
+	setValue(tag, \"text\", DeviceName); 
+}
+displayBcStatus(string dp1, bool BcStatus)
+{	
+	string tagState;
+	
+	tagState=\"BcStatus\";
+	
+	if(BcStatus==TRUE){
+		setValue(tagState,\"backCol\",\"FwStateOKPhysics\");
+		setValue(tagState,\"text\",\"ON\");
+	}
+	if(BcStatus==FALSE){
+	  	setValue(tagState,\"backCol\",\"FwStateOKNotPhysics\");
+		setValue(tagState,\"text\",\"STANDBY\");
+	}
+}" 0
+ 4
+"CBRef" "1"
+"EClose" E
+"windowIcon" "cmsLogo_image.jpg"
+"dpi" "96"
+0 1 9 9 9 9 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 44
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.5491648915723431 0 1.437144899768362 -0.7407586638711399 -71.95641975406375 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+6 45
+"PopupDeviceNameBack"
+""
+1 240 90 E E E 1 E 1 E N {0,0,0} E N {198,195,198} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N {0,0,0}"
+"hoverbclr" "N {176,174,176}"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E 1 0 1 5.501811594202816 5.950809794278673 1 E 100 19 0 -1
+2 46
+"PopupDeviceName"
+""
+1 8.501811594202817 7.950809794278673 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 8.501811594202817 7.950809794278673 99 22
+0 2 2 "0s" 0 0 0 192 0 0  8.501811594202817 7.950809794278673 1
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 13 HV Board Name
+14 68
+"BcStatus"
+""
+1 286.5018115942029 43.22471275404735 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  103.0434782608696 2.990846681922195 157.0434782608696 26.9908466819222
+2 "0s" 0 0 0 1 0 -1  E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 27 "SHAPE_GROUP27" -1
+3 0 
+68 45 46 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

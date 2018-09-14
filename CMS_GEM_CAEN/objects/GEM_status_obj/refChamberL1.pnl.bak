@@ -1,0 +1,184 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 43 N "_3DFace" 6
+"$dpChmbrInOrEx"
+"$dpEndcapName"
+"$dpHvchClicked"
+"$dpL1CellName"
+"$dpL1CellNo"
+"$dpL1LvchClicked"
+"main()
+{
+  	LlLvchClicked=$dpL1LvchClicked;
+	HvchClicked=$dpHvchClicked;
+	ChmbrInOrExDp=$dpChmbrInOrEx;
+	L1CellNo= $dpL1CellNo;
+	L1CellName=$dpL1CellName;
+	Endcap= $dpEndcapName;
+	
+	if (!isDollarDefined(\"$dpChmbrInOrEx\")) return;
+	if (!isDollarDefined(\"$dpL1LvchClicked\")) return; // no chamber name defined
+	if (!isDollarDefined(\"$dpHvchClicked\")) return; // no chamber name defined
+
+	dpConnect(\"ChmbrInOrEx\",ChmbrInOrExDp);
+/*	dyn_string HvChannels_var=(dpNames(HvchClicked+\"*channel*\",\"FwCaenChannelA1515\"));
+	for(int i=1;i<=7;i++)
+	{
+		HvChannels[i]=HvChannels_var[i];
+	}*/
+	LvChannel=LlLvchClicked;
+//	DebugN(\"L1CellName=\",L1CellName,\"HvChannels =\",HvChannels);
+//	DebugN(\"LvChannel =\",LvChannel);
+
+//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.Actual.Status	
+}
+" 0
+ E E E E 1 -1 -1 0  9 36
+""0  1
+E "string LlLvchClicked,HvchClicked,ChmbrInOrExDp,Endcap,L1CellName,LvChannel;
+int L1CellNo;
+dyn_string HvChannels;
+bool ChmbrInOrExStatus;
+
+ChmbrInOrEx(string dpl,bool status)
+{
+	string tag; 
+	tag=Endcap+\"L1_\"+L1CellNo; 
+	if(status)
+	{
+		ChmbrInOrExStatus=TRUE;
+		setValue(tag,\"backCol\",\"_Transparent\");	
+	}
+	else
+	{
+		ChmbrInOrExStatus=FALSE;
+		setValue(tag,\"backCol\",\"FwEquipmentDisabled\"); 
+	}
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 1
+"L1_1"
+""
+1 1347.776175506668 675.2641482375499 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E "main(mapping event)
+{
+	removeSymbol(myModuleName(), \"\", \"refName\");	
+	if(ChmbrInOrExStatus)
+	{
+  		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);	
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl\");
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupChamber.pnl\");
+//		DebugN(targetPnlXY);
+//		DebugN(mouseX, mouseY);
+		edgeX=mouseX+popupPnlXY[1]+15; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1]+15;//15 just used for the adjustment
+		else
+			mouseX1=mouseX+15; //15 just used for the adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/2;
+			edgeY=mouseY+popupPnlXY[2];
+		}
+		mouseY1=mouseY+15; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), \"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupChamber.pnl\",\"refName\",
+            makeDynString(\"$dpLvchClicked:\"+LvChannel,\"$dpHvchClicked:\"+HvchClicked,\"$dpCellNo:\"+L1CellNo,\"$dpCellName:\"+L1CellName,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+	}
+}" 0
+ 0 1 3 2 1 E 0.01165794595092171 0.1332509319617998 -0.1332510453333127 0.01165795586964386 83.26735182076584 -151.4646311026797 1 E 41 1151.99393758342 425.4918581620204
+1171 423.9999999999999
+1171 423.9999999999999
+1195 421.9999999999999
+1219 420.9999999999999
+1231 420.5
+1255 420
+1280 420.5
+1305 421.4999999999999
+1326.5 422.5
+1345 423.4999999999999
+1368 426
+1368 426
+1368 426
+1345.864538825094 673.0790932447144
+1336.864538825094 672.0790932447144
+1336.864538825094 672.0790932447144
+1333.864538825094 672.0790932447144
+1330.864538825094 672.0790932447144
+1324.364538825094 671.5790932447144
+1317.864538825094 671.0790932447144
+1308.864538825094 670.5790932447144
+1299.864538825094 670.0790932447144
+1294.864538825094 670.0790932447144
+1275.364538825094 669.5790932447144
+1260.2975445656 669.4525606669752
+1255.864538825094 669.0790932447144
+1248.364538825094 669.0790932447144
+1240.864538825094 669.0790932447144
+1232.364538825094 669.5790932447144
+1224.864538825094 670.0790932447144
+1220.864538825094 670.0790932447144
+1213.364538825094 670.5790932447144
+1206.864538825094 671.0790932447144
+1203.364538825094 671.0790932447144
+1199.864538825094 671.0790932447144
+1192.864538825094 671.5790932447144
+1185.864538825094 672.0790932447144
+1181.364538825094 672.5790932447144
+1175.364538825094 673.0790932447144
+1173.864538825094 673.0790932447144
+ 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

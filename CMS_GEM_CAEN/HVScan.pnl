@@ -1,0 +1,600 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 482 450 N "_3DFace" 1
+"$dpHvChannelName"
+"main()
+{
+  HVchClicked=$dpHvChannelName;
+  ScanState=FALSE;
+  scanStop=FALSE;
+  vFrom.text=100;
+  stepSize.text=100;
+  vTo.text=3000;
+  hTime.text=2;
+  pbScan.enabled=TRUE;
+  pbStop.enabled=FALSE;
+}" 0
+ E E E E 1 -1 -1 0  5.000000000000032 -11.99999999999991
+""0  1
+E "string HVchClicked;
+bool ScanState,swopt,scanStop,write;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+30 1
+"LVScanTitle"
+""
+1 20 24 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+0 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.243243243243243 0 1.179775280898876 -15.36486486486483 -13.31460674157294 0 E 20 24 391 381
+1
+LANG:1 26 Arial,-1,27,5,75,0,0,0,0,0
+0 1
+LANG:1 15 HV Channel Scan
+2 2
+"PRIMITIVE_TEXT1"
+""
+1 19.50000000000003 79.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 19.50000000000003 79.00000000000009 118 97
+0 2 2 "0s" 0 0 0 192 0 0  19.50000000000003 79.00000000000009 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 13 Start Voltage
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 19.50000000000003 135.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 19.50000000000003 135.0000000000001 93 153
+0 2 2 "0s" 0 0 0 192 0 0  19.50000000000003 135.0000000000001 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 Step Size
+2 4
+"PRIMITIVE_TEXT3"
+""
+1 19.50000000000003 191.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 19.50000000000003 191.0000000000001 118 209
+0 2 2 "0s" 0 0 0 192 0 0  19.50000000000003 191.0000000000001 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Stop Voltage
+2 5
+"PRIMITIVE_TEXT4"
+""
+1 19.50000000000003 255.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 19.50000000000003 255.0000000000001 98 273
+0 2 2 "0s" 0 0 0 192 0 0  19.50000000000003 255.0000000000001 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 Hold Time
+25 6
+"scnTable"
+""
+1 239.5 55.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"draggable" ""
+"sizePolicy" "Expanding Expanding"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  237.5 53.00000000000009 461.5000000000001 417.0000000000001
+EE 1 0 1 2 0 "scanV" 6 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 28 Scaned Voltages and Currents
+
+80 "scanC" 8 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+100 
+25 25 10 0
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 7
+"pbScan"
+""
+1 29.50000000000007 355.1000000000001 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 18 Start Scan process
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  27.50000000000007 342.3000000000001 106.9166666666668 382.3000000000001
+
+T 
+1
+LANG:1 4 SCAN
+"// For A1526,\"output voltage range is 0 V to 15 kV with 1 V monitor resolution\" (datsheet)
+//The HV RAMP-UP and RAMP-DOWN rates may be selected independently for each channel in the range 1? 500 V/s in 1 V/s steps.
+main(mapping event)
+{
+  time t,t1,t2;
+  float eTime,stepTime,rUp;
+  float vMonVal,start,stop,step,holdTime,vSetVal;
+  float iMonVal,steps;
+  
+  start=(float)vFrom.text;
+  stop=(float)vTo.text;
+  step=(float)stepSize.text;
+  holdTime=(float)hTime.text;
+  
+  ScanState=TRUE;
+  scanStop=FALSE;
+  write=TRUE;
+  pbScan.enabled=FALSE;
+  pbStop.enabled=TRUE;
+  scnTable.deleteAllLines();
+  
+  //***********************************************/  
+  steps=(stop-start)/step;
+  steps=ceil(steps);
+  dpGet(HVchClicked+\".readBackSettings.rUp\",rUp);    //(deltaV/deltaT)
+
+  if(rUp==0);
+  {
+    rUp=50;        //*The HV RAMP-UP and RAMP-DOWN rates may be selected 
+                   //independently for each channel in 
+                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)*/
+    dpSet(HVchClicked+\".settings.rUp\",rUp);
+  }
+  stepTime=step/rUp;  //time taken to increase by one voltage step
+  dpSet(HVchClicked+\".settings.onOff\",1);
+  dpGet(HVchClicked+\".actual.vMon\",vMonVal);
+  
+  if(vMonVal>start)
+  { 
+    dpSetWait(HVchClicked+\".settings.v0\",start); 
+    while(vMonVal>start)
+    {
+      dpGet(HVchClicked+\".actual.vMon\",vMonVal);
+    }
+  }
+  if(ScanState)
+  { 
+    for(int i=0; i <= steps; i++)
+    {  
+      if(i==steps)
+      {
+       vSetVal=stop;
+      } 
+      else
+      {     
+      vSetVal=start+(i*step);
+      }
+      if(!scanStop)
+      {
+        dpSetWait(HVchClicked+\".settings.v0\",vSetVal);   
+        t1=getCurrentTime();
+        dpGet(HVchClicked+\".actual.vMon\",vMonVal); 
+        eTime=0;
+        while(vMonVal<=0.98*vSetVal || eTime < (stepTime+holdTime))
+        { 
+          if(!scanStop)
+          {
+            dpGet(HVchClicked+\".actual.vMon\",vMonVal);
+            t2=getCurrentTime();
+            t=t2-t1;
+            eTime=t;    //time elapsed
+            eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+          }
+          else  
+            break;      
+        }
+        if(write)
+        {
+          //**********show data in the table*************
+          scnTable.appendLine(\"scanV\",\"\");
+          scnTable.appendLine(\"scanC\",\"\");
+          dpGet(HVchClicked+\".actual.vMon\",vMonVal);
+          dpGet(HVchClicked+\".actual.iMon\",iMonVal);
+          iMonVal=round(iMonVal); //round off the iMonVal value
+          setValue(\"scnTable\",\"cellValueRC\",i,\"scanV\",vMonVal);
+          setValue(\"scnTable\",\"cellValueRC\",i,\"scanC\",iMonVal);
+          //**********end of show data in the table*********
+        }
+      }
+    }
+  }
+  
+  if(swopt)
+  {  
+    dpSet(HVchClicked+\".settings.onOff\",0);
+  }
+  pbScan.enabled=TRUE;
+  pbStop.enabled=FALSE;
+
+}
+//***************round off the iMonVal value***************
+float round(float v)
+{
+  int c, r, m,deciPoints;  
+  deciPoints=(int)deciPoints1.text+1;
+  m = v*power(10,deciPoints); //v*1000; //v = 838.274 m = 838274
+  c = m%10; // c = 4
+  r = m/10; // r = 83827
+  if(c>=5){r++;}
+  v = (float)r/power(10,deciPoints-1);//(float)r/100;
+  return v;
+}
+int power(int base, int expo)
+{
+    int result = 1;
+    while(expo) { result *= base; expo--; }
+    return result;
+}
+//***************end of round off the iMonVal value***************" 0
+ E E E
+13 8
+"pbStop"
+""
+1 139.5 355.0000000000001 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 17 Stop Scan process
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  137.5 342.2000000000001 216.9166666666667 382.2000000000001
+
+T 
+1
+LANG:1 4 STOP
+"main(mapping event)
+{
+  ScanState=FALSE;  
+  pbScan.enabled=TRUE;
+  pbStop.enabled=FALSE;
+  scanStop=TRUE;
+  write=FALSE;
+}
+" 0
+ E E E
+20 9
+"CHECK_BOX1"
+""
+1 49.50000000000003 305.0000000000001 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  47.50000000000003 303.0000000000001 201.5 327.0000000000001
+1
+T 
+1
+LANG:1 22  Switch Off After Scan
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  swopt=state;
+}" 0
+14 10
+"vFrom"
+""
+1 120.7222222222222 83.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E "float minV=0; 
+float maxV=4000;
+
+main()
+{
+ float start,stop;
+  start=(float)vFrom.text;
+  //stop=(float)vTo.text;
+  if((start<minV)||(start>maxV))
+  {
+    //vFrom.clear(); 
+    vFrom.text=\"\";
+  }
+  //else if(start>=stop)
+  //{
+  //  vFrom.text=\"\";   
+  //}
+}" 0
+ E
+0
+1
+LANG:1 32 Enter a value between 0 V-4000 V
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  118.7222222222222 71.00000000000009 231.5 107.0000000000001
+3 "0s" 0 0 0 0 0 -1  E E E
+14 11
+"stepSize"
+""
+1 120.7222222222222 138.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 9 Step Size
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  118.7222222222222 126.0000000000001 231.5 162.0000000000001
+3 "0s" 0 0 0 0 0 -1  E E E
+14 12
+"vTo"
+""
+1 119.5 195.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+11 0 0 0 0 0
+E "float minV=0; 
+float maxV=4000;
+
+main()
+{
+ float start,stop;
+  start=(float)vFrom.text;
+  stop=(float)vTo.text;
+  if((stop<minV)||(stop>maxV))
+  {
+    vTo.text=\"\";   
+  }
+  else if(start>=stop)
+  {
+    vTo.text=\"\";   
+  }
+}" 0
+ E
+0
+1
+LANG:1 32 Enter a value between 0 V-4000 V
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  117.5 183.0000000000001 230.2777777777778 219.0000000000001
+3 "0s" 0 0 0 0 0 -1  E E E
+14 13
+"hTime"
+""
+1 119.5 258.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+E "float minT=1; 
+main()
+{
+ float holdTime;
+  holdTime=(float)hTime.text;
+  if(holdTime<minT)
+  {
+    hTime.text=\"\";   
+  }
+}" 0
+ E
+0
+1
+LANG:1 9 Hold Time
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  117.5 246.0000000000001 230.2777777777778 282.0000000000001
+3 "0s" 0 0 0 0 0 -1  E E E
+13 14
+"PUSH_BUTTON3"
+""
+1 27.2083333333334 409.0000000000001 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 12 Close Window
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  25.2083333333334 403.0000000000001 109.2083333333334 427.0000000000001
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+  closeDialog();
+}" 0
+ E E E
+21 15
+"deciPoints1"
+""
+1 419.5000000000001 418.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+14 0 0 0 0 0
+E E E
+0
+1
+LANG:1 19 # of Decimal Places
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  417.5000000000001 413.0000000000001 461.5000000000001 434.0000000000001
+0
+
+E
+E
+E
+
+N 0 8 1 4 1 1
+2 16
+"PRIMITIVE_TEXT5"
+""
+1 332.5000000000001 418.0000000000001 E E E 1 E 1 E N "_WindowText" E N {134,142,144} E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 19 # of Decimal Places
+
+9
+"hoverfclr" "N {134,142,144}"
+"hoverbclr" "N {134,142,144}"
+"shadowOffset" "[8,8]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 332.5000000000001 418.0000000000001 416 431
+0 2 2 "0s" 0 0 0 192 0 0  332.5000000000001 418.0000000000001 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Decimal Places
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+16 0 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

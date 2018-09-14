@@ -1,0 +1,152 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 42 N "_3DFace" 5
+"$dpChmbrInOrEx"
+"$dpEndcapName"
+"$dpLVChannelName"
+"$dpLvCellName"
+"$dpLvCellNo"
+"main()
+{
+	LvchClicked=$dpLVChannelName;
+	ChmbrInOrExDp=$dpChmbrInOrEx;
+	LvCellNo=$dpLvCellNo;
+	LvCellName=$dpLvCellName;
+	Endcap=$dpEndcapName;
+	
+	if (!isDollarDefined(\"$dpLVChannelName\")) return; // ho chamber name defined
+
+	LvChStatusDp=LvchClicked+\".actual.status\";
+//	DebugN(\"LvCellName=\",LvCellName,\"LvchClicked =\",LvchClicked);
+	dpConnect(\"LVstatus\",LvChStatusDp,ChmbrInOrExDp);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status  
+}" 0
+ E E E E 1 -1 -1 0  14 9
+""0  1
+E "string Endcap,ChmbrInOrExDp,LvchClicked,LvChStatusDp,LvCellName;
+int LvCellNo;
+bool ChmbrInOrExStatus;
+
+LVstatus(string dpl,int LVval,string dp2,bool InOrExStatus)
+{
+   	string tag; 
+	tag=LvCellName; 
+	int i=1;
+    
+	if(InOrExStatus==FALSE)
+	{
+		setValue(tag,\"backCol\",\"FwEquipmentDisabled\");
+		ChmbrInOrExStatus=FALSE;
+	}
+	else
+	{
+		ChmbrInOrExStatus=TRUE;
+	    if(LVval==0)
+			setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	    if(LVval==1)  
+	      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+	    if(LVval==3)
+	      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(LVval==5)
+	      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(LVval>8)  
+	      	setValue(tag,\"backCol\",\"FwStateAttention3\"); 
+	} 
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE4"
+""
+1 841 552 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
+ "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\", \"refName3\");	
+}" 0
+ E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+	if(ChmbrInOrExStatus)
+	{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);
+		removeSymbol(myModuleName(), \"\", \"refName3\");	
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_LV.pnl\");	
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupGEMLvStatus.pnl\");
+		getValue(\"\",\"position\",FRAME1_x,FRAME1_y); 
+		getValue(\"\",\"size\",FRAME2_x,FRAME2_y);
+//		DebugN(targetPnlXY);
+//		DebugN(popupPnlXY);
+//		DebugN(mouseX, mouseY);
+//		DebugN(FRAME1_x, FRAME1_y);
+//		DebugN(FRAME2_x, FRAME2_y);
+		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		else
+			mouseX1=mouseX+10; //15 just used for the adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/20;
+			edgeY=mouseY+popupPnlXY[2];
+//			DebugN(\"mouseY\", mouseY);
+//			DebugN(\"edgeY\", edgeY);
+		}
+		mouseY1=mouseY; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(),\"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupGEMLvStatus.pnl\",\"refName3\",
+            makeDynString(\"$dpLVChannelName:\"+LvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpLvCellName:\"+LvCellName,\"$dpLvCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+	}
+}" 0
+ 0 1 3 2 1 E 1 0 1 -827 -543 1 E 841 552 855 566
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

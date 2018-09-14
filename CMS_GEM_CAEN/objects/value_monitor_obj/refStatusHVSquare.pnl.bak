@@ -1,0 +1,157 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 42 N "_3DFace" 5
+"$dpChmbrInOrEx"
+"$dpEndcapName"
+"$dpGfCellName"
+"$dpGfCellNo"
+"$dpHVChannelName"
+"main()
+{
+	HvchClicked=$dpHVChannelName;
+	ChmbrInOrExDp=$dpChmbrInOrEx;
+	GfCellNo=$dpGfCellNo;
+	GfCellName=$dpGfCellName;
+	Endcap=$dpEndcapName;
+	
+	string HvChActualStatusDp;
+	
+	if (!isDollarDefined(\"$dpHVChannelName\")) return; // ho chamber name defined
+
+	ChmbrInOrExDpN[1]=ChmbrInOrExDp+\".Layer1\"+\".IncludeExclude\";
+	ChmbrInOrExDpN[2]=ChmbrInOrExDp+\".Layer2\"+\".IncludeExclude\";
+//	DebugN(\"GfCellName=\",GfCellName,\"HvchClicked =\",HvchClicked);
+	HvChActualStatusDp=HvchClicked+\".actual.status\";
+	
+	dpConnect(\"GfHVstatus\",HvChActualStatusDp,ChmbrInOrExDpN[1],ChmbrInOrExDpN[2]);
+	//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+}" 0
+ E E E E 1 -1 -1 0  14 9
+""0  1
+E "string HvchClicked,ChmbrInOrExDp,Endcap,GfCellName;
+int GfCellNo;
+dyn_string ChmbrInOrExDpN;
+bool ChmbrInOrExStatus;
+
+GfHVstatus(string dpl,int HVval,string dp2,bool ChmbrInOrExStatus1,string dp3,bool ChmbrInOrExStatus2)
+{
+   	string tag; 
+	tag=GfCellName; 
+	int i=1;
+    if((ChmbrInOrExStatus1==FALSE)&&(ChmbrInOrExStatus2==FALSE))
+	{
+		setValue(tag,\"backCol\",\"FwEquipmentDisabled\");
+		ChmbrInOrExStatus=FALSE;
+	}
+	else
+	{
+		ChmbrInOrExStatus=TRUE;
+	    if(HVval==0)
+			setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	    if(HVval==1)  
+	      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+	    if(HVval==3)
+	      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(HVval==5)
+	      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+	    if(HVval>8)  
+	      	setValue(tag,\"backCol\",\"FwStateAttention3\");  
+	}
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE4"
+""
+1 841 552 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
+ "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\", \"refName3\");	
+}" 0
+ E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+	if(ChmbrInOrExStatus)
+	{		
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);
+		removeSymbol(myModuleName(), \"\", \"refName3\");	
+		targetPnlXY=getPanelSize(\"sub_pannels_main_DCS//refValue_monitor_HV.pnl\");	
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupGEMfoilStatus.pnl\");
+		getValue(\"\",\"position\",FRAME1_x,FRAME1_y); 
+		getValue(\"\",\"size\",FRAME2_x,FRAME2_y);
+//		DebugN(targetPnlXY);
+//		DebugN(popupPnlXY);
+//		DebugN(mouseX, mouseY);
+//		DebugN(FRAME1_x, FRAME1_y);
+//		DebugN(FRAME2_x, FRAME2_y);
+		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		else
+			mouseX1=mouseX+10; //15 just used for the adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/20;
+			edgeY=mouseY+popupPnlXY[2];
+//			DebugN(\"mouseY\", mouseY);
+//			DebugN(\"edgeY\", edgeY);
+		}
+		mouseY1=mouseY; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(),\"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupGEMfoilStatus.pnl\",\"refName3\",
+            makeDynString(\"$dpHVChannelName:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpGfCellName:\"+GfCellName,\"$dpGfCellNo:\"+GfCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+	}
+}" 0
+ 0 1 3 2 1 E 1 0 1 -827 -543 1 E 841 552 855 566
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -1,0 +1,1138 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 570 139 N "_3DFace" 2
+"$dpEndcapName"
+"$dpHvMFName"
+"main()
+{    
+	HvMF=$dpHvMFName;
+	Endcap=$dpEndcapName;
+	
+	drawGfChambers();   
+}
+drawGfChambers()
+{
+	int i;
+	float k1,x;
+	float scale;
+	int refRec_x,refRec_y; 
+	string HvbrdClicked,RECTANGLE;
+	string GfChmbrName,ChmbrInOrExDp;
+	int GfChmbrNo,GfCellWidth;
+
+	scale=1;
+	GfCellWidth=15;
+	x=0;
+			
+	RECTANGLE=\"RECTANGLE2\"; //Rectangle 1 name
+	getValue(RECTANGLE,\"position\",refRec_x,refRec_y); // get ref point of ellipse1-ellipse7
+//	DebugN(\"position=\",refRec_x,refRec_y);
+   
+//--------------------------------GEM_FOIL_CELL -------------------------
+	for (i=1; i<=36; i++)
+	{  				
+		GfChmbrNo=i;
+		if(GfChmbrNo<=9)
+			GfChmbrName=Endcap+\"Gf0\"+GfChmbrNo; 
+		else
+			GfChmbrName=Endcap+\"Gf\"+GfChmbrNo; 
+//		DebugN(\"GfChmbrName=\",GfChmbrName); 
+		ChmbrInOrExDp=chmbrInOrExDp(GfChmbrName);
+		HvbrdClicked=HVboardClicked(GfChmbrNo);
+//		DebugN(\"GfChmbrName=\",GfChmbrName,\"HvbrdClicked=\",HvbrdClicked);
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/value_monitor_obj/refStatusChmbr.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			GfChmbrName,makeDynString(\"$dpHVBoardName:\"+HvbrdClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpGfChmbrName:\"+GfChmbrName,\"$dpGfChmbrNo:\"+GfChmbrNo,\"$dpEndcapName:\"+Endcap),
+			refRec_x+x,refRec_y,0,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		x=x+GfCellWidth-1;
+//      DebugN(\"x=\",x);
+	}  
+}" 0
+ E E E E 1 -1 -1 0  6 11
+""0  1
+E "string HVchClicked,HvMF;
+string Endcap;
+
+string HVboardClicked(int GfChmbrNo)
+{
+	int GemCaenHvNo,GemCaenHvNo1,CellNo,var1,var2;
+	string HvBrdClicked,boardNo;	
+	//---------------------------------------------------
+	if(GfChmbrNo%2==0)
+		var1=GfChmbrNo/2;
+	else
+		var1=GfChmbrNo/2+1;
+	//---------------------------------------------------
+	if(Endcap==\"+\")	
+		GemCaenHvNo1=0;			
+	else if(Endcap==\"-\")	
+		GemCaenHvNo1=2;
+	else DebugN(\"Endcap name error\");	
+	//---------------------------------------------------
+	var2=var1-1;
+	//---------------------------------------------------
+	if(var2 <= 15)	
+	{
+		if(var2 < 10)
+			boardNo=\"0\"+var2;
+		else 
+			boardNo=var2;
+		GemCaenHvNo=1+GemCaenHvNo1;
+	}
+	else if((var2 > 15)&&(var2 <= 17))
+	{
+		boardNo=\"0\"+(var2-16);
+		GemCaenHvNo=2+GemCaenHvNo1;
+	}
+	else DebugN(\"Hv Cell Number is not in range\");
+	//---------------------------------------------------
+	HvBrdClicked=(HvMF+\"0\"+GemCaenHvNo+\"/board\"+boardNo);
+	
+//	DebugN(\"HvCellNo=\",HvCellNo,\"HVchannel=\",HvChClicked);
+	return (HvBrdClicked);
+	//return -- //CAEN/GEM_CAEN_HV_01/board00
+	//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+}
+string chmbrInOrExDp(string GfChmbrName)
+{
+	string EndcapType,GEMINIno;
+	string ChmbrInOrExDpN;
+	
+	GEMINIno=uniSubStr(GfChmbrName, 3, 2); // extract details from Cell name
+	if(Endcap== \"+\")
+		EndcapType= \"Plus\";
+	else if(Endcap== \"-\")
+		EndcapType= \"Minus\";
+	ChmbrInOrExDpN=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI\"+GEMINIno,\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDpN);
+	return(ChmbrInOrExDpN);
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 301
+"RECTANGLE2"
+""
+1 838.7954430726471 640.95710723497 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+300 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 0.9364175528854301 0 3.866076709040775 -741.4647603005224 -2464.989343775268 1 E 839.7106643356653 641.2820512820513 1379 670
+2 34
+"PRIMITIVE_TEXT760"
+""
+1 51.85533216782929 2.584780810587193 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 49 2.584780810587193 55 13
+0 2 2 "0s" 0 0 0 193 0 0  51.85533216782929 2.584780810587193 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 1
+2 35
+"PRIMITIVE_TEXT763"
+""
+1 66.09775641025684 2.584780810587192 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 63 2.584780810587192 69 13
+0 2 2 "0s" 0 0 0 193 0 0  66.09775641025684 2.584780810587192 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 2
+2 36
+"PRIMITIVE_TEXT764"
+""
+1 79.43108974359043 2.584780810587192 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 76 2.584780810587192 82 13
+0 2 2 "0s" 0 0 0 193 0 0  79.43108974359043 2.584780810587192 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 3
+2 37
+"PRIMITIVE_TEXT765"
+""
+1 93.93157850214664 2.315963606286135 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 91 2.315963606286135 97 12
+0 2 2 "0s" 0 0 0 193 0 0  93.93157850214664 2.315963606286135 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 4
+2 38
+"PRIMITIVE_TEXT766"
+""
+1 107.851422099413 2.315963606286135 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 105 2.315963606286135 111 12
+0 2 2 "0s" 0 0 0 193 0 0  107.851422099413 2.315963606286135 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 5
+2 39
+"PRIMITIVE_TEXT767"
+""
+1 121.5073360779079 2.315963606286135 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 119 2.315963606286135 125 12
+0 2 2 "0s" 0 0 0 193 0 0  121.5073360779079 2.315963606286135 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 6
+2 40
+"PRIMITIVE_TEXT768"
+""
+1 136.1896430182765 2.276985111662514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 133 2.276985111662514 139 12
+0 2 2 "0s" 0 0 0 193 0 0  136.1896430182765 2.276985111662514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 7
+2 41
+"PRIMITIVE_TEXT769"
+""
+1 149.4320672607042 2.276985111662514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 146 2.276985111662514 152 12
+0 2 2 "0s" 0 0 0 193 0 0  149.4320672607042 2.276985111662514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 8
+2 42
+"PRIMITIVE_TEXT770"
+""
+1 163.7654005940381 2.276985111662514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+41 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 161 2.276985111662514 167 12
+0 2 2 "0s" 0 0 0 193 0 0  163.7654005940381 2.276985111662514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 1 9
+2 43
+"PRIMITIVE_TEXT771"
+""
+1 178.2658893525941 2.642576509511985 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 173 2.642576509511985 183 13
+0 2 2 "0s" 0 0 0 193 0 0  178.2658893525941 2.642576509511985 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 10
+2 44
+"PRIMITIVE_TEXT772"
+""
+1 192.1857329498608 2.642576509511985 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 187 2.642576509511985 197 13
+0 2 2 "0s" 0 0 0 193 0 0  192.1857329498608 2.642576509511985 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 11
+2 45
+"PRIMITIVE_TEXT773"
+""
+1 205.8416469283565 2.642576509511985 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 201 2.642576509511985 211 13
+0 2 2 "0s" 0 0 0 193 0 0  205.8416469283565 2.642576509511985 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 12
+2 46
+"PRIMITIVE_TEXT774"
+""
+1 219.7380301150536 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 215 2.287737799834547 225 12
+0 2 2 "0s" 0 0 0 193 0 0  219.7380301150536 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 13
+2 47
+"PRIMITIVE_TEXT775"
+""
+1 233.9804543574805 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 229 2.287737799834547 239 12
+0 2 2 "0s" 0 0 0 193 0 0  233.9804543574805 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 14
+2 48
+"PRIMITIVE_TEXT776"
+""
+1 248.3137876908145 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+47 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 243 2.287737799834547 253 12
+0 2 2 "0s" 0 0 0 193 0 0  248.3137876908145 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 15
+2 49
+"PRIMITIVE_TEXT777"
+""
+1 261.8142764493715 2.278329197684018 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 257 2.278329197684018 267 12
+0 2 2 "0s" 0 0 0 193 0 0  261.8142764493715 2.278329197684018 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 16
+2 50
+"PRIMITIVE_TEXT778"
+""
+1 275.7341200466366 2.278329197684018 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 271 2.278329197684018 281 12
+0 2 2 "0s" 0 0 0 193 0 0  275.7341200466366 2.278329197684018 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 17
+2 51
+"PRIMITIVE_TEXT779"
+""
+1 289.3900340251327 2.278329197684018 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 284 2.278329197684018 294 12
+0 2 2 "0s" 0 0 0 193 0 0  289.3900340251327 2.278329197684018 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 18
+2 52
+"PRIMITIVE_TEXT780"
+""
+1 304.1632500564066 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 299 2.287737799834547 309 12
+0 2 2 "0s" 0 0 0 193 0 0  304.1632500564066 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 19
+2 53
+"PRIMITIVE_TEXT781"
+""
+1 317.4056742988347 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 312 2.287737799834547 322 12
+0 2 2 "0s" 0 0 0 193 0 0  317.4056742988347 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 20
+2 54
+"PRIMITIVE_TEXT782"
+""
+1 331.7390076321686 2.287737799834547 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 327 2.287737799834547 337 12
+0 2 2 "0s" 0 0 0 193 0 0  331.7390076321686 2.287737799834547 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 21
+2 55
+"PRIMITIVE_TEXT783"
+""
+1 346.2394963907246 2.278329197684018 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+54 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 341 2.278329197684018 351 12
+0 2 2 "0s" 0 0 0 193 0 0  346.2394963907246 2.278329197684018 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 22
+2 56
+"PRIMITIVE_TEXT784"
+""
+1 360.1593399879915 2.278329197683905 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+55 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 355 2.278329197683905 365 12
+0 2 2 "0s" 0 0 0 193 0 0  360.1593399879915 2.278329197683905 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 23
+2 57
+"PRIMITIVE_TEXT785"
+""
+1 373.8152539664868 2.278329197684018 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+56 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 369 2.278329197684018 379 12
+0 2 2 "0s" 0 0 0 193 0 0  373.8152539664868 2.278329197684018 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 24
+2 58
+"PRIMITIVE_TEXT786"
+""
+1 388.3147652079306 2.645264681554993 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+57 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 383 2.645264681554993 393 13
+0 2 2 "0s" 0 0 0 193 0 0  388.3147652079306 2.645264681554993 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 25
+2 59
+"PRIMITIVE_TEXT787"
+""
+1 401.9706791864255 2.645264681554993 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 397 2.645264681554993 407 13
+0 2 2 "0s" 0 0 0 193 0 0  401.9706791864255 2.645264681554993 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 26
+2 60
+"PRIMITIVE_TEXT788"
+""
+1 415.7438952176995 2.279673283705523 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 411 2.279673283705523 421 12
+0 2 2 "0s" 0 0 0 193 0 0  415.7438952176995 2.279673283705523 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 27
+2 61
+"PRIMITIVE_TEXT789"
+""
+1 429.9863194601275 2.279673283705523 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 425 2.279673283705523 435 12
+0 2 2 "0s" 0 0 0 193 0 0  429.9863194601275 2.279673283705523 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 28
+2 62
+"PRIMITIVE_TEXT790"
+""
+1 444.3196527934615 2.279673283705523 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 439 2.279673283705523 449 12
+0 2 2 "0s" 0 0 0 193 0 0  444.3196527934615 2.279673283705523 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 29
+2 63
+"PRIMITIVE_TEXT791"
+""
+1 472.3186752763486 2.646608767576498 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 467 2.646608767576498 477 13
+0 2 2 "0s" 0 0 0 193 0 0  472.3186752763486 2.646608767576498 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 31
+2 64
+"PRIMITIVE_TEXT792"
+""
+1 485.5610995187767 2.646608767576498 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 481 2.646608767576498 491 13
+0 2 2 "0s" 0 0 0 193 0 0  485.5610995187767 2.646608767576498 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 32
+2 65
+"PRIMITIVE_TEXT793"
+""
+1 499.8944328521097 2.646608767576498 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 495 2.646608767576498 505 13
+0 2 2 "0s" 0 0 0 193 0 0  499.8944328521097 2.646608767576498 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 33
+2 66
+"PRIMITIVE_TEXT794"
+""
+1 513.3949216106665 2.637200165425969 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 508 2.637200165425969 518 13
+0 2 2 "0s" 0 0 0 193 0 0  513.3949216106665 2.637200165425969 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 34
+2 67
+"PRIMITIVE_TEXT795"
+""
+1 528.3147652079323 2.637200165425969 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 523 2.637200165425969 533 13
+0 2 2 "0s" 0 0 0 193 0 0  528.3147652079323 2.637200165425969 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 35
+2 68
+"PRIMITIVE_TEXT796"
+""
+1 541.9706791864286 2.637200165425969 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 537 2.637200165425969 547 13
+0 2 2 "0s" 0 0 0 193 0 0  541.9706791864286 2.637200165425969 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 36
+2 69
+"PRIMITIVE_TEXT797"
+""
+1 458.1153517181906 2.622415219189423 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 453 2.622415219189423 463 13
+0 2 2 "0s" 0 0 0 193 0 0  458.1153517181906 2.622415219189423 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 2 30
+2 254
+"PRIMITIVE_TEXT798"
+""
+1 18.14466783216452 17.4070512820514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+253 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 17.4070512820514 32 27
+0 2 2 "0s" 0 0 0 193 0 0  18.14466783216452 17.4070512820514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 5 DRIFT
+2 255
+"PRIMITIVE_TEXT800"
+""
+1 22.14466783216452 49.15705128205139 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+254 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 49.15705128205139 40 59
+0 2 2 "0s" 0 0 0 193 0 0  22.14466783216452 49.15705128205139 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G1_BOT
+2 256
+"PRIMITIVE_TEXT801"
+""
+1 22.14466783216452 66.90705128205138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+255 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 66.90705128205138 40 77
+0 2 2 "0s" 0 0 0 193 0 0  22.14466783216452 66.90705128205138 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G2_TOP
+2 257
+"PRIMITIVE_TEXT802"
+""
+1 798 610 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+256 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1 0 1.125 -775.8553321678355 -605.9679487179486 0 E 780 610 816 620
+0 2 2 "0s" 0 0 0 193 0 0  798 610 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G2_BOT
+2 258
+"PRIMITIVE_TEXT803"
+""
+1 22.14466783216452 99.2820512820514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+257 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 99.2820512820514 40 109
+0 2 2 "0s" 0 0 0 193 0 0  22.14466783216452 99.2820512820514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G3_TOP
+2 259
+"PRIMITIVE_TEXT804"
+""
+1 22.14466783216452 113.2820512820514 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+258 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 113.2820512820514 40 123
+0 2 2 "0s" 0 0 0 193 0 0  22.14466783216452 113.2820512820514 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G3_BOT
+2 260
+"PRIMITIVE_TEXT805"
+""
+1 22.14466783216452 35.15705128205139 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+259 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 4 35.15705128205139 40 45
+0 2 2 "0s" 0 0 0 193 0 0  22.14466783216452 35.15705128205139 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 6 G1_TOP
+6 302
+"TAB3Back"
+""
+1 2.999999999999999 492.9999999999998 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+301 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 0.8709677419354827 -6.144954871514074 -430.1050454921414 1 E 2.999999999999999 492.9999999999998 566.9999999999998 647.9999999999999
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 3 "SHAPE_GROUP3" -1
+36 0 
+68 67 66 65 34 35 36 37 38 39 40 41 42 43 44 45 46 48 47 49 50 51 52 53 54 55 57 56 58 59 60 61 62 69 63 64 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

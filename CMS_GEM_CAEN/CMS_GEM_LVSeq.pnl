@@ -1,0 +1,227 @@
+V 14
+1
+LANG:10001 0 
+PANEL,-1 -1 459 522 N "_3DFace" 3
+"$p1"
+"$p2"
+"$p3"
+"main()
+{
+  shape itable; 
+  dyn_string ival;
+   float iHpT,iHpB;
+   addT=$p1;
+   addB=$p2;
+  dpGet(addT+\".readBackSettings.rUp\",iHpT);
+  dpGet(addB+\".readBackSettings.rUp\",iHpB);
+  IsqValL1.text=iHpT;
+  IsqValL2.text=iHpB;
+  Isqn.text=$p3;
+  
+  
+}" 0
+ "main()
+{
+  int i=0;
+}" 0
+ E E E 1 -1 -1 0  170 64
+""0  1
+E "dyn_float df_rval;
+string addT,addB;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:10001 0 
+14 0
+"IsqValL1"
+""
+1 194.5 79 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  192.5 63 296.5 107
+3 "0s" 0 0 0 0 0 -1  E E E
+2 1
+"PRIMITIVE_TEXT1"
+""
+1 60 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 1 2 1 E 1 0 0.7272727272727273 32.5 44.09090909090909 0 E 60 50 160 90
+0 2 2 "0s" 0 0 0 65 0 0  60 50 1
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:10001 16 Happy Current L1
+14 2
+"Isqn"
+""
+1 194.5 209.9999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  192.5 193.9999999999999 296.5 237.9999999999999
+3 "0s" 0 0 0 0 0 -1  E E E
+2 3
+"PRIMITIVE_TEXT2"
+""
+1 60 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 1 2 1 E 1 0 0.7272727272727273 32.5 169.0909090909091 0 E 60 50 160 90
+0 2 2 "0s" 0 0 0 65 0 0  60 50 2
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:10001 13 Happy Current
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:10001 10 Iterations
+13 4
+"PUSH_BUTTON1"
+""
+1 164.5 339 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  162.5 318 296.5 372
+
+T 
+1
+LANG:10001 2 OK
+"main(mapping event)
+{
+  float iHpT,iHpB;
+  iHpT=(float)IsqValL1.text;
+  iHpB=(float)IsqValL2.text;
+  df_rval[1]=iHpT;
+  df_rval[2]=iHpB;
+  df_rval[3]=(float)Isqn.text; 
+  
+  dpSet(addT+\".settings.rUp\",iHpT);
+  dpSet(addB+\".settings.rUp\",iHpB);
+  
+  dpSet(\"_Ui_\"+myManNum()+\".ReturnValue.Float:_original.._value\",df_rval);
+  PanelOffPanel(\"LVpsq\");
+}" 0
+ E E E
+14 5
+"IsqValL2"
+""
+1 194.5 140 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  192.5 124 296.5 168
+3 "0s" 0 0 0 0 0 -1  E E E
+2 6
+"PRIMITIVE_TEXT3"
+""
+1 60 50 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 1 2 1 E 1 0 0.7272727272727273 32.75 105.0909090909091 0 E 60 50 160 90
+0 2 2 "0s" 0 0 0 65 0 0  60 50 1
+1
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:10001 16 Happy Current L2
+0
+LAYER, 1 
+1
+LANG:10001 0 
+0
+LAYER, 2 
+1
+LANG:10001 0 
+0
+LAYER, 3 
+1
+LANG:10001 0 
+0
+LAYER, 4 
+1
+LANG:10001 0 
+0
+LAYER, 5 
+1
+LANG:10001 0 
+0
+LAYER, 6 
+1
+LANG:10001 0 
+0
+LAYER, 7 
+1
+LANG:10001 0 
+0
+0

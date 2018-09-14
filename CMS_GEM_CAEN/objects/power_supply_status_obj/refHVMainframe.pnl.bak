@@ -1,0 +1,173 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 138 44 N "_3DFace" 4
+"$dpHvMainFrameName"
+"$dpHvMfCellName"
+"$dpHvMfCellNo"
+"$dpHvMfLabel"
+"main()
+{
+	HvMFrameName=$dpHvMainFrameName;
+	HvMfCellName=$dpHvMfCellName;
+	HvMfLabel=$dpHvMfLabel; 
+	HvMfCellNo=$dpHvMfCellNo;
+	MAIN_FRAME.text=HvMfLabel;
+	
+	string HvMFrameActStatusDp;
+	
+	if (!isDollarDefined(\"$dpHvMainFrameName\")) return; // ho LvMainFrame name defined
+
+	HvMFrameActStatusDp=HvMFrameName+\".PWstatus.ACstatus\";
+//	DebugN(\"MfCellName=\",MfCellName,\"LvMFrameName =\",LvMFrameName);
+	dpConnect(\"status\",HvMFrameActStatusDp);
+	//CAEN/GEM_CAEN_LV.PWstatus.ACstatus
+}" 0
+ E E E E 1 -1 -1 0  9 8.5
+""0  1
+E "string HvMFrameName,HvMfCellName,HvMfLabel;
+int HvMfCellNo;
+
+status(string dpl,bool val)
+{
+   	string tag; 
+	tag=HvMfCellName; 
+	int i=1;
+    
+	if(val==TRUE)
+		setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==FALSE)  
+      	setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	/*
+    if(val==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+    if(val==1)  
+      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==3)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val==5)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val>8)  
+      	setValue(tag,\"backCol\",\"FwStateAttention3\");
+	*/  
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE1"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\", \"refName2\");
+}" 0
+ E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);
+		removeSymbol(myModuleName(), \"\", \"refName2\");		
+		targetPnlXY=getPanelSize(\"sub_pannels_main_DCS//refHVMainFrameStatus.pnl\");
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\");
+		getValue(\"FRAME5\",\"position\",FRAME1_x,FRAME1_y); // get ref point of ellipse1-ellipse7
+//		DebugN(targetPnlXY);
+//		DebugN(popupPnlXY);
+//		DebugN(mouseX, mouseY);
+//		DebugN(FRAME1_x, FRAME1_y);
+		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+	/*	if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		else*/
+			mouseX1=FRAME1_x+targetPnlXY[1]-30; //15 just used for the adjustment
+		while(edgeY>(FRAME1_y+targetPnlXY[2])){
+			mouseY=mouseY-popupPnlXY[2]/20;
+			edgeY=mouseY+popupPnlXY[2];
+//			DebugN(\"mouseY\", mouseY);
+//			DebugN(\"edgeY\", edgeY);
+		}
+		mouseY1=mouseY; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), myPanelName(),
+            \"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\",\"refName2\",
+            makeDynString(\"$dpMainFrameName:\"+HvMFrameName,\"$dpMfCellName:\"+HvMfCellName,\"$dpMfLabel:\"+HvMfLabel,\"$dpMfCellNo:\"+HvMfCellNo),mouseX1, mouseY1, 0, 1, 1);
+}" 0
+ 0 1 3 2 1 E 1 0 1 -581 -520.5 1 E 590 529 704 548
+2 2
+"MAIN_FRAME"
+""
+1 66.00000000000003 11.24999999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"transparentForMouse" ""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 29 11.24999999999998 103 24
+0 2 2 "0s" 0 0 0 193 0 0  66.00000000000003 11.24999999999998 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Main Frame 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+2 0 
+1 2 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

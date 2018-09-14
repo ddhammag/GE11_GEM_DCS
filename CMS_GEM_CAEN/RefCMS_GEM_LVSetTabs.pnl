@@ -1,0 +1,89 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 494 484 N "_3DFace" 4
+"$1"
+"$ChannelClicked"
+"$GEMINI"
+"$dpLvChannelName"
+"main()
+{
+  chClicked=$ChannelClicked; 
+   string dpTPlot;
+}" 0
+ E E E E 1 -1 -1 0  20 20
+""0  1
+E "string chClicked;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+28 1
+"TAB1"
+""
+1 10 10 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  8 8 486.5 478
+E2 "simsettings" 1
+LANG:1 15 Simple Settings
+1 "CMS_GEM_CAEN/RefCMS_GEM_SC_SimpleSettings.pnl" 1
+LANG:1 0 
+3
+"$1""$1"
+"$ChannelClicked""$ChannelClicked"
+"$GEMINI""$GEMINI"
+
+"lvscn" 1
+LANG:1 7 LV Scan
+1 "CMS_GEM_CAEN/RefLVScan.pnl" 1
+LANG:1 0 
+1
+"$dpLvChannelName""$dpLvChannelName"
+
+
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

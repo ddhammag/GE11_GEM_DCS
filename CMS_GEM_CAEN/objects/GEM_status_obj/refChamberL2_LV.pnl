@@ -1,0 +1,118 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 94 31 N "_3DFace" 4
+"$dpEndcapName"
+"$dpL2LvCellName"
+"$dpL2LvCellNo"
+"$dpL2LvchClicked"
+"main()
+{
+  	L2LvchClicked=$dpL2LvchClicked;
+	L2LvCellNo= $dpL2LvCellNo;
+	L2LvCellName=$dpL2LvCellName;
+	Endcap= $dpEndcapName;
+	
+	if (!isDollarDefined(\"$dpL2LvchClicked\")) return; // ho chamber name defined
+	
+//	DebugN(\"L2LvCellName=\",L2LvCellName,\"L2LvChannels =\",L2LvchClicked);
+	dpConnect(\"L2LVstatus\",L2LvchClicked);
+//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.Actual.Status	
+}
+" 0
+ E E E E 1 -1 -1 0  6 23
+""0  1
+E "string L2LvchClicked,Endcap,L2LvCellName;
+int L2LvCellNo;
+
+L2LVstatus(string dpl,int LVval)
+{
+   	string tag; 
+	tag=Endcap+\"L2Lv_\"+L2LvCellNo; 
+    
+    if(LVval==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+    if(LVval==1)
+	  	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(LVval==3)
+	  	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(LVval==5)
+	   	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(LVval > 8)
+		setValue(tag,\"backCol\",\"FwStateAttention3\");  
+}
+" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+10 4
+"POLYGON29"
+""
+1 1297.657745580464 1192.605761725031 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E -1 1 3 2 1 E 0.01163364258332407 0.1329731431990256 -0.1329738645928749 0.01163370569710783 149.4889106647416 -163.4280536709798 1 E 18 1201 990
+1204 990
+1216 989
+1236 988
+1236 988
+1252 988
+1266 988
+1270 988
+1286 988
+1318 990
+1301 1196
+1290 1195
+1265 1194
+1249 1194
+1246 1194
+1227 1195
+1219 1196
+1219 1195
+ 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

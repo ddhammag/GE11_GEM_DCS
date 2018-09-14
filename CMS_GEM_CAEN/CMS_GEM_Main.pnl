@@ -1,0 +1,1616 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 1364 710 N {199,200,200} 2
+"$dpGChannelName"
+"$dpL1ChannelName"
+"main() 
+{ int i;
+	i = moduleMaximize(myModuleName());
+//  i = moduleRestore(myModuleName());
+	
+//	$dpHvChannelName = \"CAEN/GEM_CAEN_HV_\";
+//	$dpLvChannelName = \"CAEN/GEM_CAEN_LV/branchController\";
+//	$dpLvMainFrameName = \"CAEN/GEM_CAEN_LV\";
+//	$HvMainFrameName=\"CAEN/GEM_CAEN_HV_\";
+//--------------------------------------------------------------------------
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/CMS_GEM_Start.pnl\",\"CMS_GEM_Start\", makeDynString() );
+	setScaleStyle(SCALE_FIT_TO_MODULE);
+	
+//--------------------------------------------------------------------------
+  // adjust the panel size to user's screen size by zooming
+  int screenW, screenH, panelW, panelH; 
+  panelSize(\"\", panelW, panelH);
+//  DebugN(\"panel width:\" + panelW, \"panel height:\" + panelH);
+  getScreenSize(screenW, screenH);
+  DebugN(\"Screen width:\" + screenW, \"Screen height:\" + screenH);
+  zoomFactor=(float)(screenW-2)/panelW;
+  if(zoomFactor<0.500)
+  {  
+    zoomFactor=0.500;
+  }
+  else if(zoomFactor>4.000)
+  {  
+    zoomFactor=4.000;
+  }
+//  DebugN(\"zoomFactor:\" + zoomFactor);
+//  ZoomModule(\"CMS_GEM_Main_9.pnl\",zoomFactor, -1, -1); 
+  //--------------------------------------------------------------------------
+
+}" 0
+ E E E E 1 -1 -1 0  0 0
+""0  1
+E "string GchClicked,L2chClicked,L1chClicked,HvbrdClicked,LvbrdClicked;
+string HvMainFrameName;
+string Endcap;
+float zoomFactor;
+
+int x, y;
+" 0
+ 6
+"CBRef" "0"
+"EClose" E
+"Wheel" "main(mapping event)
+{/*
+ float factor = (event.angleDelta.y / 120.0) * 1.1;
+ if ( factor > 0.0 )
+   panelZoomIn(myModuleName(), factor, event.localPos);
+ else
+   panelZoomOut(myModuleName(), -factor, event.localPos);
+*/
+}"
+"runtimeSelection" ""
+"windowIcon" "cmsLogo_image.jpg"
+"dpi" "96"
+0 1 9 9 9 9 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 4661
+"RECTANGLE546"
+""
+1 0 489.0000000000001 E E E 1 E 1 E N {0,0,0} E N {134,142,144} E E
+ E E
+3926 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\",\"refName2\");
+}" 0
+ 0 1 3 2 1 E 1.925035360678925 0 0.9817351598173519 -1.999999999999697 11.93150684931486 1 E 0 489.0000000000001 707 708
+28 4540
+"TAB3"
+""
+1 3 492.9999999999998 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+3908 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  1 490.9999999999998 568.9999999999998 650
+E4 "Endcap Plus HV" 1
+LANG:1 14 Endcap Plus HV
+1 "CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_HV.pnl" 1
+LANG:1 0 
+2
+"$dpEndcapName""\"+\""
+"$dpHvMFName""\"CAEN/GEM_CAEN_HV_\""
+
+"Endcap Minus HV" 1
+LANG:1 15 Endcap Minus HV
+1 "CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_HV.pnl" 1
+LANG:1 0 
+2
+"$dpEndcapName""\"-\""
+"$dpHvMFName""\"CAEN/GEM_CAEN_HV_\""
+
+"LV" 1
+LANG:1 2 LV
+1 "CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_LV.pnl" 1
+LANG:1 0 
+1
+"$dpLvMFName""\"CAEN/GEM_CAEN_LV/branchController\""
+
+"Temperatures" 1
+LANG:1 12 Temperatures
+1 "CMS_GEM_CAEN/utils/value_monitor/refTemperature_monitor.pnl" 1
+LANG:1 0 
+0
+
+
+6 2826
+"RECTANGLE542"
+""
+1 4 51 E E E 1 E 1 E N {0,0,0} E N {134,142,144} E E
+ E E
+2796 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.174418604651163 0 1.038812785388128 -11.69767441860465 -15.97945205479442 1 E 4 51 90 489
+13 2357
+"PUSH_BUTTON44"
+""
+1 973.3571428571427 111.6923634582429 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2333 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  971.357142857143 89.10134941511868 1349.357142857143 143.3434236803417
+
+P 
+4294967295
+"pictures/fsm3.PNG"
+1
+LANG:1 13 PUSH_BUTTON43
+E E E E
+6 2258
+"RECTANGLE469"
+""
+1 1067.710664335669 77.47626321899378 E E E 1 E 1 E N {0,0,0} E N {134,142,144} E E
+ E E
+2240 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.390027812737946 0 1.745979356537458 -519.1475193834891 -84.4840046713434 1 E 1067.710664335669 77.47626321899378 1349 264
+15 962
+"CLOCK1"
+""
+1 1095 8.076923076923068 E E E 1 E 1 E N "_WindowText" E N {8,255,222} E E
+ E E
+961 0 0 0 0 0
+E E E
+2
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  1095 8.076923076923064 1279.428321678331 27.3076923076923
+E 1 1 "%X" "%a %d-%b-%Y"
+1 1 0 1
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
+0  1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
+0 
+6 2230
+"RECTANGLE467"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2229 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 7.072538860103633 0 0.911111111111111 -2286.357512953371 -53.28888888888889 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+1 4662 292 "" 2
+0
+30 2257
+"FRAME4"
+""
+1 1032 61 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2239 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+4
+"hoverfclr" "N \"_Transparent\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "FwStateOKPhysics"
+"antiAliased" "0"
+E E 0 7 1 0 1 E 1.233438485804416 0 1.561718098415346 -307.9085173501572 -59.26480400333607 0 E 1032 61 1350 280
+1
+LANG:1 26 Arial,-1,19,5,75,0,0,0,0,0
+0 1
+LANG:1 3 FSM
+13 2356
+"PUSH_BUTTON43"
+""
+1 973.6428571428569 81.17922070622041 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2332 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  971.6428571428572 57.81818181818181 1349.642857142858 113.9391167049961
+
+P 
+4294967295
+"pictures/fsm3.PNG"
+1
+LANG:1 13 PUSH_BUTTON43
+E E E E
+13 2359
+"PUSH_BUTTON45"
+""
+1 1086.357142857146 85.71914917252849 E E E 1 E 1 E N "_ButtonText" E N {198,195,198} E E
+ E E
+2335 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,12,5,75,0,0,0,0,0
+0  1084.357142857146 80.26379202967129 1128.071428571428 102.6923634582427
+
+T 
+1
+LANG:1 6 _Plus 
+E E E E
+13 2360
+"PUSH_BUTTON46"
+""
+1 1007.357142857143 181.6161509530687 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2336 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  1005.357142857143 146.6161509530685 1349.357142857144 260.6161509530687
+
+P 
+4294967295
+"pictures/fsm2.PNG"
+1
+LANG:1 13 PUSH_BUTTON46
+E E E E
+13 2361
+"PUSH_BUTTON47"
+""
+1 1007.357142857143 294.6842635316818 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2337 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  1005.357142857143 259.6842635316817 1349.357142857143 373.6842635316818
+
+P 
+4294967295
+"pictures/fsm2.PNG"
+1
+LANG:1 13 PUSH_BUTTON46
+E E E E
+13 2362
+"PUSH_BUTTON48"
+""
+1 1042.951298701299 157.5061308520093 E E E 1 E 1 E N "_ButtonText" E N {198,195,198} E E
+ E E
+2338 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,13,5,75,0,0,0,0,0
+0  1040.951298701299 149.4545454545455 1174.951298701299 170.398984567444
+
+T 
+1
+LANG:1 15 GEM_ENDCAP_Plus
+E E E E
+13 2363
+"PUSH_BUTTON49"
+""
+1 1034.81168831169 271.0755353451236 E E E 1 E 1 E N "_ButtonText" E N {198,195,198} E E
+ E E
+2339 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,13,5,75,0,0,0,0,0
+0  1032.81168831169 263.0239499476597 1179.272727272728 283.9683890605583
+
+T 
+1
+LANG:1 16 GEM_ENDCAP_Minus
+E E E E
+13 2719
+"kill"
+""
+1 26.09523809523813 11.5 E E E 1 E 1 E N "_ButtonText" E N "FwStateAttention3" E E
+ E E
+2689 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  24.09523809523812 5.499999999999998 84.09523809523812 29.5
+
+T 
+1
+LANG:1 4 Kill
+"main(mapping event)
+{
+  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/refKillChildpnl.pnl\",\"PNL\",makeDynString());
+
+}" 0
+ E E E
+13 2729
+"PUSH_BUTTON53"
+""
+1 109.6402875067285 10.1 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+2699 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  107.6402875067284 3.500000000000002 203.6666666666667 30.5
+
+T 
+1
+LANG:1 17 Save/ Load Recipe
+"main(mapping event)
+{
+  ChildPanelOn(\"/CMS_GEM_GAS/CMS_GEMfwRecipeHandling\", \"GEM RECIPES\",makeDynString(\"\"),0,0);
+}" 0
+ E E E
+6 2730
+"RECTANGLE509"
+""
+1 337 9 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
+ E E
+2700 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 130.3852813852814 4.999999999999996 1 E 337 9 365 21
+2 2731
+"PRIMITIVE_TEXT982"
+""
+1 507.3852813852815 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2701 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 499 13.5 515 27
+0 2 2 "0s" 0 0 0 193 0 0  507.3852813852815 13.5 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 2 ON
+6 2732
+"RECTANGLE510"
+""
+1 337 9 E E E 1 E 1 E N {0,0,0} E N "FwStateOKNotPhysics" E E
+ E E
+2702 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 197.7315753807182 4.999999999999996 1 E 337 9 365 21
+2 2733
+"PRIMITIVE_TEXT983"
+""
+1 597.67962732877 14 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2703 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.263348861301249 0 1 -151.5908573418135 -0.5000000000000036 0 E 560 14 636 27
+0 2 2 "0s" 0 0 0 193 0 0  597.67962732877 14 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 12 OFF/ STANDBY
+6 2734
+"RECTANGLE511"
+""
+1 337 9 E E E 1 E 1 E N {0,0,0} E N "FwStateAttention1" E E
+ E E
+2704 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 309.3245820837894 4.999999999999996 1 E 337 9 365 21
+2 2735
+"PRIMITIVE_TEXT984"
+""
+1 704.3245820837926 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2705 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 679 13.5 729 27
+0 2 2 "0s" 0 0 0 193 0 0  704.3245820837926 13.5 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 7 RAMPING
+6 2736
+"RECTANGLE512"
+""
+1 337 9 E E E 1 E 1 E N {0,0,0} E N "FwStateAttention3" E E
+ E E
+2706 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 395.3913373727438 4.999999999999996 1 E 337 9 365 21
+2 2737
+"PRIMITIVE_TEXT985"
+""
+1 759.3393893207956 14 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2707 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.225 0 1 -147.223051948052 -0.5000000000000036 0 E 741 14 777 27
+0 2 2 "0s" 0 0 0 193 0 0  759.3393893207956 14 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 5 ERROR
+30 2738
+"FRAME11"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2708 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.6751592356687897 0 1 343.1082802547771 -4.000000000000213 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 10 GAS Status
+30 2739
+"FRAME12"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2709 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.057324840764331 0 0.7302631578947366 581.9808917197453 12.86842105263169 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 17 Radiation Monitor
+2 2740
+"PRIMITIVE_TEXT986"
+""
+1 1231 405.1382044521673 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2710 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1199 405.1382044521673 1263 418
+0 2 2 "0s" 0 0 0 193 0 0  1231 405.1382044521673 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 11 Temp (Rth):
+2 2741
+"PRIMITIVE_TEXT987"
+""
+1 1230 422.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2711 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1199 422.6797563667074 1261 436
+0 2 2 "0s" 0 0 0 193 0 0  1230 422.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 13 REM250      :
+2 2742
+"PRIMITIVE_TEXT988"
+""
+1 1230 440.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2712 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1199 440.6797563667074 1261 454
+0 2 2 "0s" 0 0 0 193 0 0  1230 440.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 13 REM130      :
+2 2743
+"PRIMITIVE_TEXT989"
+""
+1 1231 458.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2713 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1199 458.6797563667074 1263 472
+0 2 2 "0s" 0 0 0 193 0 0  1231 458.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 13 BPW34S      :
+2 2744
+"PRIMITIVE_TEXT990"
+""
+1 1230 475.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2714 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1199 475.6797563667074 1261 489
+0 2 2 "0s" 0 0 0 193 0 0  1230 475.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 18 SI-1             :
+2 2745
+"PRIMITIVE_TEXT991"
+""
+1 1308 405.1382044521673 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2715 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1304 405.1382044521673 1312 418
+0 2 2 "0s" 0 0 0 193 0 0  1308 405.1382044521673 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 1 C
+2 2746
+"PRIMITIVE_TEXT992"
+""
+1 1311 422.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2716 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1304 422.6797563667074 1318 436
+0 2 2 "0s" 0 0 0 193 0 0  1311 422.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 2 Gy
+2 2747
+"PRIMITIVE_TEXT993"
+""
+1 1311 440.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2717 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 1304 440.6797563667074 1318 454
+0 2 2 "0s" 0 0 0 193 0 0  1311 440.6797563667074 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 2 Gy
+2 2748
+"PRIMITIVE_TEXT994"
+""
+1 1320 450.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2718 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.115384615384615 0 1.351326634522717 -145.3076923076924 -149.9730269661415 0 E 1296 450.6797563667074 1344 460
+0 2 2 "0s" 0 0 0 193 0 0  1320 450.6797563667074 1
+1
+LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
+0 1
+LANG:1 12 n/cm2 *10+12
+2 2749
+"PRIMITIVE_TEXT995"
+""
+1 1328 477.6797563667074 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2719 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.211538461538462 0 1 -281.4230769230768 0 0 E 1304 477.6797563667074 1352 487
+0 2 2 "0s" 0 0 0 193 0 0  1328 477.6797563667074 1
+1
+LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
+0 1
+LANG:1 12 n/cm2 *10+12
+13 2750
+"PUSH_BUTTON54"
+""
+1 8 64.93155882533154 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2720 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  6 57.93155882533156 86.99999999999992 92.93155882533152
+
+T 
+1
+LANG:1 6 Alarms
+"main(mapping event)
+{
+  ChildPanelOn(\"/fwAlarmHandling/fwAlarmHandlingScreen\", \"GEMM CAEN Alarms\",makeDynString(\"\"),0,0);
+}" 0
+ E E E
+13 2751
+"PUSH_BUTTON55"
+""
+1 8.019857934986476 106.0948994653689 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2721 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,50,0,0,0,0,0
+0  6.019857934986472 97.10111948024202 86.98014206501351 131.8737514148004
+
+T 
+1
+LANG:1 12 CLR LV Alarm
+"main(mapping event)
+{
+  dpSetWait(\"CAEN/GEM_CAEN_LV.Commands.ClearAlarm\",1);
+  
+}" 0
+ E E E
+13 2752
+"PUSH_BUTTON56"
+""
+1 8.0148934512398 79.94496852740082 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2722 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,50,0,0,0,0,0
+0  6.0148934512398 135.9449685274008 86.95531964628049 170.9449685274008
+
+T 
+1
+LANG:1 12 CLR HV Alarm
+"main(mapping event)
+{
+  dpSetWait(\"CAEN/GEM_CAEN_HV.Commands.ClearAlarm\",1);
+}" 0
+ E E E
+30 2753
+"FRAME13"
+""
+1 1113 396 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2723 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 4.379999999999999 0 1.486486486486484 -3909.94 -210.6486486486475 0 E 1113 396 1164 471
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+30 960
+"FRAME1"
+""
+1 0 649 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+959 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.205545376746658 0 1.037121212121219 1.880151514353241 -26.90984848485262 0 E 0 649 780 710
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Massages
+13 2755
+"PUSH_BUTTON57"
+""
+1 1289.619709238139 11.3076923076923 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+2725 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  1287.619709238139 5.307692307692302 1347.619709238139 29.3076923076923
+
+T 
+1
+LANG:1 8 Settings
+"main(mapping event)
+{
+   ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/CMS_GEM_Settings.pnl\",\"Settings\",makeDynString());
+}" 0
+ E E E
+6 2769
+"RECTANGLE517"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
+ E E
+2739 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.6842105263157895 0 1.342105263157895 342.3157894736842 -184.4736842105262 1 E 590 529 704 548
+2 2770
+"PRIMITIVE_TEXT1004"
+""
+1 781 526.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2740 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.172949617883489 0 1 -130.073651567005 5.625 0 E 765 526.25 797 539
+0 2 2 "0s" 0 0 0 193 0 0  781 526.25 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 5 Mixer
+6 2771
+"RECTANGLE518"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "FwStateOKNotPhysics" E E
+ E E
+2741 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8012227133403121 0 1 266.2785991292159 38 1 E 590 529 704 548
+2 2772
+"PRIMITIVE_TEXT1005"
+""
+1 779.3393893207956 570.5 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2742 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.164040913300018 0 1 -122.2916511725321 0 0 E 759 570.5 799 584
+0 2 2 "0s" 0 0 0 193 0 0  779.3393893207956 570.5 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 6 RACK 1
+6 2773
+"RECTANGLE519"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
+ E E
+2743 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8012227133403121 0 1 266.1051247569999 74 1 E 590 529 704 548
+2 2774
+"PRIMITIVE_TEXT1006"
+""
+1 779.3393893207956 570.5 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2744 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.164040913300018 0 1 -122.4651255447481 36 0 E 759 570.5 799 584
+0 2 2 "0s" 0 0 0 193 0 0  779.3393893207956 570.5 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 6 RACK 2
+30 2817
+"FRAME14"
+""
+1 -2 32 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2787 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.116883116883117 0 1.07093983919462 5.233766233766237 8.791505407249993 0 E -2 32 76 159
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 6 Alarms
+30 2818
+"FRAME15"
+""
+1 -2 32 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2788 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.116883116883117 0 0.5683180590719191 5.233766233766237 170.2057466666368 0 E -2 32 76 159
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 11 Power Cycle
+13 2819
+"PUSH_BUTTON59"
+""
+1 8.042198111846119 215.1589725327635 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2789 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  6.042198111846115 206.1651925476366 87.00248224187315 240.937824482195
+
+T 
+1
+LANG:1 15 Power Cycle
+ LV
+"main(mapping event)
+{
+  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/power_cycle/refLvPowerCycle.pnl\",\"PNL\",makeDynString());
+}" 0
+ E E E
+30 2821
+"FRAME16"
+""
+1 -2 32 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2791 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.116883116883117 0 0.7680917160424973 5.235007354702818 242.6415088652855 0 E -2 32 76 159
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 4 SCAN
+13 2822
+"PUSH_BUTTON61"
+""
+1 8 292 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2792 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  6 283.0062200148731 86.96028413002703 317.7788519494314
+
+T 
+1
+LANG:1 7 LV Scan
+E E E E
+13 2823
+"PUSH_BUTTON62"
+""
+1 7.995035516253438 265.8500690620319 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2793 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  5.995035516253435 321.8500690620319 86.93546171129415 356.8500690620319
+
+T 
+1
+LANG:1 7 HV Scan
+E E E E
+6 4529
+"RECTANGLE543"
+""
+1 337 9 E E E 1 E 1 E N {0,0,0} E N "FwEquipmentDisabled" E E
+ E E
+3905 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 470.0519480519482 4.999999999999996 1 E 337 9 365 21
+2 4530
+"PRIMITIVE_TEXT1553"
+""
+1 759.3393893207956 14 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+3906 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.225 0 1 -64.56244126884759 -0.5000000000000036 0 E 731 14 787 27
+0 2 2 "0s" 0 0 0 193 0 0  759.3393893207956 14 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 8 EXCLUDED
+13 4613
+"PUSH_BUTTON69"
+""
+1 813.8533400079469 497.4675360275693 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+3917 0 0 0 0 0
+E E E
+1
+1
+LANG:1 4 Help
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  811.8533400079473 489.6307565789479 835.9049273095344 514.0594846491229
+
+P 
+4294967295
+"pictures/help.png"
+1
+LANG:1 12 PUSH_BUTTON1
+E E E E
+13 4614
+"PUSH_BUTTON70"
+""
+1 705.8533400079469 497.4675360275692 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+3918 0 0 0 0 0
+E E E
+1
+1
+LANG:1 4 Help
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  703.8533400079471 489.6307565789479 727.9049273095344 514.0594846491229
+
+P 
+4294967295
+"pictures/help.png"
+1
+LANG:1 12 PUSH_BUTTON1
+E E E E
+13 4615
+"PUSH_BUTTON71"
+""
+1 540.1350033373068 499.3544603696745 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+3919 0 0 0 0 0
+E E E
+1
+1
+LANG:1 4 Help
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  538.1350033373068 491.5176809210528 562.1865906388942 515.9464089912279
+
+P 
+4294967295
+"pictures/help.png"
+1
+LANG:1 12 PUSH_BUTTON1
+E E E E
+13 4616
+"PUSH_BUTTON72"
+""
+1 920.8533400079471 497.4675360275693 E E E 1 E 1 E N "_ButtonText" E N "_Transparent" E E
+ E E
+3920 0 0 0 0 0
+E E E
+1
+1
+LANG:1 4 Help
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  918.8533400079472 489.6307565789479 942.9049273095343 514.0594846491229
+
+P 
+4294967295
+"pictures/help.png"
+1
+LANG:1 12 PUSH_BUTTON1
+E E E E
+6 4651
+"RECTANGLE544"
+""
+1 283 8 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+3921 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.133333333333334 0 1.079758771929831 93.83809523809531 -5.135054824561532 2  1 0  "pictures/cmsLogo_image.jpg" 4294967295 E 283 8 313 33
+6 4652
+"RECTANGLE545"
+""
+1 283 8 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+3922 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.277777777777778 0 1.119758771929831 -131.373015873017 -5.955054824561536 2  1 0  "pictures/150625548_f5654b55ca.jpg" 4294967295 E 283 8 313 33
+2 4653
+"PRIMITIVE_TEXT1554"
+""
+1 337.0000000000004 3.285714285714281 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+3923 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1 0 0.572052401746725 3.714285714284216 17.41100037894947 0 E 269 3.285714285714281 405 32
+0 2 2 "0s" 0 0 0 193 0 0  337.0000000000004 3.285714285714281 2
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 23 Detector Control System
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 0 
+2 4654
+"PRIMITIVE_TEXT1555"
+""
+1 337.0000000000004 3.285714285714281 E E E 1 E 1 E N "FwStateOKNotPhysics" E N "FwStateOKNotPhysics" E E
+ E E
+3924 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1 0 0.572052401746725 3.71428571428423 0.6234146022807252 0 E 319 3.285714285714281 355 42
+0 2 2 "0s" 0 0 0 193 0 0  337.0000000000004 3.285714285714281 2
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 3 GEM
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 0 
+28 4535
+"TAB2"
+""
+1 98.4444444444446 40.16666666666671 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+3907 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+2
+"sizePolicy" "Expanding Expanding"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  96.44444444444461 38.1666666666667 966.4444444444443 495.1666666666666
+E9 "Status" 1
+LANG:1 6 Status
+1 "CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl" 1
+LANG:1 0 
+5
+"$dpGChannelName""$dpGChannelName"
+"$dpHvChannelName""\"CAEN/GEM_CAEN_HV_\""
+"$dpL1ChannelName""$dpL1ChannelName"
+"$dpL2ChannelName""\"CAEN/GEM_CAEN_LV/branchController\""
+"$dpLvChannelName""\"CAEN/GEM_CAEN_LV/branchController\""
+
+"2" 1
+LANG:1 11 Status(Old)
+0
+"3" 1
+LANG:1 4 CAEN
+0
+"4" 1
+LANG:1 17 CAEN Multichannel
+0
+"5" 1
+LANG:1 3 GAS
+0
+"6" 1
+LANG:1 8 LHC Info
+0
+"7" 1
+LANG:1 11 Magnet Info
+0
+"8" 1
+LANG:1 8 DSS Info
+0
+"9" 1
+LANG:1 11 Temperature
+0
+
+14 958
+"TEXT_FIELD3"
+""
+1 5.000000000000013 675.8000000000001 E E E 1 E 1 E N {0,0,0} E N "_Window" E E
+ E E
+957 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+2
+"acceptDrops" ""
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  3.000000000000012 657.0000000000002 939.0000000000005 709
+3 "0s" 0 0 0 0 0 -1  E E E
+1 4665 636 "" 1
+0
+1 4667 637 "" 3
+0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+3 292 "PANEL_REF292" -1
+"layoutAlignment" "AlignNone"
+"initCB" "main()
+{
+  //fwAccessControl_setupPanel(\"ApplyPanelAccessControl\", exceptionInfo);
+}"
+"" ""
+"objects/fwAccessControl/fwAccessControl_CurrentUser.pnl" 265 799.8059020497988 T 2284 0.8095457841650943 0 1 695.9030918320203 -808.4212866651826
+0
+1 303 "SHAPE_GROUP303" 304
+3 0 
+2357 2356 2359 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 304 "SHAPE_GROUP304" -1
+6 1 
+2258 2257 2360 2361 2362 2363 
+303 
+"layoutAlignment" "AlignNone"
+"" ""
+1 411 "SHAPE_GROUP411" -1
+2 0 
+2770 2769 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 412 "SHAPE_GROUP412" -1
+2 0 
+2772 2771 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 413 "SHAPE_GROUP413" -1
+2 0 
+2774 2773 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 632 "SHAPE_GROUP632" -1
+10 0 
+2730 2731 2732 2733 2734 2735 2736 2737 4529 4530 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 635 "SHAPE_GROUP635" -1
+4 0 
+4651 4653 4654 4652 
+
+"layoutAlignment" "AlignNone"
+"" ""
+3 636 "PANEL_REF636" -1
+"layoutAlignment" "AlignNone"
+"" ""
+"CMS_GEM_CAEN/utils/power_supply_status/refHVMainFrameStatus.pnl" 573 494.0833333333333 T 3928 U 
+1
+"$HvMainFrameName""\"CAEN/GEM_CAEN_HV_\""
+3 637 "PANEL_REF637" -1
+"layoutAlignment" "AlignNone"
+"" ""
+"CMS_GEM_CAEN/utils/power_supply_status/refLVCrateStatus.pnl" 844.8928571428658 492 T 3930 U 
+2
+"$dpLvChannelName""\"CAEN/GEM_CAEN_LV/branchController\""
+"$dpLvMainFrameName""\"CAEN/GEM_CAEN_LV\""
+0

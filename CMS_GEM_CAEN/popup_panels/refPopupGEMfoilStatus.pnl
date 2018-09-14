@@ -1,0 +1,731 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 260 99 N {198,195,198} 6
+"$dpChmbrInOrEx"
+"$dpEndcapName"
+"$dpGfCellName"
+"$dpGfCellNo"
+"$dpHVChannelName"
+"$dpe_value"
+"main()
+{
+	HvchClicked=$dpHVChannelName;
+	ChmbrInOrExDp=$dpChmbrInOrEx;
+	GfCellName=$dpGfCellName;	//Endcap+\"Gf\"+GfChmbrNo+\"_\"+GfCellNo // i.e +Gf01_1 -- +Gf01_7
+	GfCellNo=$dpGfCellNo;
+	Endcap=$dpEndcapName;
+	
+	string ChStatusDp,ChVmonDp,ChImonDp,ChIsOnDp,ChOvCDp,ChOvVDp,ChUnVDp,ChTripDp;
+//	Debug(\"GfCellNo=\",GfCellNo);
+	if (!isDollarDefined(\"$dpHVChannelName\")) return; // no chamber name defined
+	
+	ChStatusDp=HvchClicked+\".actual.status\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+	ChVmonDp=HvchClicked+\".actual.vMon\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.vMon
+	ChImonDp=HvchClicked+\".actual.iMon\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.iMon
+	ChIsOnDp=HvchClicked+\".actual.isOn\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.isOn
+	ChOvCDp=HvchClicked+\".actual.OvC\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.OvC
+	ChOvVDp=HvchClicked+\".actual.OvV\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.OvV
+	ChUnVDp=HvchClicked+\".actual.UnV\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.UnV
+	ChTripDp=HvchClicked+\".actual.Trip\";
+//	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.Trip
+
+	displayDeviceName(GfCellName,GfCellNo);
+	dpConnect(\"displayGfStatus\",ChStatusDp);
+	dpConnect(\"displayValues\",ChVmonDp,ChImonDp,ChIsOnDp,ChOvCDp,ChOvVDp,ChUnVDp,ChTripDp);
+}" 0
+ E E E E 1 -1 -1 0  5 3
+""0  1
+E "string HvchClicked,ChmbrInOrExDp,GfCellName,Endcap;
+int GfCellNo;
+
+displayDeviceName(string GfName,int Cellno)
+{	
+	string DeviceName,tag,GEMfoilName,ChamberNo;	
+	tag=\"PopupDeviceName\";
+	switch(Cellno)
+  	{
+		case 1: GEMfoilName=\"DRIFT\"; break;
+		case 2: GEMfoilName=\"G1TOP\"; break;	
+		case 3: GEMfoilName=\"G1BOT\"; break;	
+		case 4: GEMfoilName=\"G2TOP\"; break;
+		case 5: GEMfoilName=\"G2BOT\"; break;
+		case 6: GEMfoilName=\"G3TOP\"; break;
+		case 7: GEMfoilName=\"G3BOT\"; break;
+	}
+	ChamberNo=uniSubStr(GfName,3,2);    
+	DeviceName=\"GE\"+Endcap+\"1/1-\"+ChamberNo+\"/\"+GEMfoilName; //GE+1/1_01/G1TOP
+	setValue(tag, \"text\", DeviceName); 
+}
+displayValues(string dp1,float ChVmon, string dp2,float ChImon, string dp3,bool ChIsOn,
+			string dp4,bool ChOvC, string dp5,bool ChOvV, string dp6, bool ChUnV, string dp7,bool ChTrip)
+{
+	string  tagVmon,tagImon,tagOvC,tagOvV,tagUnV,tagTrip,tagChOn;
+	tagVmon=\"VmonDisp\";
+	tagImon=\"ImonDisp\";		
+	tagOvC=\"CIRCLE_OvC\";
+	tagOvV=\"CIRCLE_OvV\";
+	tagUnV=\"CIRCLE_UnV\";
+	tagTrip=\"CIRCLE_Trip\";
+	tagChOn=\"CIRCLE_ChOn\";
+	
+	setValue(tagVmon,\"text\",ChVmon);
+	setValue(tagImon,\"text\",ChImon);
+	setValue(tagOvC,\"backCol\",StatusColor(ChOvC));
+	setValue(tagOvV,\"backCol\",StatusColor(ChOvV));
+	setValue(tagUnV,\"backCol\",StatusColor(ChUnV));
+	setValue(tagTrip,\"backCol\",StatusColor(ChTrip));	
+	if(ChIsOn==TRUE)
+		setValue(tagChOn,\"backCol\",\"FwStateOKPhysics\");
+    if(ChIsOn==FALSE)  
+    	setValue(tagChOn,\"backCol\",\"STD_grey_middle\");
+}
+displayGfStatus(string dp1, int HvChStatus)
+{
+	time ChStatusTime;
+	string tagChStatusTime,localTime;		
+	string tagState;
+	
+	tagState=\"Status\";
+	tagChStatusTime=\"LastUpdatedTime\";
+	
+	if(HvChStatus==0){
+		setValue(tagState,\"backCol\",\"FwStateOKNotPhysics\");
+		setValue(tagState,\"text\",\"STANDBY\");
+	}
+	if(HvChStatus==1){
+	  	setValue(tagState,\"backCol\",\"FwStateOKPhysics\");
+		setValue(tagState,\"text\",\"ON\");
+	}
+	if(HvChStatus==3){
+	  	setValue(tagState,\"backCol\",\"FwStateAttention1\");
+		setValue(tagState,\"text\",\"RAMPING\");
+	}
+	if(HvChStatus==5){
+	   	setValue(tagState,\"backCol\",\"FwStateAttention1\");
+		setValue(tagState,\"text\",\"NOTREADY\");
+	}
+	if(HvChStatus > 8){
+		setValue(tagState,\"backCol\",\"FwStateAttention3\"); 
+		setValue(tagState,\"text\",\"ERROR\");
+	}	
+//-----------------------------------------------------
+	dpGet(HvchClicked+\".actual.status:_online.._stime\",ChStatusTime);
+	localTime = timeFormat(ChStatusTime);	//format Time as \"%Y.%m.%d %H:%M\"
+	setValue(tagChStatusTime,\"text\", localTime);
+//----------------------------------------------------- 
+}
+
+string StatusColor(bool sval)
+{
+	string statusColor;
+	if(sval==TRUE)
+		statusColor = \"FwStateAttention3\";
+    if(sval==FALSE)  
+		statusColor = \"STD_grey_middle\";
+	return(statusColor);
+}
+/* Format time as a string. */
+string timeFormat(time t) {
+  return formatTime(\"%Y.%m.%d  %H:%M\", t);
+}" 0
+ 4
+"CBRef" "1"
+"EClose" E
+"windowIcon" "cmsLogo_image.jpg"
+"dpi" "96"
+0 1 9 9 9 9 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 38
+"PopupBack"
+""
+1 2.499999999999979 6.988300492610847 E E E 1 E 1 E N {0,0,0} E N {198,195,198} E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 4.98 0 1.508679314141108 -7.049728702669271 -0.4357728607950843 1 E 2.499999999999979 6.988300492610847 52.49999999999998 56.98830049261085
+6 44
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8924731182795698 0 1.383529411764705 -1.739513648905965 -61.79619787835553 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+30 1
+"PopupFrame"
+""
+1 4.999999999999986 0.9999999999999432 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"hoverfclr" "N \"_Transparent\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "white"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8861209964412813 0 0.213156025053448 0.9696663151241536 1.571157700436844 0 E 5 1 287 398
+1
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 25
+"LastUpdatedTag"
+""
+1 211.690476190476 12.44109195402302 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 182 12.44109195402302 242 22
+0 2 2 "0s" 0 0 0 193 0 0  211.690476190476 12.44109195402302 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Last Updated
+2 26
+"LastUpdatedTime"
+""
+1 212.3571428571426 23.4644909688013 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 174 23.4644909688013 250 33
+0 2 2 "0s" 0 0 0 193 0 0  212.3571428571426 23.4644909688013 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 17 2018.08.15  14.23
+6 45
+"PopupDeviceNameBack"
+""
+1 0.3035714285715798 0.09266846659089012 E E E 1 E 1 E N {0,0,0} E N {198,195,198} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N {0,0,0}"
+"hoverbclr" "N {176,174,176}"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E 1 0 1 7.69642857142842 12.90733153340911 1 E 100 19 0 -1
+2 46
+"PopupDeviceName"
+""
+1 10.69642857142845 15.36099730011366 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 10.69642857142845 15.36099730011366 92 28
+0 2 2 "0s" 0 0 0 192 0 0  10.69642857142845 15.36099730011366 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 13 GEM Foil Name
+6 53
+"PopupLVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8924731182795698 0 0.1926630352611077 -1.859459356426421 72.24754780744799 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+14 68
+"Status"
+""
+1 108 12 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  105.2380952380952 10 168.2380952380952 34
+2 "0s" 0 0 0 1 0 -1  E E E
+2 73
+"OvC"
+""
+1 20.30917398884199 35.23549462304737 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+72 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 20.30917398884199 35.23549462304737 41 45
+0 2 2 "0s" 0 0 0 192 0 0  20.30917398884199 35.23549462304737 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 OvC
+LANG:10001 3 OvC
+14 85
+"VmonDisp"
+""
+1 54.65027129733058 68.74940181974662 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  52.81693796399729 62.965080332531 120.8169379639973 81.96508033253103
+3 "0s" 0 0 0 0 0 -1  E E E
+2 86
+"Vmon"
+""
+1 32.50741415447345 65.28105645938757 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+85 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 17 65.28105645938757 49 77
+0 2 2 "0s" 0 0 0 193 0 0  32.50741415447345 65.28105645938757 1
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 4 Vmon
+14 87
+"ImonDisp"
+""
+1 180.9359855830448 68.8550785732067 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  179.1026522497117 62.965080332531 247.1026522497116 81.96508033253102
+3 "0s" 0 0 0 0 0 -1  E E E
+2 88
+"Imon"
+""
+1 159.7455093925685 65.34355645938757 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 145 65.34355645938757 175 77
+0 2 2 "0s" 0 0 0 193 0 0  159.7455093925685 65.34355645938757 1
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 4 Imon
+7 84
+"CIRCLE_ChOn"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+83 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 216.7529546257298 43.76970794247603 1 E 140 100 78 81
+7 83
+"CIRCLE_Trip"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+82 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 166.6974701942381 43.76970794247603 1 E 140 100 78 81
+7 82
+"CIRCLE_UnV"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+81 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 116.7764667366337 43.76970794247603 1 E 140 100 78 81
+7 81
+"CIRCLE_OvV"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+80 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 67.35464520507661 43.76970794247603 1 E 140 100 78 81
+7 74
+"CIRCLE_OvC"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+73 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 16.55505281377211 43.76970794247603 1 E 140 100 78 81
+2 75
+"OvV"
+""
+1 71.69215632579873 35.23549462304737 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 71.69215632579873 35.23549462304737 91 45
+0 2 2 "0s" 0 0 0 192 0 0  71.69215632579873 35.23549462304737 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 OvV
+LANG:10001 3 OvC
+2 77
+"UnT"
+""
+1 120.2651060144388 35.28530104157599 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+76 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 120.2651060144388 35.28530104157599 141 45
+0 2 2 "0s" 0 0 0 192 0 0  120.2651060144388 35.28530104157599 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 UnV
+LANG:10001 3 OvC
+2 78
+"Trip"
+""
+1 170.7109398523194 35.09893639346562 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 170.7109398523194 35.09893639346562 190 45
+0 2 2 "0s" 0 0 0 192 0 0  170.7109398523194 35.09893639346562 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 4 Trip
+LANG:10001 3 OvC
+2 79
+"CHON"
+""
+1 215.7232142067786 34.45605000622473 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 215.7232142067786 34.45605000622473 245 44
+0 2 2 "0s" 0 0 0 192 0 0  215.7232142067786 34.45605000622473 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 4 CHON
+LANG:10001 3 OvC
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 8 "SHAPE_GROUP8" -1
+2 0 
+26 25 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 27 "SHAPE_GROUP27" -1
+3 0 
+68 45 46 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 31 "SHAPE_GROUP13" -1
+4 0 
+85 86 88 87 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 32 "SHAPE_GROUP32" -1
+10 0 
+78 73 74 84 79 83 82 77 75 81 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

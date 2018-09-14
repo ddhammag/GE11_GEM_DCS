@@ -1,0 +1,689 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 480 440 N "_3DFace" 3
+"$1"
+"$ChannelClicked"
+"$GEMINI"
+"main()
+{
+  Channel_No=$ChannelClicked;
+  PopUp();
+  bool Chlock;
+  dpGet(Channel_No+\".settings.onOff:_lock._original._locked\",Chlock); 
+  setValue(\"lcVfat\",\"state\",0,Chlock);
+  GemTitle.text=GemTitle.text + \" For \"+$GEMINI+$1;
+}" 0
+ E E E E 1 -1 -1 0  60 49
+""0  1
+E "string Channel_No;
+float v0,imax0,vmax0,trpt0;
+int Ch_Opt;
+
+PopUp()
+{
+  dpGet(Channel_No+\".readBackSettings.v0\",v0);
+  dpGet(Channel_No+\".readBackSettings.i0\",imax0);
+  dpGet(Channel_No+\".readBackSettings.vMaxSoftValue\",vmax0);
+  dpGet(Channel_No+\".readBackSettings.tripTime\",trpt0);
+  
+  setValue(\"vset\",\"text\",v0);
+  setValue(\"imax\",\"text\",imax0);
+  setValue(\"vmax\",\"text\",vmax0);
+  setValue(\"Trtp\",\"text\",trpt0);
+}
+UpDateAllVFAT(int i)
+{   
+  switch(i)
+  {
+    case 0: 
+      getValue(\"vset\",\"text\",v0);
+      getValue(\"imax\",\"text\",imax0);
+      getValue(\"vmax\",\"text\",vmax0);
+      getValue(\"Trtp\",\"text\",trpt0);
+      dpSet(Channel_No+\".settings.v0\",v0);
+      dpSet(Channel_No+\".settings.i0\",imax0);
+      dpSet(Channel_No+\".settings.vMaxSoftValue\",vmax0); 
+      dpSet(Channel_No+\".settings.tripTime\",trpt0);
+    break;
+    case 1:
+      getValue(\"vset\",\"text\",v0);
+      dpSet(Channel_No+\".settings.v0\",v0);
+    break;
+    case 2:
+      getValue(\"imax\",\"text\",imax0);
+      dpSet(Channel_No+\".settings.i0\",imax0);
+    break;
+    case 3:
+      getValue(\"vmax\",\"text\",vmax0);
+      dpSet(Channel_No+\".settings.vMaxSoftValue\",vmax0);
+    break;
+    case 4:
+      getValue(\"Trtp\",\"text\",trpt0);
+      dpSet(Channel_No+\".settings.tripTime\",trpt0);
+    break;
+  }
+    
+}
+
+Set_All()
+{
+  string sys;
+  dyn_string lvchannelsv0,lvchannelsi0,lvchannelsvx,lvchannelstrt;
+  sys=getSystemName();
+  lvchannelsv0=dpNames(sys+\"CAEN*LV*easyBoard*.settings.v0\",\"FwCaenChannel\");
+  lvchannelsi0=dpNames(sys+\"CAEN*LV*easyBoard*.settings.i0\",\"FwCaenChannel\");
+  lvchannelsvx=dpNames(sys+\"CAEN*LV*easyBoard*.settings.vMaxSoftValue\",\"FwCaenChannel\");
+  lvchannelstrt=dpNames(sys+\"CAEN*LV*easyBoard*.settings.tripTime\",\"FwCaenChannel\");
+Debug(\"lvchannelsv0=\",lvchannelsv0);  
+  for(int i=1; i<=10; i++)
+  {
+    getValue(\"vset\",\"text\",v0);
+    getValue(\"imax\",\"text\",imax0);
+    getValue(\"vmax\",\"text\",vmax0);
+    getValue(\"Trtp\",\"text\",trpt0);    
+    dpSet(lvchannelsv0[i],v0);
+    dpSet(lvchannelsi0[i],imax0);
+    dpSet(lvchannelsvx[i],vmax0);
+    dpSet(lvchannelstrt[i],trpt0);
+  } 
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 1
+"Settings_Ok"
+""
+1 297 329 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  295 318 369 352
+
+T 
+1
+LANG:1 2 OK
+"main()
+{
+ if(Ch_Opt)
+  { 
+  Set_All();
+  }
+ else
+  {  
+   UpDateAllVFAT(0);
+  }
+  PanelOffPanel(\"chsettings\");
+}
+
+" 0
+ E E E
+13 2
+"Settings_Cancel"
+""
+1 387 329 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  385 318 459 352
+
+T 
+1
+LANG:1 6 Cancel
+"main()
+{ 
+  PanelOffPanel(\"chsettings\");
+}
+" 0
+ E E E
+2 4
+"PRIMITIVE_TEXT43"
+""
+1 45.125 142 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 0.714095744680851 0 0.4398362171443667 77.77642952127658 -22.45674283450008 0 E 45.125 142 417.125 205
+0 2 2 "0s" 0 0 0 65 0 0  45.125 142 1
+2
+LANG:1 36 Times New Roman,-1,13,5,50,0,0,0,0,0
+LANG:10001 36 Times New Roman,-1,13,5,50,0,0,0,0,0
+0 2
+LANG:1 42 ( For all settings Right-Click on channel)
+LANG:10001 61                    ( For all settings Right-Click on channel)
+20 6
+"stgopt"
+""
+1 300.0000000000001 262 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  298.0000000000001 260 452.0000000000001 284
+1
+T 
+1
+LANG:1 26 Apply Settings to all GEMs
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  Ch_Opt=state;
+}" 0
+30 7
+"FRAME1"
+""
+1 20 144 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+6 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.5813953488372093 0 1.223776223776224 18.37209302325582 -96.22377622377624 0 E 20 144 451 431
+1
+LANG:1 26 Arial,-1,17,5,75,0,0,0,0,0
+0 1
+LANG:1 4 VFAT
+30 8
+"GemTitle"
+""
+1 10 4 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+7 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 0.9862385321100917 0 6.055045871559646 0 E 10 4 471 441
+1
+LANG:1 26 Arial,-1,20,5,75,0,0,0,0,0
+0 1
+LANG:1 26 LV Channel Simple Settings
+14 9
+"vset"
+""
+1 160 130 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E "float minV=2.00; 
+float maxV=8.00;
+main()
+{
+ float vset1,vmax1;
+  vset1=(float)vset.text;
+  vmax1=(float)vmax.text;
+  if((vset1<minV)||(vset1>maxV))
+  {
+    vset.text=\"\";   
+  }
+  else if(vmax1>=minV)
+  {
+    if(vset1>=vmax1)
+    {
+      vset.text=\"\";
+    }   
+  }
+}" 0
+ E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+LANG:10001 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+0  157.9999999999999 120.9999999999999 240.9999999999999 153.9999999999999
+3 "1.3f" 5 0 0 0 0 -1  E E "main()
+{
+  UpDateAllVFAT(1);
+}" 0
+
+14 10
+"vmax"
+""
+1 160 232.4999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E "float minV=2.00; 
+float maxV=8.00;
+main()
+{
+ float vset1,vmax1;
+  vset1=(float)vset.text;
+  vmax1=(float)vmax.text;
+  if((vmax1<minV)||(vmax1>maxV))
+  {
+    vmax.text=\"\";   
+  }
+  else if(vset1>=vmax1)
+  {
+    vset.text=\"\";   
+  }
+
+}" 0
+ E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+LANG:10001 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+0  157.9999999999999 223.2499999999998 240.9999999999999 256.2499999999998
+3 "1.3f" 5 0 0 0 0 -1  E E "main()
+{
+ UpDateAllVFAT(3);
+}" 0
+
+14 13
+"imax"
+""
+1 159.4999999999999 182.625 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+12 0 0 0 0 0
+E "float minA=0.00; 
+float maxA=16.00;
+main()
+{
+ float imax1;
+  imax1=(float)imax.text;
+  if((imax1<minA)||(imax1>maxA))
+  {
+    imax.text=\"\";   
+  }
+}" 0
+ E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+LANG:10001 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+0  157.9999999999998 173.3749999999999 240.9999999999998 206.3749999999999
+3 "2.3f" 6 0 0 0 0 -1  E E "main()
+{
+ UpDateAllVFAT(2);
+}" 0
+
+14 14
+"Trtp"
+""
+1 159.5 282.4999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+13 0 0 0 0 0
+E "float minTrtp=0.00; 
+float maxTrtp=1000.00;
+main()
+{
+ float Trtp1;
+  Trtp1=(float)Trtp.text;
+  if((Trtp1<minTrtp)||(Trtp1>maxTrtp))
+  {
+    Trtp.text=\"\";   
+  }
+}" 0
+ E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+LANG:10001 36 Times New Roman,-1,17,5,50,0,0,0,0,0
+0  157.9999999999999 273.2499999999998 240.9999999999999 306.2499999999998
+3 "3.1f" 5 0 0 0 0 -1  E E "main()
+{
+ UpDateAllVFAT(4);
+}" 0
+
+13 17
+"chon"
+""
+1 51.24127327127714 382.2041719342604 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 26 Arial,-1,17,5,50,0,0,0,0,0
+0  49.24127327127714 371.6327433628318 133.2412732712772 405.6327433628318
+
+T 
+2
+LANG:1 2 ON
+LANG:10001 2 ON
+"main(mapping event)
+{
+  dpSet(Channel_No+\".settings.onOff\",1);
+}" 0
+ E E E
+13 18
+"PUSH_BUTTON2"
+""
+1 178.2412732712766 382.2041719342603 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 26 Arial,-1,17,5,50,0,0,0,0,0
+0  176.2412732712766 371.6327433628318 260.2412732712767 405.6327433628318
+
+T 
+2
+LANG:1 3 OFF
+LANG:10001 3 OFF
+"main(mapping event)
+{
+  dpSet(Channel_No+\".settings.onOff\",0);
+}" 0
+ E E E
+20 19
+"lcVfat"
+""
+1 116.4999999999999 321.4999999999999 E E E 1 E 1 E N {0,0,0} E N "_3DFace" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  114.4999999999999 319.4999999999999 205.4999999999999 353.4999999999999
+1
+T 
+2
+LANG:1 12 Lock Channel
+LANG:10001 12 Lock Channel
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+ int st;
+ 
+ if(state>0)
+  {
+   dpSetWait(Channel_No+\".settings.onOff:_lock._original._locked\",1);
+   dpSetWait(Channel_No+\".mask\",1);
+   dpGet(Channel_No+\".settings.onOff:_lock._original._locked\",st);
+   
+   string gm,msg;
+   msg=\"*** INFO -\"; 
+   gm=\"GEMINI \"+$GEMINI+$1+\" VFAT\"; 
+      msg=msg+gm+\" locked\";
+      dpSet(\"fwCU_GEM_ENDCAP_Minus.message\",msg);
+   ChildPanelOn(\"/vision/MessageInfo1\", \"MAO CH1\",makeDynString(\"$1:Channel Locked=\"+st),0,0);
+   
+ }
+ else
+  {
+   
+  dpSetWait(Channel_No+\".settings.onOff:_lock._original._locked\",0);
+  dpSetWait(Channel_No+\".mask\",0); 
+  string gm,msg;
+   msg=\"*** INFO -\"; 
+   gm=\"GEMINI \"+$GEMINI+$1+\" VFAT\"; 
+      msg=msg+gm+\" unlocked\";
+      dpSet(\"fwCU_GEM_ENDCAP_Minus.message\",msg);
+  ChildPanelOn(\"/vision/MessageInfo1\", \"MAO CH1\",makeDynString(\"$1:Channel UnLocked=\"+st),0,0);
+ }
+}" 0
+2 20
+"PRIMITIVE_TEXT44"
+""
+1 50 132.4999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 50 132.4999999999999 52 150
+0 2 2 "0s" 0 0 0 192 0 0  50 132.4999999999999 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 0 
+2 21
+"PRIMITIVE_TEXT45"
+""
+1 50 128.4999999999999 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 50 128.4999999999999 92 146
+0 2 2 "0s" 0 0 0 192 0 0  50 128.4999999999999 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 5 V Set
+2 22
+"PRIMITIVE_TEXT46"
+""
+1 50 180.7499999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 50 180.7499999999998 116 199
+0 2 2 "0s" 0 0 0 192 0 0  50 180.7499999999998 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 I Max (A)
+2 23
+"PRIMITIVE_TEXT47"
+""
+1 50 230.7499999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 50 230.7499999999998 98 249
+0 2 2 "0s" 0 0 0 192 0 0  50 230.7499999999998 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 5 V Max
+2 24
+"PRIMITIVE_TEXT48"
+""
+1 50 280.7499999999998 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 50 280.7499999999998 122 299
+0 2 2 "0s" 0 0 0 192 0 0  50 280.7499999999998 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 Trip Time
+13 26
+"PUSH_BUTTON3"
+""
+1 374.9270833333335 407.8163716814159 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 12 Close Window
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  372.9270833333335 401.8163716814159 456.9270833333336 425.8163716814159
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+  closeDialog();
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

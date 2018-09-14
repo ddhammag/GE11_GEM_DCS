@@ -1,0 +1,165 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 122 51 N "_3DFace" 4
+"$dpLv48VPmName"
+"$dpPmCellName"
+"$dpPmCellNo"
+"$dpPmLabel"
+"main()
+{
+	Lv48VPmName=$dpLv48VPmName;	
+	PmCellName=$dpPmCellName;
+	PmLabel=$dpPmLabel;
+	PmCellNo=$dpPmCellNo;
+	POWER_CON.text=PmLabel;
+	
+	string Lv48VPmActStatusDp;
+	if (!isDollarDefined(\"$dpLv48VPmName\")) return; // no Lv48V power supply name defined
+
+	Lv48VPmActStatusDp=Lv48VPmName+\".Actual.Status\";
+//	DebugN(\"PmCellName=\",PmCellName,\"Lv48VPmName =\",Lv48VPmName);
+	dpConnect(\"status\",Lv48VPmActStatusDp);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22.Actual.Status
+}" 0
+ E E E E 1 -1 -1 0  10.18443591128363 12.44736842105277
+""0  1
+E "string Lv48VPmName,PmCellName,PmLabel;
+int PmCellNo;
+
+status(string dpl,int val)
+{
+   	string tag; 
+	tag=PmCellName; 
+	int i=1;
+    
+    if(val==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+    if(val==1)  
+      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==3)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val==5)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val>8)  
+      	setValue(tag,\"backCol\",\"FwStateAttention3\"); 
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE541"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ "main(mapping event)
+{
+	removeSymbol(myModuleName(), \"\", \"refName2\");
+}" 0
+ E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+		dyn_int popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);
+		removeSymbol(myModuleName(), \"\", \"refName2\");		
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupPowerConverter.pnl\");
+		getValue(\"FRAME8\",\"position\",FRAME1_x,FRAME1_y); 
+		getValue(\"FRAME8\",\"size\",FRAME2_x,FRAME2_y);
+//		DebugN(popupPnlXY);
+//		DebugN(mouseX, mouseY);
+//		DebugN(FRAME2_x, FRAME2_y);
+		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+	/*	if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		else*/
+			mouseX1=FRAME1_x+10; //15 just used for the adjustment
+		while(edgeY>(FRAME1_y+FRAME2_y*0.85)){
+			mouseY=mouseY-popupPnlXY[2]/20;
+			edgeY=mouseY+popupPnlXY[2];
+//			DebugN(\"mouseY\", mouseY);
+//			DebugN(\"edgeY\", edgeY);
+		}
+		mouseY1=mouseY; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), myPanelName(),
+            \"/CMS_GEM_CAEN/popup_panels/refPopupPowerConverter.pnl\",\"refName2\",
+            makeDynString(\"$dpLv48VPmName:\"+Lv48VPmName,\"$dpPmCellName:\"+PmCellName,\"$dpPmLabel:\"+PmLabel,\"$dpPmCellNo:\"+PmCellNo),mouseX1, mouseY1, 0, 1, 1);
+}" 0
+ 0 1 3 2 1 E 0.7823696963239518 0 0.8947368421052631 -451.4136849198479 -460.8684210526314 1 E 590 529 704 548
+2 2
+"POWER_CON"
+""
+1 1289.80985461907 543 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"transparentForMouse" ""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.135059036067152 0 1 -1409.446647924877 -527.0526315789473 0 E 1283 543 1297 553
+0 2 2 "0s" 0 0 0 193 0 0  1289.80985461907 543 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 3 P 1
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+2 0 
+1 2 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

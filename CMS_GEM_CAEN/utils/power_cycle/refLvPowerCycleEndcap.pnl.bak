@@ -1,0 +1,911 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 880 538 N {134,142,144} 2
+"$dpEndcapName"
+"$dpLvMFName"
+"#uses \"fwFsmUi.ctl\"
+
+main()
+{ 
+	LvMF=$dpLvMFName; 
+	Endcap= $dpEndcapName;
+	initEndcap();
+	
+	dyn_string L1L2LvChActStatusDps,L1LvChActVmonImonDps,L2LvChActVmonImonDps;
+	int n,ref_Px,ref_Py,ref_Sx,ref_Sy;
+	
+	ChmbrInOrExDp=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI*\"+\".Layer*\"+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDp);
+	n=0;
+	for (int i=1; i<=36; i++)
+	{  
+		int CellNo=i;
+		L1andL2LvChDp[++n]=L1LVchannelClicked(CellNo);
+		L1andL2LvChDp[++n]=L2LVchannelClicked(CellNo);
+	}
+	n=0;
+	for (int i=1; i<=72; i=i+2)
+	{ 
+		L1LvChActVmonImonDps[++n]= L1andL2LvChDp[i]+\".actual.vMon\";
+		L1LvChActVmonImonDps[++n]= L1andL2LvChDp[i]+\".actual.iMon\";
+//		CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.vMon
+	}
+	n=0;
+	for (int i=2; i<=72; i=i+2)
+	{ 
+		L2LvChActVmonImonDps[++n]= L1andL2LvChDp[i]+\".actual.vMon\";
+		L2LvChActVmonImonDps[++n]= L1andL2LvChDp[i]+\".actual.iMon\";
+//		CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.vMon
+	}
+	n=0;
+	for (int i=1; i<=72; i++)
+	{ 
+		L1L2LvChActStatusDps[++n]= L1andL2LvChDp[i]+\".actual.status\";
+//		CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status
+	}
+
+	drawRingChambers();
+	drawRingTexts();  
+	initTable();
+	dpConnect(\"drawTable\",ChmbrInOrExDp);
+	dpConnect(\"updateTableLayer1\",L1LvChActVmonImonDps);
+	dpConnect(\"updateTableLayer2\",L2LvChActVmonImonDps);
+	dpConnect(\"updateTableStatus\",L1L2LvChActStatusDps);
+//	dpConnect(\"dispalyMassages\",\"ENDCAP_Minus.message\");
+	
+//	getValue(\"FrameMassages\",\"position\",ref_Px,ref_Py);
+//	getValue(\"FrameMassages\",\"size\",ref_Sx,ref_Sy);
+//	fwFsmUi_addMessageBox(ref_Px-2, ref_Py-5,ref_Sx-8,\"ENDCAP_Minus\");
+}" 0
+ E E E E 1 -1 -1 0  775 79
+""0  1
+E "string Gchannel,L2channel,L1channel,HvMF,LvMF;
+string ChamberInOrExDp;
+string Endcap,EndcapType,easyBoardName;
+int branchConNo,CaenHvNo;
+dyn_string ChmbrInOrExDp,L1andL2LvChDp;
+dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+dyn_bool statusSet,statusCurnt;
+dyn_bool statusSet=statusChanged;
+drawTable(dyn_string Dp,dyn_bool InOrExDp)
+{
+	SelectAllCBox1.state(0,FALSE);
+	statusCurnt=InOrExDp;
+	string includeColor=\"FwStateOKPhysics\";
+	string excludeColor=\"FwEquipmentDisabled\";
+	string excludeFontColor=\"{234,234,234}\";
+	for(int i=1;i<=72;i++)
+	{
+		if(InOrExDp[i]==TRUE)
+		{
+			if(i%4==1){
+				LvPowerCycleTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+				LvPowerCycleTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
+				LvPowerCycleTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
+				LvPowerCycleTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
+			}
+			if(i%4==3){
+				LvPowerCycleTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+				LvPowerCycleTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
+				LvPowerCycleTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
+				LvPowerCycleTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
+			}
+//			LvPowerCycleTable.cellValueRC(i-1,\"3\",\"Included\");
+			LvPowerCycleTable.cellBackColRC(i-1, \"3\", \"white\");
+//			LvPowerCycleTable.cellValueRC(i-1,\"4\",\"Exclude\");
+			LvPowerCycleTable.cellBackColRC(i-1, \"4\", \"white\");
+			LvPowerCycleTable.cellValueRC(i-1,\"5\",\"Click here\\n to select\");	
+			for(int j=1;j<5;j++)
+			{
+				LvPowerCycleTable.cellForeColRC(i-1,j, \"black\");
+			}
+		}
+		else
+		{
+			LvPowerCycleTable.cellBackColRC(i-1, \"1\", excludeColor);
+			for(int k=2;k<=5;k++)
+			{
+				LvPowerCycleTable.cellBackColRC(i-1, k, excludeColor);
+				LvPowerCycleTable.cellForeColRC(i-1,k, excludeFontColor);
+			}	
+			LvPowerCycleTable.cellValueRC(i-1,\"3\",\"Excluded\");
+			LvPowerCycleTable.cellValueRC(i-1,\"4\",\"Excluded\");
+			LvPowerCycleTable.cellValueRC(i-1,\"5\",\"Excluded\");	
+		}
+	}
+}	
+initTable() 
+{
+  // ------------ prepare table ------------
+	LvPowerCycleTable.sortOnClick(FALSE);
+	LvPowerCycleTable.columnHeader(4, \"    Enable/ Disable\"\"\\n\");
+	for(int i=1;i<=36;i++)
+	{
+   	LvPowerCycleTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"Layer 1\",\"3\",\"loading...\",\"4\",\"loading...\",\"5\",\"\");
+		LvPowerCycleTable.appendLine(\"1\",\"\",\"2\",\"Layer 2\",\"3\",\"loading...\",\"4\",\"loading...\",\"5\",\"\");
+	}
+	for(int i=1;i<=72;i++)
+	{
+		if(i%4==1){
+			LvPowerCycleTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+			LvPowerCycleTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
+			LvPowerCycleTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
+			LvPowerCycleTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
+		}
+		if(i%4==3){
+			LvPowerCycleTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+			LvPowerCycleTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
+			LvPowerCycleTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
+			LvPowerCycleTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
+		}
+	}
+	LvPowerCycleTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"2\",\"[0s,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"3\",\"[0s,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"4\",\"[0s,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"5\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+updateTableLayer1(dyn_string Dp1,dyn_float L1LvChActVmonImon)
+{
+	LvPowerCycleTable.columnFormat(\"3\",\"[0.3f,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"4\",\"[0.3f,,,ALIGNMENT_CENTER]\");
+	for(int i=0;i<72;i=i+2)
+	{
+		if(statusCurnt[i+1]==TRUE)
+		{
+			LvPowerCycleTable.cellValueRC(i,\"3\",L1LvChActVmonImon[i+1]);
+			LvPowerCycleTable.cellValueRC(i,\"4\",L1LvChActVmonImon[i+2]);
+		}
+	}	
+}
+updateTableLayer2(dyn_string Dp2,dyn_float L2LvChActVmonImon)
+{
+	LvPowerCycleTable.columnFormat(\"3\",\"[0.3f,,,ALIGNMENT_CENTER]\");
+	LvPowerCycleTable.columnFormat(\"4\",\"[0.3f,,,ALIGNMENT_CENTER]\");
+	for(int i=1;i<=72;i=i+2)
+	{
+		if(statusCurnt[i+1]==TRUE)
+		{
+			LvPowerCycleTable.cellValueRC(i,\"3\",L2LvChActVmonImon[i]);		
+			LvPowerCycleTable.cellValueRC(i,\"4\",L2LvChActVmonImon[i+1]);		
+		}
+	}	
+}
+updateTableStatus(dyn_string dp3,dyn_int LVsatus)
+{
+	string statusColor;
+	for(int i=1;i<=72;i++)
+	{
+		if(statusCurnt[i]==TRUE)
+		{
+			if(LVsatus[i]==0)
+				statusColor= \"FwStateOKNotPhysics\";
+			if(LVsatus[i]==1)
+				statusColor= \"FwStateOKPhysics\";
+			if(LVsatus[i]==3)
+		  		statusColor= \"FwStateAttention1\";
+			if(LVsatus[i]==5)
+				statusColor= \"FwStateAttention1\";
+			if(LVsatus[i] > 8)
+				statusColor= \"FwStateAttention3\"; 
+		}
+		else if(statusCurnt[i]==FALSE)
+			statusColor= \"FwEquipmentDisabled\";
+		LvPowerCycleTable.cellBackColRC(i-1, \"3\", statusColor);
+		LvPowerCycleTable.cellBackColRC(i-1, \"4\", statusColor);
+	}
+}
+drawRingChambers()
+{
+	int i;
+	float k1,k2,k3,x,y,ag,r;
+	float scale,side,angle;
+	dyn_int refCir_x,refCir_y; 
+	string ELLIPSE;
+	string GCellName,L2CellName,NumCellName,L1CellName;
+	string L1LvchClicked,L2LvchClicked;	
+	int GCellNo,L2CellNo,NumCellNo,L1CellNo;
+ 
+	side=1.0; // positive, should be +1, sorry, this is \"old tail\"  
+	scale=1;
+//	sys=getSystemName();
+	for(i=1; i<=4; i++)
+	{		
+		ELLIPSE=\"ELLIPSE\"+i;
+		getValue(ELLIPSE,\"position\",refCir_x[i],refCir_y[i]); // get ref point of ellipse1-ellipse7
+//		DebugN(\"position=\",refCir_x[i],refCir_y[i]);
+	}  
+//--------------------------------LAYER2 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER2 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L2CellNo=i;
+		L2CellName=Endcap+\"L2_\"+L2CellNo;   
+		  
+		r=refCir_x[1]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L2LvchClicked=L1andL2LvChDp[L2CellNo*2];;
+		ChamberInOrExDp=ChmbrInOrExDp[i*2];
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/power_cycle_obj/refLvPowerCycleL2.pnl\",  
+			L2CellName,makeDynString(\"$dpL2Lvch:\"+L2LvchClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir4_x+x0=\",refCir_x[4]+x, \"refCir4_y+y0=\",refCir_y[4]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	}	
+//--------------------------------CHAMBER_NUM CELL ----------------
+	ag=0;
+	angle=10; //define CHAMBER_NUM CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		NumCellNo=i;
+		NumCellName=Endcap+\"Num_\"+NumCellNo;   
+		  
+		r=refCir_x[2]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		k2=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsNum.pnl\",  
+			NumCellName,makeDynString(\"$dpNumCellNo:\"+NumCellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+//--------------------------------LAYER1 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER1 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L1CellNo=i;
+		L1CellName=Endcap+\"L1_\"+L1CellNo;   
+		  
+		r=refCir_x[3]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L1LvchClicked=L1andL2LvChDp[(L1CellNo*2)-1];
+		ChamberInOrExDp=ChmbrInOrExDp[i*2-1];
+		k3=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/power_cycle_obj/refLvPowerCycleL1.pnl\",  
+			L1CellName,makeDynString(\"$dpL1Lvch:\"+L1LvchClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+}
+drawRingTexts()
+{
+	int refCir4_x,refCir4_y;
+	float k1,k2;
+	string txt1,txt2;
+	txt1=Endcap+\"text\";
+	txt2=Endcap+\"name\";
+	getValue(\"ELLIPSE4\",\"position\",refCir4_x,refCir4_y); // get ref point of ellipse7 
+//	DebugN(\"position=\",refCir9_x,refCir9_y);
+  
+	k1=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsTexts.pnl\",  
+         txt1,makeDynString(),
+         refCir4_x,refCir4_y,0,1,1);
+//	DebugN(\"refCir1_x+x0=\",refCir1_x, \"refCir1_y+y0=\",refCir1_y);
+	k2=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/GEM_status_obj/refEndcapNames.pnl\",  
+         txt2,makeDynString(\"$dpEndcapTextName:\"+txt2,\"$dpEndcapName:\"+Endcap),
+         refCir4_x,refCir4_y,0,1,1);
+}
+initEndcap()
+{
+	if(Endcap== \"+\")
+	{
+		EndcapType= \"Plus\";
+		branchConNo=0;
+		CaenHvNo=0;
+	}
+	else if(Endcap== \"-\")
+	{
+		EndcapType= \"Minus\";
+		branchConNo=2;
+		CaenHvNo=2;
+	}
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+}
+string L1LVchannelClicked(int L1CellNo)
+{
+	int LvcellNo,LVchNo,LVchannelNo;
+	string LVbrdClicked,LvChClicked;
+	if(L1CellNo%3==0)
+		LvcellNo=L1CellNo/3;
+	else
+		LvcellNo=L1CellNo/3+1;
+
+	LVbrdClicked = LVboardClicked(LvcellNo);
+	if(L1CellNo%3==1)
+		LVchannelNo=0;
+	if(L1CellNo%3==2)
+		LVchannelNo=2;
+	if(L1CellNo%3==0)
+		LVchannelNo=4;
+	
+	LvChClicked=LVbrdClicked+\"/channel00\"+LVchannelNo;	
+//	LvChClicked=LVbrdClicked+\"/channel00\"+LVchannelNo+\".actual.status\";		
+	return (LvChClicked);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status
+}
+
+string L2LVchannelClicked(int L2CellNo)
+{
+	int LvcellNo,LVchNo,LVchannelNo;
+	string LVbrdClicked,LvChClicked;
+	if(L2CellNo%3==0)
+		LvcellNo=L2CellNo/3;
+	else
+		LvcellNo=L2CellNo/3+1;
+
+	LVbrdClicked = LVboardClicked(LvcellNo);
+	if(L2CellNo%3==1)
+		LVchannelNo=1;
+	if(L2CellNo%3==2)
+		LVchannelNo=3;
+	if(L2CellNo%3==0)
+		LVchannelNo=5;
+	
+	LvChClicked=LVbrdClicked+\"/channel00\"+LVchannelNo;	
+//	LvChClicked=LVbrdClicked+\"/channel00\"+LVchannelNo+\".actual.status\";	
+	return (LvChClicked);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status
+}
+string LVboardClicked(int LvCellNo)
+{
+	int branchControllerNo,easyCrateNo;
+	string LvBrdClicked;	
+	
+	if(LvCellNo <= 6)
+		branchControllerNo=0+branchConNo;
+	else if((LvCellNo > 6)&&(LvCellNo <= 12))
+		branchControllerNo=1+branchConNo;
+	else DebugN(\"Lv Cell Number is not in range\");
+	//---------------------------------------------------
+	if((LvCellNo <= 4)||((LvCellNo > 6)&&(LvCellNo <= 10)))
+		easyCrateNo=0;
+	else if(((LvCellNo>4)&&(LvCellNo<=6))||((LvCellNo>10)&&(LvCellNo<=12)))
+		easyCrateNo=1;
+	else DebugN(\"Lv Cell Number is not in range\");
+	//---------------------------------------------------	
+	easyBoard(LvCellNo);
+	
+	LvBrdClicked=(LvMF+\"0\"+branchControllerNo+\"/easyCrate\"+easyCrateNo+\"/\"+easyBoardName);	
+//	DebugN(\"LvCellNo=\",LvCellNo,\"LVchannel=\",LvChClicked);
+	return (LvBrdClicked);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.Actual.Status	
+}
+
+
+easyBoard(int i)
+{   
+  switch(i)
+  {
+    case 1: easyBoardName=\"easyBoard00\"; break;
+	case 2: easyBoardName=\"easyBoard04\"; break;	
+	case 3: easyBoardName=\"easyBoard08\"; break;	
+	case 4: easyBoardName=\"easyBoard12\"; break;
+	case 5: easyBoardName=\"easyBoard00\"; break;
+	case 6: easyBoardName=\"easyBoard04\"; break;
+	case 7: easyBoardName=\"easyBoard00\"; break;
+	case 8: easyBoardName=\"easyBoard04\"; break;
+	case 9: easyBoardName=\"easyBoard08\"; break;
+	case 10: easyBoardName=\"easyBoard12\"; break;
+	case 11: easyBoardName=\"easyBoard00\"; break;
+	case 12: easyBoardName=\"easyBoard04\"; break;
+  }
+    
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+7 44
+"ELLIPSE4"
+""
+1 248.2417648166128 261.7373567541949 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 429.6019765877338 -30.64855487966351 1 E 248.0862068965516 261.4758620689654 165 165
+7 46
+"ELLIPSE3"
+""
+1 548.4396765261108 215.0557715284947 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 262.5159356759813 17.22112696580584 1 E 416.284889730696 214.0557715284947 132.5 132.5
+7 47
+"ELLIPSE2"
+""
+1 364.7179121290293 261.7515242315114 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 429.6019765877336 -30.64855487966349 1 E 248.0862068965516 261.4758620689654 117.5 117.5
+7 49
+"ELLIPSE1"
+""
+1 309.9634802935623 261.7515242384537 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 429.6019765877338 -30.64855487966351 1 E 248.0862068965516 261.4758620689654 62.5 62.5
+25 60
+"LvPowerCycleTable"
+""
+1 9.499999999999885 8.999999999999972 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"shadowOffset" "[8,8]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  7.499999999999886 6.999999999999972 487.9999999999999 455.0000000000001
+E"main(int row, string column, string value)
+{
+	if(statusCurnt[row+1]==TRUE)
+	{
+		if(column==5)
+		{
+			if(statusChanged[row+1]==FALSE)
+			{
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Power Cycle\");
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"red\");
+				statusSet[row+1]=!statusCurnt[row+1];
+				statusChanged[row+1]=TRUE;
+			return;
+			}
+			if(statusChanged[row+1]==TRUE)
+			{
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Click here\\n to select\");
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"white\");
+				statusSet[row+1]=statusCurnt[row+1];
+				statusChanged[row+1]=FALSE;
+			}
+		}
+	}
+}" 0
+ 1 0 1 5 0 "1" 10 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 15  Supper Chamber
+E
+1
+LANG:1 0 
+
+110 "2" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 12        Layer
+E
+1
+LANG:1 0 
+
+80 "3" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 12      Voltage
+E
+1
+LANG:1 0 
+
+80 "4" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 11     Current
+E
+1
+LANG:1 0 
+
+80 "5" 10 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 19     Enable/ Disable
+E
+1
+LANG:1 0 
+
+110 
+30 30 10 50
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 0 2 0 1 7
+1 0
+20 61
+"SelectAllCBox1"
+""
+1 408.5000000000001 31.50140939458962 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignLeft|AlignLeading"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  380.5000000000001 24.50140939458962 454.5000000000001 42.50140939458962
+1
+T 
+1
+LANG:1 10 Select All
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  int row;
+	if(state==TRUE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			row=i-1;
+			if(statusCurnt[i]==TRUE)
+			{
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"red\");
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Power Cycle\");
+				statusChanged[i]=TRUE;
+				statusSet[i]=!statusCurnt[i];
+			}
+		}	
+	}
+	if(state==FALSE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			row=i-1;
+			if(statusCurnt[i]==TRUE)
+			{
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"white\");
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Click here\\n to select\");
+				statusChanged[i]=FALSE;
+				statusSet[i]=statusCurnt[i];
+			}
+		}	
+	}
+}" 0
+13 62
+"PUSH_BUTTON1"
+""
+1 521.8445107498101 22.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+61 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  519.8445107498101 13.25070469729477 653.748657117809 42.25070469729477
+
+T 
+1
+LANG:1 14 Power Cycle LV
+"main(mapping event)
+{
+	string mask,SCNumber,LayerNo,msg;
+	int SCNo;
+	string sys=getSystemName(); 
+	for(int i=1; i<=72; i++)
+	{
+		if(statusChanged[i]==TRUE)
+		{	
+			if(i%2==1)
+			{
+				SCNo=(i+1)/2;
+				LayerNo=\"Layer 1\";
+				if(SCNo<=9)
+					SCNumber=\"0\"+SCNo;
+				else
+					SCNumber=SCNo;
+			}
+			else
+			{
+				SCNo=i/2;
+				LayerNo=\"Layer 2\";
+				if(SCNo<=9)
+					SCNumber=\"0\"+SCNo;
+				else
+					SCNumber=SCNo;
+			}
+			msg=\"*** INFO -\";
+     		msg=msg+\" Powercycling GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" started\";
+     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
+			
+     		dpGet(L1andL2LvChDp[i]+\".mask\",mask); //Check if chamber is locked
+     
+     		if(!mask)
+			{
+       		dpSetWait(L1andL2LvChDp[i]+\".settings.onOff\",0);
+       		delay(3); 
+       		dpSetWait(L1andL2LvChDp[i]+\".settings.onOff\",1);
+		   } 
+    		else
+			{
+         	msg=\"*** INFO -\";
+         	msg=msg+\"GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" is locked\";
+         	dpSet(sys+\"ENDCAP_Minus.message\",msg);  
+//				ENDCAP_Minus.message
+     		} 
+			msg=\"*** INFO -\";
+     		msg=msg+\"GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" Powercycled Successfully\";
+     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
+			
+			LvPowerCycleTable.cellBackColRC(i-1, \"5\", \"white\");
+			LvPowerCycleTable.cellValueRC(i-1,\"5\",\"Click here\\n to select\");
+		}
+		statusChanged[i]=FALSE; // reset after finishing update
+		SelectAllCBox1.state(0,FALSE);
+		statusSet[i]=statusCurnt[i];
+	}
+//---------------popupMessage----------------
+	string uiDp = \"_Ui_1\";
+	langString msgText = \"Powercycle Completed Successfully\";
+	popupMessage(uiDp, msgText);
+}" 0
+ E E E
+6 65
+"RECTANGLE3"
+""
+1 31 32.49859060541036 E E E 1 E 1 E N {0,32,130} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.100686498855835 0 1.006756756756757 -26.12128146453089 -25.21676628247897 1 E 31 32.49859060541036 468 476.4985906054104
+13 66
+"PUSH_BUTTON2"
+""
+1 705.2650223099354 22.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+65 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  703.2650223099354 13.25070469729477 837.1691686779343 42.25070469729477
+
+T 
+1
+LANG:1 15 Clear Selection
+"main(mapping event)
+{
+	int row;
+	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
+	for(int i=1;i<=72;i++)
+	{
+		row=i-1;
+		if(statusCurnt[i]==TRUE)
+		{
+			LvPowerCycleTable.cellBackColRC(row, \"5\", \"white\");
+			LvPowerCycleTable.cellValueRC(row,\"5\",\"Click here\\n to select\");
+			statusChanged[i]=FALSE;
+			statusSet[i]=statusCurnt[i];
+		}
+	}	
+}" 0
+ E E E
+13 68
+"Cancel"
+""
+1 687.5068397138722 435.0014093945895 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+67 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0  644.5068397138722 424.0014093945895 712.5068397138722 449.0014093945895
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+  closeDialog();
+}" 0
+ E E E
+6 70
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.326115844345002 0 1.882352941176469 482.9047526729843 322.6190564534131 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+6 71
+"RECTANGLE4"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.326115844345002 0 2.26462297678885 482.9047526729843 -109.2589853984307 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+30 72
+"FRAME1"
+""
+1 7 -3 E E E 1 E 1 E N "white" E N {0,0,0} E E
+ E E
+71 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "white"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.044794188861985 0 1 -3.313559322033897 0 0 E 7 -3 834 459
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+30 73
+"FrameMassages"
+""
+1 0.9026651216685808 656.0588235294117 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+72 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.10783055198973 0 1.249999999999999 4.00000000000002 -354.2499999999994 0 E 0 649 780 710
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Massages
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" 3
+4 0 
+44 46 47 49 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 2 "SHAPE_GROUP2" 3
+2 0 
+66 62 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 3 "SHAPE_GROUP3" -1
+3 2 
+71 68 70 
+2 0 
+"layoutAlignment" "AlignNone"
+"" ""
+0

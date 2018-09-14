@@ -1,0 +1,713 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 524 222 N "_3DFace" 2
+"$dpLvChannelName"
+"$dpLvMainFrameName"
+"main()
+{    
+	LvMFName=$dpLvMainFrameName;
+	LvBrnchContName=$dpLvChannelName;
+//	DebugN(\"LvBrnchContName=\",LvBrnchContName);
+	drawLvPowerSupplies();   
+}
+drawLvPowerSupplies()
+{
+	int i,j;
+	float k1,k2,k3,k4,y1,y2,y3,y4;
+	float scale;
+	int refRec1_x,refRec2_x,refRec3_x,refRec4_x,refRec1_y,refRec2_y,refRec3_y,refRec4_y; 
+	int MfCellHeight,BcCellHeight,PmCellHeight,EcCellHeight;
+	int MfCellVspace,BcCellVspace,PmCellVspace1,PmCellVspace2,EcCellVspace1,EcCellVspace2;
+	string RECTANGLE1,RECTANGLE2,RECTANGLE3,RECTANGLE4;
+	string LvMFrameName,LvBranchConName,Lv48VPmName,LvEasyCrateName;
+	string LvBConName,Lv48VPwMName,LvEasyCName;
+	string MfCellName,BcCellName,PmCellName,EcCellName;
+	string MfLabel,BcLabel,PmLabel,EcLabel;
+	string MfLabel1,BcLabel1,PmLabel1,EcLabel1;
+	int MfCellNo,BcCellNo,PmCellNo,EcCellNo;
+	int easyCrateNo;
+ 
+	scale=1;
+	MfCellHeight=32;
+	BcCellHeight=30;
+	PmCellHeight=18;
+	EcCellHeight=18;
+	MfCellVspace=0;
+	BcCellVspace=13;
+	PmCellVspace1=2;
+	PmCellVspace2=4;
+	EcCellVspace1=2;
+	EcCellVspace2=4;
+	
+	MfLabel=\"Main Frame\";	
+	BcLabel=\"Branch Controller\";//\"MAO\";
+	PmLabel=\"Power Converter\";//\"Power Con.\";
+	EcLabel=\"EASY Crate\";//\"Crate\";
+	
+	RECTANGLE1=\"RECTANGLE1\"; //Rectangle 1 name
+	RECTANGLE2=\"RECTANGLE2\"; //Rectangle 2 name
+	RECTANGLE3=\"RECTANGLE3\"; //Rectangle 3 name
+	RECTANGLE4=\"RECTANGLE4\"; //Rectangle 4 name
+	getValue(RECTANGLE1,\"position\",refRec1_x,refRec1_y); // get ref point of Rectangle 1
+	getValue(RECTANGLE2,\"position\",refRec2_x,refRec2_y); // get ref point of Rectangle 2
+	getValue(RECTANGLE3,\"position\",refRec3_x,refRec3_y); // get ref point of Rectangle 3
+	getValue(RECTANGLE4,\"position\",refRec4_x,refRec4_y); // get ref point of Rectangle 4
+//	DebugN(\"position=\",refRec1_x,refRec1_y);
+   
+//--------------------------------LV_MainFrame_CELL -------------------------
+	MfCellNo=1;
+	MfCellName=\"LvMf_1\";
+	y1=0;
+	MfLabel1=MfLabel;
+	LvMFrameName=LvMFName;
+	k1=addSymbol(myModuleName(),\"\", // chamber itself
+		\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refLVMainframe.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+		MfCellName,makeDynString(\"$dpLvMainFrameName:\"+LvMFrameName,\"$dpMfCellName:\"+MfCellName,\"$dpMfLabel:\"+MfLabel1,\"$dpMfCellNo:\"+MfCellNo),
+		refRec1_x,refRec1_y+y1,0,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		//return -- //CAEN/GEM_CAEN_LV.PWstatus.ACstatus
+		//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status 
+	
+//--------------------------------LV_Branch_Controller_CELL -------------------------
+	y2=0;
+	y3=0;
+	y4=0;
+	for(i=1;i<=4;i++)
+	{			
+		BcCellNo=i;
+		BcCellName=\"LvBc_\"+i;
+		BcLabel1=BcLabel+\" \"+i;
+		LvBConName=LvBrnchContName+\"0\"+(BcCellNo-1);			//CAEN/GEM_CAEN_LV/branchController00
+		LvBranchConName=LvBConName+\".Actual.48VA1676\";
+		k2=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refLVBranchControlr.pnl\",	// modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			BcCellName,makeDynString(\"$dpLvBranchConName:\"+LvBranchConName,\"$dpBcCellName:\"+BcCellName,\"$dpBcLabel:\"+BcLabel1,\"$dpBcCellNo:\"+BcCellNo),
+			refRec2_x,refRec2_y+y2,0,scale,scale);
+		
+		y2=y2+BcCellHeight+BcCellVspace-1;	
+//		DebugN(\"refRec2_x=\",refRec2_x, \"refRec2_y+y2=\",refRec2_y+y2);
+		//return -- //CAEN/GEM_CAEN_LV/branchController00.Actual.48VA1676
+		//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00/channel000.actual.status  	
+
+//--------------------------------LV_48V_Power_module_CELL -------------------------	
+	for(j=1;j<=2;j++)
+	{	
+		PmCellNo=i*2+j-2;
+//		DebugN(\"PmCellNo=\",PmCellNo);
+		PmCellName=\"LvPm_\"+PmCellNo;
+		PmLabel1=PmLabel+\" \"+PmCellNo;
+		if(PmCellNo%2==0)
+			easyCrateNo=1;
+		else
+			easyCrateNo=0;
+		Lv48VPwMName=LvBConName+\"/easyCrate\"+easyCrateNo+\"/powerConverter22\";	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22
+		Lv48VPmName=Lv48VPwMName;
+		k3=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refLV48PS.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			PmCellName,makeDynString(\"$dpLv48VPmName:\"+Lv48VPmName,\"$dpPmCellName:\"+PmCellName,\"$dpPmLabel:\"+PmLabel1,\"$dpPmCellNo:\"+PmCellNo),
+			refRec3_x,refRec3_y+y3,0,scale,scale);
+		if(PmCellNo%2!=0)
+			y3=y3+PmCellHeight+PmCellVspace1;	
+		if(PmCellNo%2==0)
+			y3=y3+PmCellHeight+PmCellVspace2;
+//		DebugN(\"refRec2_x=\",refRec2_x, \"refRec2_y+y2=\",refRec2_y+y2);
+		//return -- //CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22.Actual.Status 
+		//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22.Actual.Status  	
+	
+	//--------------------------------LV_Easy_Crate_CELL -------------------------	
+		EcCellNo=PmCellNo;
+		EcCellName=\"LvEc_\"+EcCellNo;
+		EcLabel1=EcLabel+\" \"+EcCellNo;
+		LvEasyCName=Lv48VPwMName;						//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22/channel000
+		LvEasyCrateName=LvEasyCName+\".Actual.Status\"; 
+		k4=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refLVEasyCrate.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			EcCellName,makeDynString(\"$dpLvEasyCrateName:\"+LvEasyCrateName,\"$dpEcCellName:\"+EcCellName,\"$dpEcLabel:\"+EcLabel1,\"$dpEcCellNo:\"+EcCellNo),
+			refRec4_x,refRec4_y+y4,0,scale,scale);
+		if(EcCellNo%2!=0)
+			y4=y4+EcCellHeight+EcCellVspace1;
+		if(EcCellNo%2==0)	
+			y4=y4+EcCellHeight+EcCellVspace2;
+//		DebugN(\"refRec2_x=\",refRec2_x, \"refRec2_y+y2=\",refRec2_y+y2);
+		//return -- //CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22/channel000.actual.status
+		//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/powerConverter22/channel000.actual.status  	
+	}
+	}
+}" 0
+ E E E E 2 -1 -1 0  2 -1
+""0  1
+E "string LvMFName,LvBrnchContName;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+30 3
+"FRAME8"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8025477707006369 0 1.276315789473684 -203.267515923567 -627.1578947368422 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 18 48 V Power Modules
+30 4
+"FRAME9"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+3 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.7704073524434396 0 1.269736842105263 -54.75463500742126 -623.8684210526316 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 11 EASY Crates
+30 1
+"FRAME6"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+0 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.6751592356687897 0 0.8815789473684211 -379.8917197452229 -422.7894736842106 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 13 LV Main Frame
+30 2
+"FRAME7"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+1 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.8598726114649682 0 1.282894736842105 -375.2866242038217 -630.4473684210527 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 21 LV Branch Controllers
+30 5
+"FRAME10"
+""
+1 576 500 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 3.242038216560511 0 1.375 -1862.414012738854 -685.5 0 E 576 500 734 653
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 9 LV Status
+31 78
+"PIPE15"
+""
+1 277.7146165238315 43.99999999999982 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 4 277.7146165238315 43.99999999999982
+262 43.99999999999982
+262 65
+278 65
+31 79
+"PIPE16"
+""
+1 246.178571428573 54.24999999999985 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 2 5 2 246.178571428573 54.24999999999985
+262 54
+31 80
+"PIPE17"
+""
+1 277.7146165238315 43.99999999999982 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+79 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 0 41.75000000000008 0 0 0 5 4 277.7146165238315 43.99999999999982
+262 43.99999999999982
+262 65
+278 65
+31 81
+"PIPE18"
+""
+1 246.178571428573 54.24999999999985 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 0 41.75000000000008 0 0 2 5 2 246.178571428573 54.24999999999985
+262 54
+31 86
+"PIPE23"
+""
+1 366.904761904762 43.99999999999982 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+85 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 2 366.904761904762 43.99999999999982
+405.8098546190695 44.00000000000003
+31 87
+"PIPE24"
+""
+1 366.904761904762 64.49999999999999 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 5.684341886080802e-014 -1.249999999999993 0 0 0 5 2 366.904761904762 64.49999999999999
+405.8098546190695 64.49999999999999
+31 88
+"PIPE25"
+""
+1 366.904761904762 86.00000000000001 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 2 366.904761904762 86.00000000000001
+405.8098546190695 86.00000000000001
+31 89
+"PIPE26"
+""
+1 366.904761904762 106.5 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 5.684341886080802e-014 -1.25 0 0 0 5 2 366.904761904762 106.5
+405.8098546190695 106.5
+31 90
+"PIPE27"
+""
+1 366.904761904762 128.0000000000001 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+89 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 2 366.904761904762 128.0000000000001
+405.8098546190695 128.0000000000001
+31 91
+"PIPE28"
+""
+1 366.904761904762 148.5 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+90 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 5.684341886080802e-014 -1.25 0 0 0 5 2 366.904761904762 148.5
+405.8098546190695 148.5
+31 92
+"PIPE29"
+""
+1 366.904761904762 170 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+91 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 2 366.904761904762 170
+405.8098546190695 170
+31 93
+"PIPE30"
+""
+1 366.904761904762 190.5000000000001 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+92 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 5.684341886080802e-014 -1.625 0 0 0 5 2 366.904761904762 190.5000000000001
+405.8098546190695 190.5000000000001
+31 101
+"PIPE38"
+""
+1 96.86373405348738 85.27271069054542 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 0.9715098032219616 0 5.156725616824957 0 0 0 5 4 96.86373405348738 85.27271069054542
+104 85.27271069054542
+104 181
+132.1785714285729 180.2500000000001
+31 102
+"PIPE39"
+""
+1 131.9999999999999 138.25 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+101 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 0.9346938775510206 0 9.028571428571405 0 0 0 5 4 131.9999999999999 138.25
+113 138.25
+113 77
+97 77
+31 103
+"PIPE40"
+""
+1 132.1785714285729 96.24999999999999 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+102 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 0.7876106194690261 0 20.44247787610622 0 0 0 5 4 132.1785714285729 96.24999999999999
+122 96.24999999999999
+122 68
+97 68
+31 105
+"PIPE42"
+""
+1 132.1785714285729 54.24999999999985 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+104 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1.090909090909092 0 -4.909090909090947 0 0 0 5 4 132.1785714285729 54.24999999999985
+112 54
+112 65
+97 65
+31 110
+"PIPE47"
+""
+1 277.7146165238315 190.5000000000001 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+109 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 0 -1 0 0 0 5 4 277.7146165238315 190.5000000000001
+265 190.5000000000001
+265 184
+247 184
+31 111
+"PIPE48"
+""
+1 277.7146165238315 190.5000000000001 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+110 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 -1 0 360.4999999999999 0 0 0 5 4 277.7146165238315 190.5000000000001
+265 190.5000000000001
+265 184
+247 184
+31 112
+"PIPE49"
+""
+1 278 132 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+111 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E U  0 0 0 5 2 278 132
+246 132
+31 114
+"PIPE51"
+""
+1 278 132 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+113 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 0 11.63636363636368 0 0 0 5 2 278 132
+246 132
+6 6
+"RECTANGLE1"
+""
+1 590 529 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.6052631578947368 0 1.605263157894737 -328.4091915142045 -787.6842105263158 1 E 590 529 704 548
+6 8
+"RECTANGLE2"
+""
+1 590 529 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1.526315789473684 -457.8214285714271 -767.671052631579 1 E 590 529 704 548
+6 40
+"RECTANGLE3"
+""
+1 590 529 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.7823696963239518 0 0.8947368421052631 -183.8835043073001 -438.8684210526317 1 E 590 529 704 548
+6 24
+"RECTANGLE4"
+""
+1 590 529 E E E 1 E 0 E N {0,0,0} E N "_Transparent" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.7823696963239518 0 0.8947368421052631 -55.78826621206201 -438.8684210526317 1 E 590 529 704 548
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 25 "SHAPE_GROUP25" -1
+2 0 
+79 78 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 26 "SHAPE_GROUP26" -1
+2 0 
+81 80 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

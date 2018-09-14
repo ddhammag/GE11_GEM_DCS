@@ -1,0 +1,599 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 836 462 N {134,142,144} 1
+"$dpEndcapName"
+"main()
+{    
+	Endcap= $dpEndcapName;
+//	Endcap= \"-\";
+	if(Endcap== \"+\")
+		EndcapType= \"Plus\";
+	else if(Endcap== \"-\")
+		EndcapType= \"Minus\";
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+	
+	ChmbrInOrExDp=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI*\"+\".Layer*\"+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDp);
+	
+	drawRingChambers();
+	drawRingTexts();  
+	initTable();
+	dpConnect(\"drawTable\",ChmbrInOrExDp);
+}" 0
+ E E E E 1 -1 -1 0  775 79
+""0  1
+E "string Gchannel,L2channel,L1channel,HvMF,LvMF;
+string ChamberInOrExDp;
+string Endcap,EndcapType;
+dyn_string ChmbrInOrExDp;
+dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+dyn_bool statusSet,statusCurnt;
+dyn_bool statusSet=statusChanged;
+drawTable(dyn_string Dp,dyn_bool InOrExDp)
+{
+	SelectAllCBox1.state(0,FALSE);
+	statusCurnt=InOrExDp;
+	string includeColor=\"FwStateOKPhysics\";
+	string excludeColor=\"FwEquipmentDisabled\";
+	for(int i=1;i<=72;i++)
+	{
+		if(InOrExDp[i]==TRUE)
+		{
+			includeExcludeTable.cellValueRC(i-1,\"3\",\"Included\");
+			includeExcludeTable.cellBackColRC(i-1, \"3\", includeColor);
+			includeExcludeTable.cellValueRC(i-1,\"4\",\"Exclude\");
+			includeExcludeTable.cellBackColRC(i-1, \"4\", \"white\");
+		}
+		else
+		{
+			includeExcludeTable.cellValueRC(i-1,\"3\",\"Excluded\");
+			includeExcludeTable.cellBackColRC(i-1, \"3\", excludeColor);
+			includeExcludeTable.cellValueRC(i-1,\"4\",\"Include\");
+			includeExcludeTable.cellBackColRC(i-1, \"4\", \"white\");
+		}
+	}
+}	
+initTable() 
+{
+  // ------------ prepare table ------------
+	includeExcludeTable.sortOnClick(FALSE);
+	includeExcludeTable.columnHeader(3, \"    Enable/ Disable\"\"\\n\");
+	for(int i=1;i<=36;i++)
+	{
+   	 	includeExcludeTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"Layer 1\",\"3\",\"loading...\",\"4\",\"\");
+		includeExcludeTable.appendLine(\"1\",\"\",\"2\",\"Layer 2\",\"3\",\"loading...\",\"4\",\"\");
+	}
+	for(int i=1;i<=72;i++)
+	{
+		if(i%4==1){
+			includeExcludeTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+			includeExcludeTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
+			includeExcludeTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
+			includeExcludeTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
+		}
+		if(i%4==3){
+			includeExcludeTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+			includeExcludeTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
+			includeExcludeTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
+			includeExcludeTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
+		}
+	}
+	includeExcludeTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+	includeExcludeTable.columnFormat(\"2\",\"[0s,,,ALIGNMENT_CENTER]\");
+	includeExcludeTable.columnFormat(\"3\",\"[0s,,,ALIGNMENT_CENTER]\");
+	includeExcludeTable.columnFormat(\"4\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+drawRingChambers()
+{
+	int i;
+	float k1,k2,k3,x,y,ag,r;
+	float scale,side,angle;
+	dyn_int refCir_x,refCir_y; 
+	string ELLIPSE;
+	string GCellName,L2CellName,NumCellName,L1CellName;
+//	string sys;	
+	int GCellNo,L2CellNo,NumCellNo,L1CellNo;
+ 
+	side=1.0; // positive, should be +1, sorry, this is \"old tail\"  
+	scale=1;
+//	sys=getSystemName();
+	for(i=1; i<=4; i++)
+	{		
+		ELLIPSE=\"ELLIPSE\"+i;
+		getValue(ELLIPSE,\"position\",refCir_x[i],refCir_y[i]); // get ref point of ellipse1-ellipse7
+//		DebugN(\"position=\",refCir_x[i],refCir_y[i]);
+	}  
+//--------------------------------LAYER2 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER2 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L2CellNo=i;
+		L2CellName=Endcap+\"L2_\"+L2CellNo;   
+		  
+		r=refCir_x[1]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2];
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsL2.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			L2CellName,makeDynString(\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir4_x+x0=\",refCir_x[4]+x, \"refCir4_y+y0=\",refCir_y[4]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	}	
+//--------------------------------CHAMBER_NUM CELL ----------------
+	ag=0;
+	angle=10; //define CHAMBER_NUM CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		NumCellNo=i;
+		NumCellName=Endcap+\"Num_\"+NumCellNo;   
+		  
+		r=refCir_x[2]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		k2=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsNum.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			NumCellName,makeDynString(\"$dpNumCellNo:\"+NumCellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+//--------------------------------LAYER1 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER1 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L1CellNo=i;
+		L1CellName=Endcap+\"L1_\"+L1CellNo;   
+		  
+		r=refCir_x[3]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2-1];
+		k3=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsL1.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+			L1CellName,makeDynString(\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+}
+drawRingTexts()
+{
+	int refCir4_x,refCir4_y;
+	float k1,k2;
+	string txt1,txt2;
+	txt1=Endcap+\"text\";
+	txt2=Endcap+\"name\";
+	getValue(\"ELLIPSE4\",\"position\",refCir4_x,refCir4_y); // get ref point of ellipse7 
+//	DebugN(\"position=\",refCir9_x,refCir9_y);
+  
+	k1=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsTexts.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+         txt1,makeDynString(),
+         refCir4_x,refCir4_y,0,1,1);
+//	DebugN(\"refCir1_x+x0=\",refCir1_x, \"refCir1_y+y0=\",refCir1_y);
+	k2=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/GEM_status_obj/refEndcapNames.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
+         txt2,makeDynString(\"$dpEndcapTextName:\"+txt2,\"$dpEndcapName:\"+Endcap),
+         refCir4_x,refCir4_y,0,1,1);
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+7 44
+"ELLIPSE4"
+""
+1 248.2417648166128 261.7373567541949 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 391.6019765877338 -31.64855487966351 1 E 248.0862068965516 261.4758620689654 165 165
+7 46
+"ELLIPSE3"
+""
+1 548.4396765261108 215.0557715284947 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 224.5159356759813 16.22112696580584 1 E 416.284889730696 214.0557715284947 132.5 132.5
+7 47
+"ELLIPSE2"
+""
+1 364.7179121290293 261.7515242315114 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 391.6019765877336 -31.64855487966349 1 E 248.0862068965516 261.4758620689654 117.5 117.5
+7 49
+"ELLIPSE1"
+""
+1 309.9634802935623 261.7515242384537 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 391.6019765877338 -31.64855487966351 1 E 248.0862068965516 261.4758620689654 62.5 62.5
+25 60
+"includeExcludeTable"
+""
+1 9.499999999999886 8.999999999999972 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"shadowOffset" "[8,8]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  7.499999999999886 6.999999999999972 448.4999999999999 455
+E"main(int row, string column, string value)
+{
+	if(column==4)
+	{
+		if(statusChanged[row+1]==FALSE)
+		{
+//			includeExcludeTable.cellValueRC(row,\"4\",\"Exclude\");
+			includeExcludeTable.cellBackColRC(row, \"4\", \"red\");
+			statusSet[row+1]=!statusCurnt[row+1];
+			statusChanged[row+1]=TRUE;
+		return;
+		}
+		if(statusChanged[row+1]==TRUE)
+		{
+//			includeExcludeTable.cellValueRC(row,\"4\",\"Click here to select\");
+			includeExcludeTable.cellBackColRC(row, \"4\", \"white\");
+			statusSet[row+1]=statusCurnt[row+1];
+			statusChanged[row+1]=FALSE;
+		}
+	}
+}" 0
+ 1 0 1 4 0 "1" 12 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 20       Supper Chamber
+E
+1
+LANG:1 0 
+
+130 "2" 8 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 15           Layer
+E
+1
+LANG:1 0 
+
+90 "3" 8 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 14         Status
+E
+1
+LANG:1 0 
+
+90 "4" 10 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 19     Enable/ Disable
+E
+1
+LANG:1 0 
+
+110 
+30 30 10 50
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 0 2 0 1 7
+1 0
+20 61
+"SelectAllCBox1"
+""
+1 366.5000000000001 31.50140939458962 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignLeft|AlignLeading"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  338.5000000000001 24.50140939458962 412.5000000000001 42.50140939458962
+1
+T 
+1
+LANG:1 10 Select All
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  int raw;
+	if(state==TRUE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			raw=i-1;
+			includeExcludeTable.cellBackColRC(raw, \"4\", \"red\");
+			statusChanged[i]=TRUE;
+		}	
+		statusSet=!statusCurnt;
+	}
+	if(state==FALSE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			raw=i-1;
+			includeExcludeTable.cellBackColRC(raw, \"4\", \"white\");
+			statusChanged[i]=FALSE;
+		}	
+		statusSet=statusCurnt;
+	}
+}" 0
+13 62
+"PUSH_BUTTON1"
+""
+1 483.8445107498101 21.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+61 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  481.8445107498101 12.25070469729477 615.748657117809 41.25070469729477
+
+T 
+1
+LANG:1 13 Apply Changes
+"main(mapping event)
+{
+	for(int i=1; i<=72; i++)
+	{
+		if(statusChanged[i]==TRUE)
+		{
+			dpSetWait(ChmbrInOrExDp[i],statusSet[i]);
+		}
+		statusChanged[i]=FALSE; // reset after finishing update
+		SelectAllCBox1.state(0,FALSE);
+	}
+//---------------popupMessage----------------
+	string uiDp = \"_Ui_1\";
+	langString msgText = \"Settings Updated Successfully\";
+	popupMessage(uiDp, msgText);
+
+}" 0
+ E E E
+6 65
+"RECTANGLE3"
+""
+1 31 32.49859060541036 E E E 1 E 1 E N {0,32,130} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.006864988558352 0 1.006756756756757 -22.71281464530904 -25.21676628247897 1 E 31 32.49859060541036 468 476.4985906054104
+13 66
+"PUSH_BUTTON2"
+""
+1 667.2650223099354 21.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+65 0 0 0 0 0
+E E E
+8
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  665.2650223099354 12.25070469729477 799.1691686779343 41.25070469729477
+
+T 
+1
+LANG:1 15 Clear Selection
+"main(mapping event)
+{
+	int raw;
+	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
+	for(int i=1;i<=72;i++)
+	{
+		raw=i-1;
+		includeExcludeTable.cellBackColRC(raw, \"4\", \"white\");
+		statusChanged[i]=FALSE;
+	}	
+	statusSet=statusCurnt;
+}" 0
+ E E E
+13 68
+"Cancel"
+""
+1 649.5068397138722 434.0014093945895 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+67 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0  606.5068397138722 423.0014093945895 674.5068397138722 448.0014093945895
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+  closeDialog();
+}" 0
+ E E E
+6 70
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.326115844345002 0 1.882352941176469 444.9047526729843 321.6190564534131 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+6 71
+"RECTANGLE4"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.326115844345002 0 2.26462297678885 444.9047526729843 -110.2589853984307 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+30 72
+"FRAME1"
+""
+1 7 -3 E E E 1 E 1 E N "white" E N {0,0,0} E E
+ E E
+71 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "white"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1 0 1 -3 0 0 E 7 -3 834 459
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+4 0 
+44 46 47 49 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 2 "SHAPE_GROUP2" -1
+2 0 
+66 62 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0
