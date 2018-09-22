@@ -1,0 +1,1602 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 1350 679 N {134,142,144} 2
+"$dpEndcapName"
+"$dpHvMFName"
+"main()
+{ 
+	HvMF=$dpHvMFName; 
+	Endcap= $dpEndcapName;
+	initEndcap();
+	
+	dyn_string L1L2LvChActStatusDps,L1LvChActVmonImonDps,L2LvChActVmonImonDps;
+	int n,ref_Px,ref_Py,ref_Sx,ref_Sy;
+	
+	ScanState=FALSE;
+	scanStop=FALSE;
+	vFrom.text=100;
+  	stepSize.text=100;
+  	vTo.text=3000;
+  	hTime.text=2;
+  	pbScan.enabled=TRUE;
+  	pbStop.enabled=FALSE;
+	rowBegin=0;
+	rowLast=0;
+	
+	ChmbrInOrExDp=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI*\"+\".Layer*\"+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
+//	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
+//	Debug(\"ChmbrInOrExDp=\",ChmbrInOrExDp);
+	n=0;
+	for (int i=1; i<=36; i++)
+	{  
+		int ChmbrNo=i;
+		L1andL2HvBrdDp[++n]=HVboardClicked(ChmbrNo);
+		cellNames[n]=Endcap+\"L1_\"+i;
+		L1andL2HvBrdDp[++n]=L1andL2HvBrdDp[n];
+		cellNames[n]=Endcap+\"L2_\"+i;
+	}
+	drawRingChambers();
+	drawRingTexts();  
+	initChamberTable();
+	initScanTable();
+	dpConnect(\"drawTable\",ChmbrInOrExDp);
+}" 0
+ E E E E 1 -1 -1 0  775 79
+""0  1
+E "string Gchannel,L2channel,L1channel,HvMF,LvMF;
+string ChamberInOrExDp;
+string Endcap,EndcapType,easyBoardName,scanChmbrName;
+int branchConNo,CaenHvNo,rowBegin,rowLast;
+float start,stop,step,holdTime;
+bool ScanState,swopt,scanStop,write;
+dyn_string ChmbrInOrExDp,L1andL2HvBrdDp,cellNames;
+dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+dyn_bool statusSet,statusCurnt;
+dyn_bool statusSet=statusChanged;
+drawTable(dyn_string Dp,dyn_bool InOrExDp)
+{
+	SelectAllCBox1.state(0,FALSE);
+	statusCurnt=InOrExDp;
+	string includeColor=\"FwStateOKPhysics\";
+	string excludeColor=\"FwEquipmentDisabled\";
+	string excludeFontColor=\"{234,234,234}\";
+	for(int i=1;i<=72;i++)
+	{
+		if(InOrExDp[i]==TRUE)
+		{
+			if(i%4==1){
+				ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+				ChamberTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
+				ChamberTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
+				ChamberTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
+			}
+			if(i%4==3){
+				ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+				ChamberTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
+				ChamberTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
+				ChamberTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
+			}
+			ChamberTable.cellBackColRC(i-1, \"3\", \"white\");
+			ChamberTable.cellValueRC(i-1,\"3\",\"Click here\\n to select\");	
+			for(int j=1;j<3;j++)
+			{
+				ChamberTable.cellForeColRC(i-1,j, \"black\");
+			}
+		}
+		else
+		{
+			ChamberTable.cellBackColRC(i-1, \"1\", excludeColor);
+			for(int k=2;k<=3;k++)
+			{
+				ChamberTable.cellBackColRC(i-1, k, excludeColor);
+				ChamberTable.cellForeColRC(i-1,k, excludeFontColor);
+			}	
+			ChamberTable.cellValueRC(i-1,\"3\",\"Excluded\");	
+		}
+	}
+}	
+initChamberTable() 
+{
+  // ------------ prepare table ------------
+	ChamberTable.sortOnClick(FALSE);
+	ChamberTable.columnHeader(0, \"     Supper \\n   Chamber\");
+	ChamberTable.columnHeader(2, \"       Select\"\"\\n\");
+	for(int i=1;i<=36;i++)
+	{
+   	ChamberTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"Layer 1\",\"3\",\"\");
+		ChamberTable.appendLine(\"1\",\"\",\"2\",\"Layer 2\",\"3\",\"\");
+	}
+	for(int i=1;i<=72;i++)
+	{
+		if(i%4==1){
+			ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+			ChamberTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
+			ChamberTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
+			ChamberTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
+		}
+		if(i%4==3){
+			ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+			ChamberTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
+			ChamberTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
+			ChamberTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
+		}
+	}
+	ChamberTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+	ChamberTable.columnFormat(\"2\",\"[0s,,,ALIGNMENT_CENTER]\");
+	ChamberTable.columnFormat(\"3\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+initScanTable() 
+{
+// ------------ prepare table ------------
+	ScanTable.sortOnClick(FALSE); // disable sort
+// ------------ table headers------------
+	ScanTable.columnHeader(0, \"    Supper \\n  Chamber\");
+	ScanTable.columnHeader(1,\"  Drift\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(2,\"  Drift\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(3,\"G1_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(4,\"G1_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(5,\"G1_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(6,\"G1_Bot\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(7,\"G2_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(8,\"G2_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(9,\"G2_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(10,\"G2_Bot\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(11,\"G3_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(12,\"G3_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(13,\"G3_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(14,\"G3_Bot\\nCurrent\\n   (uA)\");
+// ------------ end table headers------------
+	for(int j=1;j<=29;j++)
+	{
+		ScanTable.appendLine(\"1\",\"\",\"2\",\"\",\"3\",\"\",\"4\",\"\",\"5\",\"\");
+		ScanTable.cellBackColRC(j-1, 1, \"{204,204,204}\");
+		for(int i=2;i<=15;i++)
+		{
+			if(i%4==2){
+				ScanTable.cellBackColRC(j-1, i, \"{222,234,246}\");
+				ScanTable.cellBackColRC(j-1, i+1, \"{222,234,246}\");
+			}
+			if(i%4==0){
+				ScanTable.cellBackColRC(j-1, i, \"{205,230,245}\");
+				ScanTable.cellBackColRC(j-1, i+1, \"{205,230,245}\");
+			}
+		}
+	}
+	ScanTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+//****************************Scan for single channel*************************
+//********************************************************************************
+// For A1526,\"output voltage range is 0 V to 15 kV with 1 V monitor resolution\" (datsheet)
+//The HV RAMP-UP and RAMP-DOWN rates may be selected independently for each channel in the range 1? 500 V/s in 1 V/s steps.
+scanChannel(dyn_string HVchannels)
+{
+  	time t,t1,t2;
+  	float eTime,stepTime,rUp;
+  	float vMonVal,vSetVal;
+  	float iMonVal,steps; 
+	string HVchDp;
+	float iSetVal=0; //degug line, must remove++++++++++++++++++++++++++++++++++++++++++
+  //***********************************************/  
+	steps=(stop-start)/step;
+	steps=ceil(steps);
+	
+	ScanTable.cellValueRC(rowBegin,1,uniSubStr(scanChmbrName,0,5));	//select \"GE1/1\"	 from \"GE1/1+GEMINI_01 Layer 1\"					
+	ScanTable.cellValueRC(rowBegin+1,1,uniSubStr(scanChmbrName,5,10));//select \"+GEMINI_01\"	 from \"GE1/1+GEMINI_01 Layer 1\"
+	ScanTable.cellValueRC(rowBegin+2,1,uniSubStr(scanChmbrName,16,7));//select \"Layer 1\"	 from \"GE1/1+GEMINI_01 Layer 1\"
+	for(int j=1;j<=7;j++)
+	{
+		if(ScanState) // check if user terminate the scan by pressing stop bttn
+  		{
+			HVchDp=HVchannels[j];
+	  		dpGet(HVchDp+\".readBackSettings.rUp\",rUp);    //(deltaV/deltaT)
+//			Debug(\"HVchDp=\",HVchDp);
+	  		if(rUp==0);
+	  		{
+	    		rUp=50;        //*The HV RAMP-UP and RAMP-DOWN rates may be selected 
+	                   //independently for each channel in 
+	                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)*/
+	    		dpSet(HVchDp+\".settings.rUp\",rUp);
+	  		}
+	  		stepTime=step/rUp;  //time taken to increase by one voltage step
+			dpSet(HVchDp+\".settings.onOff\",1);
+	  		dpGet(HVchDp+\".actual.vMon\",vMonVal);
+  
+			if(vMonVal>start)
+	  		{ 
+	    		dpSetWait(HVchDp+\".settings.v0\",start); 
+	    		while(vMonVal>start)
+	    		{
+					dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
+	      		//dpGet(HVchDp+\".actual.vMon\",vMonVal);
+	    		}
+	  		}
+	  		if(ScanState)	// check if user terminate the scan by pressing stop bttn
+	  		{ 
+	    		for(int i=0; i <= steps; i++)
+	    		{  
+	      		if(i==steps)
+	      			vSetVal=stop; 
+	      		else    
+	      			vSetVal=start+(i*step);
+					iSetVal=iSetVal+(rand()%10)*0.011111;  //degug line, must remove+++++++++++++++++++++++++++++
+	      		if(!scanStop)
+	      		{
+	        			dpSetWait(HVchDp+\".settings.v0\",vSetVal);
+						dpSetWait(HVchDp+\".actual.iMon\",iSetVal);  //degug line, must remove +++++++++++++++  
+	        			t1=getCurrentTime();
+	        			dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
+	        			eTime=0;
+	        			while(vMonVal<=0.98*vSetVal || eTime < (stepTime+holdTime))
+	        			{ 
+	         		 	if(!scanStop)	// check if user terminate the scan by pressing stop bttn
+	          			{
+								dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); ++++
+	            		//	dpGet(HVchDp+\".actual.vMon\",vMonVal);
+	            			t2=getCurrentTime();
+	            			t=t2-t1;
+	            			eTime=t;    //time elapsed
+	            			eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+	          			}
+	          			else  
+	            			break;      
+	        			}
+	        			if(write)
+	        			{
+				         //**********show data in the table*************
+							dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
+							//dpGet(HVchDp+\".actual.vMon\",vMonVal);
+							dpGet(HVchDp+\".actual.iMon\",iMonVal);
+							iMonVal=round(iMonVal); //round off the iMonVal value				
+							if(rowBegin+i>=ScanTable.lineCount()) // add new line to end of the table with bacgroud colors
+							{
+								ScanTable.appendLine(\"1\",\"\");
+								ScanTable.cellBackColRC(rowBegin+i, 1, \"{204,204,204}\");
+								for(int k=2;k<=15;k++)
+								{
+									if(k%4==2){
+										ScanTable.cellBackColRC(rowBegin+i, k, \"{222,234,246}\");
+										ScanTable.cellBackColRC(rowBegin+i, k+1, \"{222,234,246}\");
+									}
+									if(k%4==0){
+										ScanTable.cellBackColRC(rowBegin+i, k, \"{205,230,245}\");
+										ScanTable.cellBackColRC(rowBegin+i, k+1, \"{205,230,245}\");
+									}
+								}
+							}
+							ScanTable.cellValueRC(rowBegin+i,j*2,vMonVal);							
+							ScanTable.cellValueRC(rowBegin+i,(j*2+1),iMonVal);
+							rowLast=rowBegin+i;
+							//**********end of show data in the table*********
+	        			}
+	      		}
+	    		}
+			}  
+	  		if(swopt) 
+	    		dpSet(HVchDp+\".settings.onOff\",0);
+		}
+	}
+}
+//***************round off the iMonVal value***************
+float round(float v)
+{
+  int c, r, m,deciPoints;  
+  deciPoints=(int)deciPoints1.text+1;
+  m = v*power(10,deciPoints); //v*1000; //v = 838.274 m = 838274
+  c = m%10; // c = 4
+  r = m/10; // r = 83827
+  if(c>=5){r++;}
+  v = (float)r/power(10,deciPoints-1);//(float)r/100;
+  return v;
+}
+int power(int base, int expo)
+{
+    int result = 1;
+    while(expo) { result *= base; expo--; }
+    return result;
+}
+//***************end of round off the iMonVal value***************
+//****************************end of Scan for single channel*************************
+//*************************************************************************************
+drawRingChambers()
+{
+	int i;
+	float k1,k2,k3,x,y,ag,r;
+	float scale,side,angle;
+	dyn_int refCir_x,refCir_y; 
+	string ELLIPSE;
+	string GCellName,L2CellName,NumCellName,L1CellName;
+	string L1HvBrdClicked,L2HvBrdClicked;	
+	int GCellNo,L2CellNo,NumCellNo,L1CellNo;
+ 
+	side=1.0; // positive, should be +1, sorry, this is \"old tail\"  
+	scale=1;
+//	sys=getSystemName();
+	for(i=1; i<=4; i++)
+	{		
+		ELLIPSE=\"ELLIPSE\"+i;
+		getValue(ELLIPSE,\"position\",refCir_x[i],refCir_y[i]); // get ref point of ellipse1-ellipse7
+//		DebugN(\"position=\",refCir_x[i],refCir_y[i]);
+	}  
+//--------------------------------LAYER2 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER2 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L2CellNo=i;
+		L2CellName=Endcap+\"L2_\"+L2CellNo;   
+		  
+		r=refCir_x[1]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L2HvBrdClicked=HVboardClicked(L2CellNo);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2];
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/HvLv_Scan_obj/refHvScanL2.pnl\",  
+			L2CellName,makeDynString(\"$dpL2HvBrd:\"+L2HvBrdClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir4_x+x0=\",refCir_x[4]+x, \"refCir4_y+y0=\",refCir_y[4]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	}	
+//--------------------------------CHAMBER_NUM CELL ----------------
+	ag=0;
+	angle=10; //define CHAMBER_NUM CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		NumCellNo=i;
+		NumCellName=Endcap+\"Num_\"+NumCellNo;   
+		  
+		r=refCir_x[2]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		k2=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsNum.pnl\",  
+			NumCellName,makeDynString(\"$dpNumCellNo:\"+NumCellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+//--------------------------------LAYER1 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER1 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L1CellNo=i;
+		L1CellName=Endcap+\"L1_\"+L1CellNo;   
+		  
+		r=refCir_x[3]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L1HvBrdClicked=HVboardClicked(L1CellNo);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2-1];
+		k3=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/HvLv_Scan_obj/refHvScanL1.pnl\",  
+			L1CellName,makeDynString(\"$dpL1HvBrd:\"+L1HvBrdClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+}
+drawRingTexts()
+{
+	int refCir4_x,refCir4_y;
+	float k1,k2;
+	string txt1,txt2;
+	txt1=Endcap+\"text\";
+	txt2=Endcap+\"name\";
+	getValue(\"ELLIPSE4\",\"position\",refCir4_x,refCir4_y); // get ref point of ellipse7 
+//	DebugN(\"position=\",refCir9_x,refCir9_y);
+  
+	k1=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsTexts.pnl\",  
+         txt1,makeDynString(),
+         refCir4_x,refCir4_y,0,1,1);
+//	DebugN(\"refCir1_x+x0=\",refCir1_x, \"refCir1_y+y0=\",refCir1_y);
+	k2=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/GEM_status_obj/refEndcapNames.pnl\",  
+         txt2,makeDynString(\"$dpEndcapTextName:\"+txt2,\"$dpEndcapName:\"+Endcap),
+         refCir4_x,refCir4_y,0,1,1);
+}
+initEndcap()
+{
+	if(Endcap== \"+\")
+	{
+		EndcapType= \"Plus\";
+//		branchConNo=0;
+//		CaenHvNo=0;
+	}
+	else if(Endcap== \"-\")
+	{
+		EndcapType= \"Minus\";
+//		branchConNo=2;
+//		CaenHvNo=2;
+	}
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+}
+string HVboardClicked(int LayerCellNo)
+{
+	int HvCellNo,GemCaenHvNo,CellNo;	
+	string HvbrdClicked,boardNo;
+	if(LayerCellNo%2==0)
+		HvCellNo=LayerCellNo/2;
+	else
+		HvCellNo=LayerCellNo/2+1;
+
+	CellNo=HvCellNo-1;
+	//---------------------------------------------------
+	if(CellNo <= 15)	
+	{
+		if(CellNo < 10)
+			boardNo=\"0\"+CellNo;
+		else 
+			boardNo=CellNo;
+		GemCaenHvNo=1+CaenHvNo;
+	}
+	else if((CellNo > 15)&&(CellNo <= 17))
+	{
+		boardNo=\"0\"+(CellNo-16);
+		GemCaenHvNo=2+CaenHvNo;
+	}
+	else DebugN(\"Hv Cell Number is not in range\");
+	//---------------------------------------------------
+	HvbrdClicked=(HvMF+\"0\"+GemCaenHvNo+\"/board\"+boardNo);
+	
+//	DebugN(\"HvCellNo=\",HvCellNo,\"HVchannel=\",HvChClicked);
+	return (HvbrdClicked);
+	//return -- //CAEN/GEM_CAEN_HV_01/board00
+	//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+7 44
+"ELLIPSE4"
+""
+1 248.2417648166128 261.7373567541949 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 165 165
+7 46
+"ELLIPSE3"
+""
+1 548.4396765261108 215.0557715284947 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 2 1 E 1 0 1 3.84886234637538 213.8877936324726 1 E 416.284889730696 214.0557715284947 132.5 132.5
+7 47
+"ELLIPSE2"
+""
+1 364.7179121290293 261.7515242315114 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+46 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581277 166.0181117870033 1 E 248.0862068965516 261.4758620689654 117.5 117.5
+7 49
+"ELLIPSE1"
+""
+1 309.9634802935623 261.7515242384537 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "1"
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 62.5 62.5
+25 60
+"ChamberTable"
+""
+1 5.333333333333332 5.666666666666667 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"shadowOffset" "[8,8]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  3.333333333333333 3.666666666666667 243.8333333333334 640.6666666666665
+E"main(int row, string column, string value)
+{
+	if(statusCurnt[row+1]==TRUE)
+	{
+		if(column==3)
+		{
+			if(statusChanged[row+1]==FALSE)
+			{
+				ChamberTable.cellValueRC(row,\"3\",\"Selected\");
+				ChamberTable.cellBackColRC(row, \"3\", \"red\");
+				statusSet[row+1]=!statusCurnt[row+1];
+				statusChanged[row+1]=TRUE;				
+				setValue(cellNames[row+1], \"backCol\", \"red\");
+			return;
+			}
+			if(statusChanged[row+1]==TRUE)
+			{
+				ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
+				ChamberTable.cellBackColRC(row, \"3\", \"white\");
+				statusSet[row+1]=statusCurnt[row+1];
+				statusChanged[row+1]=FALSE;
+				setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");			
+			}
+		}
+	}
+}" 0
+ 1 0 1 3 0 "1" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 15  Supper Chamber
+E
+1
+LANG:1 0 
+
+80 "2" 4 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 7   Layer
+E
+1
+LANG:1 0 
+
+55 "3" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 16 Select/ Deselect
+E
+1
+LANG:1 0 
+
+85 
+30 30 10 50
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 0 2 0 1 7
+1 0
+20 61
+"SelectAllCBox1"
+""
+1 176.3333333333336 28.16807606125632 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignLeft|AlignLeading"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  148.3333333333336 21.16807606125631 222.3333333333336 39.16807606125632
+1
+T 
+1
+LANG:1 10 Select All
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  int row;
+	if(state==TRUE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			row=i-1;
+			if(statusCurnt[i]==TRUE)
+			{
+				ChamberTable.cellBackColRC(row, \"3\", \"red\");
+				ChamberTable.cellValueRC(row,\"3\",\"Selected\");
+				setValue(cellNames[row+1], \"backCol\", \"red\");
+				statusChanged[i]=TRUE;
+				statusSet[i]=!statusCurnt[i];
+			}
+		}	
+	}
+	if(state==FALSE)
+	{
+		for(int i=1;i<=72;i++)
+		{
+			row=i-1;
+			if(statusCurnt[i]==TRUE)
+			{
+				ChamberTable.cellBackColRC(row, \"3\", \"white\");
+				ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
+				setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");
+				statusChanged[i]=FALSE;
+				statusSet[i]=statusCurnt[i];
+			}
+		}	
+	}
+}" 0
+6 65
+"RECTANGLE3"
+""
+1 31 32.49859060541036 E E E 1 E 1 E N {0,32,130} E N "_Transparent" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 0.5495804729214338 0 1.438059888750924 -13.20366132723101 -42.56684352932196 1 E 31 32.49859060541036 468 476.4985906054104
+13 66
+"clearSelection"
+""
+1 705.2650223099354 22.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 15 Clear Selection
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0  260.9999999999999 615.9999999999999 363.9999999999999 638.9999999999999
+
+T 
+1
+LANG:1 15 Clear Selection
+"main(mapping event)
+{
+	int row;
+	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
+	for(int i=1;i<=72;i++)
+	{
+		row=i-1;
+		if(statusCurnt[i]==TRUE)
+		{
+			ChamberTable.cellBackColRC(row, \"3\", \"white\");
+			ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
+			setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");	
+			statusChanged[i]=FALSE;
+			statusSet[i]=statusCurnt[i];
+		}
+	}	
+}" 0
+ E E E
+13 68
+"Cancel"
+""
+1 686.6101005834381 434.7999202384544 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 19 Close HV Scan Panel
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0  502.1032608695658 615.798510843865 570.1032608695657 638.798510843865
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+  closeDialog();
+}" 0
+ E E E
+6 70
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.261648745519713 0 1.882352941176469 233.9068100358424 513.4161579026886 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+6 71
+"RECTANGLE4"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.261648745519713 0 1.176470588235296 233.9068100358423 164.4901960784313 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+30 72
+"FRAME1"
+""
+1 7 -3 E E E 1 E 1 E N "white" E N {0,0,0} E E
+ E E
+71 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "white"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.624697336561743 0 1.412147505422994 -11.53954802259876 -2.096890817064326 0 E 7 -3 834 459
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+6 74
+"RECTANGLE5"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+73 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.258064516129033 0 1.40227335183494 234.9354838709678 -68.75686127661086 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+2 75
+"vFromTxt"
+""
+1 253 43.27427037722232 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 253 43.27427037722232 352 61
+0 2 2 "0s" 0 0 0 192 0 0  253 43.27427037722232 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 13 Start Voltage
+14 76
+"vFrom"
+""
+1 120.7222222222222 83.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+75 0 0 0 0 0
+E "float minV=0; 
+float maxV=4000;
+
+main()
+{
+ float start,stop;
+  start=(float)vFrom.text;
+  //stop=(float)vTo.text;
+  if((start<minV)||(start>maxV))
+  {
+    //vFrom.clear(); 
+    vFrom.text=\"\";
+  }
+  //else if(start>=stop)
+  //{
+  //  vFrom.text=\"\";   
+  //}
+}" 0
+ E
+0
+1
+LANG:1 32 Enter a value between 0 V-4000 V
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
+0  351 33.99999999999999 443.9999999999999 70
+3 "0s" 0 0 0 0 0 -1  E E E
+2 77
+"stepSizeTxt"
+""
+1 252.5138888888889 92.8840579710147 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+76 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 252.5138888888889 92.8840579710147 326 111
+0 2 2 "0s" 0 0 0 192 0 0  252.5138888888889 92.8840579710147 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 Step Size
+14 78
+"stepSize"
+""
+1 120.7222222222222 138.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 9 Step Size
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
+0  351 83.99999999999999 443.9999999999999 120
+3 "0s" 0 0 0 0 0 -1  E E E
+2 79
+"vToTxt"
+""
+1 253 141.4057971014495 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 253 141.4057971014495 352 159
+0 2 2 "0s" 0 0 0 192 0 0  253 141.4057971014495 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Stop Voltage
+14 80
+"vTo"
+""
+1 119.5 195.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+79 0 0 0 0 0
+E "float minV=0; 
+float maxV=4000;
+
+main()
+{
+ float start,stop;
+  start=(float)vFrom.text;
+  stop=(float)vTo.text;
+  if((stop<minV)||(stop>maxV))
+  {
+    vTo.text=\"\";   
+  }
+  else if(start>=stop)
+  {
+    vTo.text=\"\";   
+  }
+}" 0
+ E
+0
+1
+LANG:1 32 Enter a value between 0 V-4000 V
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
+0  351 132 443.9999999999999 168
+3 "0s" 0 0 0 0 0 -1  E E E
+2 81
+"hTimeTxt"
+""
+1 253.125 191.298510843865 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 253.125 191.298510843865 332 209
+0 2 2 "0s" 0 0 0 192 0 0  253.125 191.298510843865 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 9 Hold Time
+14 82
+"hTime"
+""
+1 119.5 258.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+81 0 0 0 0 0
+E "float minT=1; 
+main()
+{
+ float holdTime;
+  holdTime=(float)hTime.text;
+  if(holdTime<minT)
+  {
+    hTime.text=\"\";   
+  }
+}" 0
+ E
+0
+1
+LANG:1 9 Hold Time
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
+0  351 182 443.9999999999999 218
+3 "0s" 0 0 0 0 0 -1  E E E
+20 83
+"CHECK_BOX1"
+""
+1 329.0446798606633 225.6666666666668 E E E 1 E 1 E N "white" E N "_Transparent" E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 33 Set 0 to "HvDP.settings.onOff" DP
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
+0  327.0446798606632 223.6666666666667 531.9545068134579 247.6666666666667
+1
+T 
+1
+LANG:1 31  Switch Off Channels After Scan
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  swopt=state;
+}" 0
+13 84
+"pbStop"
+""
+1 134.8902968849898 365.0978260869566 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 17 Stop Scan process
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  484.3902968849898 130.0978260869565 563.3902968849899 163.0978260869565
+
+T 
+1
+LANG:1 9 Stop Scan
+"main(mapping event)
+{
+	scanStop=TRUE;
+	ScanState=FALSE;  
+  	pbScan.enabled=TRUE;
+  	pbStop.enabled=FALSE;
+  	write=FALSE;
+	
+	int row;
+	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
+	for(int i=1;i<=72;i++)
+	{
+		row=i-1;
+		if(statusCurnt[i]==TRUE)
+		{
+			ChamberTable.cellBackColRC(row, \"3\", \"white\");
+			ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
+			setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");	
+			statusChanged[i]=FALSE;
+			statusSet[i]=statusCurnt[i];
+		}
+	}
+}
+" 0
+ E E E
+13 85
+"pbScan"
+""
+1 469.4527968849899 83.80000000000003 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
+ E E
+84 0 0 0 0 0
+E E E
+0
+1
+LANG:1 18 Start Scan process
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  467.4527968849898 71.00000000000009 580.3277968849899 111.0000000000001
+
+T 
+1
+LANG:1 31 Start Scan for 
+Selected Layers
+"main(mapping event)
+{
+	string mask,SCNumber,LayerNo,msg;
+	dyn_string HvChannels,HvChChmber;
+	int SCNo,chStart;
+	bool statusChangedOk;
+	string sys=getSystemName(); 
+	
+	string uiDp = \"_Ui_1\";
+	langString msgText;
+	
+	for(int i=1; i<=72; i++)
+		statusChangedOk |= statusChanged[i]; // check if user select any chamber
+	if(statusChangedOk==TRUE)
+	{
+		if(scanStop==TRUE){
+			ScanTable.deleteAllLines();
+			initScanTable();
+		}
+		ScanState=TRUE;
+		scanStop=FALSE;
+		write=TRUE;
+	  	pbScan.enabled=FALSE;
+	  	pbStop.enabled=TRUE;
+		clearTable.enabled=FALSE;
+	
+		start=(float)vFrom.text;
+	  	stop=(float)vTo.text;
+	  	step=(float)stepSize.text;
+	  	holdTime=(float)hTime.text;
+		
+		for(int i=1; i<=72; i++)
+		{
+			if(ScanState)	// check if user terminate the scan by pressing stop bttn
+  			{
+				if(statusChanged[i]==TRUE)
+				{	
+					if(i%2==1)
+					{
+						SCNo=(i+1)/2;
+						LayerNo=\"Layer 1\";
+						if(SCNo<=9)
+							SCNumber=\"0\"+SCNo;
+						else
+							SCNumber=SCNo;
+					}
+					else
+					{
+						SCNo=i/2;
+						LayerNo=\"Layer 2\";
+						if(SCNo<=9)
+							SCNumber=\"0\"+SCNo;
+						else
+							SCNumber=SCNo;
+					}
+					scanChmbrName=\"GE1/1\"+Endcap+\"GEMINI_\"+SCNumber+\" \"+LayerNo; //GE1/1+GEMINI_01 Layer 1
+					msg=\"*** INFO -\";
+		     		msg=msg+\"HV Scan for GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" started\";
+		     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
+			
+		     		HvChannels=(dpNames(L1andL2HvBrdDp[i]+\"*channel*\",\"FwCaenChannelA1515\"));
+					if(SCNo%2==1)
+						chStart=1;
+					else if(SCNo%2==0)
+						chStart=8;
+					for(int i=0;i<=6;i++)
+						HvChChmber[i+1]=HvChannels[chStart+i];
+//					Debug(\"HvChChmber=\",HvChChmber);   		
+		       	scanChannel(HvChChmber);
+					rowBegin=rowLast+2; 
+		   
+					msg=\"*** INFO -\";
+		     		msg=msg+\"GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" HV Scan Completed Successfully\";
+		     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
+			
+					ChamberTable.cellBackColRC(i-1, \"3\", \"white\");
+					ChamberTable.cellValueRC(i-1,\"3\",\"Click here\\n to select\");
+					setValue(cellNames[i], \"backCol\", \"kobaltblau\");	
+				}
+				statusChanged[i]=FALSE; // reset after finishing update
+				SelectAllCBox1.state(0,FALSE);
+				statusSet[i]=statusCurnt[i];
+			}
+		}
+		pbScan.enabled=TRUE;
+  		pbStop.enabled=FALSE;
+		clearTable.enabled=TRUE;
+		if(scanStop==FALSE) // check if user terminate the scan by pressing stop bttn
+			msgText = \"HV Scan Completed Successfully\";
+		else{
+			msgText = \"HV Scan Terminated By User\";
+			rowBegin=0;	// reset row number if Terminated
+			rowLast=0; 	// reset row number if Terminated
+		}
+	}
+	else
+		msgText = \"Pleace Select a Chamber\";
+//---------------popupMessage----------------
+	popupMessage(uiDp, msgText);	
+}" 0
+ E E E
+25 87
+"ScanTable"
+""
+1 598.0208333333334 6.792019015314055 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+86 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"shadowOffset" "[8,8]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  596.0208333333334 4.792019015314055 1343.645833333334 641.7920190153141
+E"main(int row, string column, string value)
+{
+	if(statusCurnt[row+1]==TRUE)
+	{
+		if(column==5)
+		{
+			if(statusChanged[row+1]==FALSE)
+			{
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Power Cycle\");
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"red\");
+				statusSet[row+1]=!statusCurnt[row+1];
+				statusChanged[row+1]=TRUE;
+			return;
+			}
+			if(statusChanged[row+1]==TRUE)
+			{
+				LvPowerCycleTable.cellValueRC(row,\"5\",\"Click here\\n to select\");
+				LvPowerCycleTable.cellBackColRC(row, \"5\", \"white\");
+				statusSet[row+1]=statusCurnt[row+1];
+				statusChanged[row+1]=FALSE;
+			}
+		}
+	}
+}" 0
+ 1 0 1 15 0 "1" 6 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+LANG:1 15  Supper Chamber
+E
+1
+LANG:1 0 
+
+70 "2" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "3" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "4" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "5" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "6" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "7" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "8" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "9" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "10" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "11" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "12" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "13" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 "14" 4 1 0 "s" 1
+LANG:1 7 Voltage
+E
+1
+LANG:1 0 
+
+50 "15" 4 1 0 "s" 1
+LANG:1 7 Current
+E
+1
+LANG:1 0 
+
+50 
+20 20 10 50
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+6 88
+"RECTANGLE6"
+""
+1 31 32.49859060541036 E E E 1 E 1 E N {0,32,130} E N "_Transparent" E E
+ E E
+87 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.711670480549199 0 1.438059888750924 542.7715484363084 -42.69219587796937 1 E 31 32.49859060541036 468 476.4985906054104
+2 89
+"PRIMITIVE_TEXT1"
+""
+1 257.7139220415717 7.310019350393376 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+88 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 257.7139220415717 7.310019350393376 393 25
+0 2 2 "0s" 0 0 0 192 0 0  257.7139220415717 7.310019350393376 1
+1
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+0 1
+LANG:1 15 HV Channel Scan
+21 90
+"deciPoints1"
+""
+1 550.6521739130437 192.8537478399929 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+89 0 0 0 0 0
+E E E
+0
+1
+LANG:1 19 # of Decimal Places
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0  548.6521739130436 186.9557921163527 590.0652173913038 213.0442078836474
+0
+
+E
+E
+E
+
+N 0 6 1 4 1 1
+2 92
+"PRIMITIVE_TEXT2"
+""
+1 457.1031360840953 184.3028885805314 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+91 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 457.1031360840953 184.3028885805314 547 215
+0 2 2 "0s" 0 0 0 192 0 0  457.1031360840953 184.3028885805314 2
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Decimal Places
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0 1
+LANG:1 15    for Currents
+13 94
+"clearTable"
+""
+1 719.5150223099355 22.04921554115973 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+93 0 0 0 0 0
+E E E
+0
+1
+LANG:1 20 Clear Table Contents
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+0  392.2500000000001 615.7985108438649 475.2500000000001 638.7985108438649
+
+T 
+1
+LANG:1 11 Clear Table
+"main(mapping event)
+{
+	ScanTable.deleteAllLines();
+	initScanTable();
+	rowBegin=0;
+	rowLast=0;
+}" 0
+ E E E
+6 95
+"RECTANGLE7"
+""
+1 252 594 E E E 1 E 1 E N {0,0,0} E N "kobaltblau" E E
+ E E
+94 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E U  1 E 252 594 262 604
+6 96
+"RECTANGLE8"
+""
+1 252 594 E E E 1 E 1 E N {0,0,0} E N "red" E E
+ E E
+95 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 0 -19.28571428571433 1 E 252 594 262 604
+2 98
+"PRIMITIVE_TEXT4"
+""
+1 292.3749999999998 574.4285714285714 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 268 574.4285714285714 316 587
+0 2 2 "0s" 0 0 0 193 0 0  292.3749999999998 574.4285714285714 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Selected
+2 99
+"PRIMITIVE_TEXT5"
+""
+1 312.142857142857 593.2261904761906 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 268 593.2261904761906 356 606
+0 2 2 "0s" 0 0 0 193 0 0  312.142857142857 593.2261904761906 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Active Chamber
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+4 0 
+44 46 47 49 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 1 "SHAPE_GROUP1" -1
+2 0 
+76 75 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 2 "SHAPE_GROUP2" -1
+2 0 
+78 77 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 3 "SHAPE_GROUP3" -1
+2 0 
+80 79 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 4 "SHAPE_GROUP4" -1
+2 0 
+82 81 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0
