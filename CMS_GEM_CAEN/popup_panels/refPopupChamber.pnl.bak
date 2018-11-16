@@ -1,16 +1,18 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 291 305 N {198,195,198} 5
+PANEL,-1 -1 291 305 N {198,195,198} 6
 "$dpCellName"
 "$dpCellNo"
 "$dpEndcapName"
 "$dpHvchClicked"
+"$dpLVBrdClicked"
 "$dpLvchClicked"
 "main()
 {
   	LvchClicked=$dpLvchClicked;
-	HvchClicked=$dpHvchClicked;
+	LVBrdClicked=$dpLVBrdClicked;
+	HvBrdClicked=$dpHvchClicked;
 	CellNo= $dpCellNo;
 	CellName=$dpCellName;
 	Endcap= $dpEndcapName;
@@ -20,12 +22,12 @@ PANEL,-1 -1 291 305 N {198,195,198} 5
 	if (!isDollarDefined(\"$dpLvchClicked\")) return; // no chamber name defined
 	if (!isDollarDefined(\"$dpHvchClicked\")) return; // no chamber name defined
 	
-	HvChannelStatusDps=(dpNames(HvchClicked+\"*channel*\"+\".actual.status\",\"FwCaenChannelA1515\"));
+	HvChannelStatusDps=(dpNames(HvBrdClicked+\"*channel*\"+\".actual.status\",\"FwCaenChannelA1515\"));
 	LvChannelStatusDp=LvchClicked+\".actual.status\";
 //	Debug(\"HvChannelStatusDps=\",HvChannelStatusDps,\"LvchClicked=\",LvchClicked);
-	HvChannelVmonDps=(dpNames(HvchClicked+\"*channel*\"+\".actual.vMon\",\"FwCaenChannelA1515\"));
+	HvChannelVmonDps=(dpNames(HvBrdClicked+\"*channel*\"+\".actual.vMon\",\"FwCaenChannelA1515\"));
 //	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.vMon
-	HvChannelImonDps=(dpNames(HvchClicked+\"*channel*\"+\".actual.iMon\",\"FwCaenChannelA1515\"));
+	HvChannelImonDps=(dpNames(HvBrdClicked+\"*channel*\"+\".actual.iMon\",\"FwCaenChannelA1515\"));
 //	CAEN/GEM_CAEN_HV_01/board00/channel000.actual.iMon
 //	Debug(\"HvChannels=\",HvChannelVmonDps,\"LvChannels=\",HvChannelImonDps);	
 	
@@ -52,18 +54,19 @@ PANEL,-1 -1 291 305 N {198,195,198} 5
 }" 0
  E E E E 1 -1 -1 0  5 1
 ""0  1
-E "string LvchClicked,HvchClicked,Endcap,CellName,LvChannelStatusDp;
+E "string LvchClicked,LVBrdClicked,HvBrdClicked,Endcap,CellName,LvChannelStatusDp,ChamberName,Layer;
 int CellNo,HvStatus,LvStatus;
 dyn_string HvChannelStatusDps,HvChStatusChmbrDps,HvChannelVmonDps,HvChVmonChmbrDps,HvChannelImonDps,HvChImonChmbrDps;
 
 displayChamberName()
 {	
-	string Layer,ChamberName,tag;
+	string tag,CellNumber;
 	
 	tag=\"PopupDeviceName\";
 	
-	Layer=uniSubStr(CellName, 1, 2); // extract L1 or L2 from Cell name
-	ChamberName=\"GE\"+Endcap+\"1/1 C\"+CellNo+\"_\"+Layer;
+	Layer=uniSubStr(CellName, 2, 1); // extract L1 or L2 from Cell name	
+	sprintf(CellNumber, \"%02d\", CellNo);	//this will put a zero infront of if the value is a single digit
+	ChamberName=\"GE\"+Endcap+\"1/1/\"+CellNumber+\"/\"+Layer;
 	setValue(tag, \"text\", ChamberName); 
 }
 displayChamberStatus()
@@ -138,10 +141,10 @@ displayHvValues(dyn_string HvChVmonDps, dyn_string HvChImonDps)
 	for(int i=1;i<=7;i++)
 	{
 		tableHV.cellValueRC(0,i,HvVoltage[8-i]);//[8-i]-- gem foils are conneted in oposite order i.e. channel0- G3Bottom to channel7 -Drift
-		tableHV.cellFontRC(0,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //11 for 8pt 9 for 7pt //75 for bold 50 for normal
+		tableHV.cellFontRC(0,i,\"Arial,-1,,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //11 for 8pt 9 for 7pt //75 for bold 50 for normal
 		tableHV.cellFormatRC(0,i,\"[4d,,,ALIGNMENT_CENTER]\"); //can use string s; formatSelector(s);
 		tableHV.cellValueRC(1,i,HvCurrent[8-i]);//[8-i]-- gem foils are conneted in oposite order i.e. channel0- G3Bottom to channel7 -Drift
-		tableHV.cellFontRC(1,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //10 for 7.5pt 12 for 9pt //75 for bold 50 for normal
+//		tableHV.cellFontRC(1,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //10 for 7.5pt 12 for 9pt //75 for bold 50 for normal
 		tableHV.cellFormatRC(1,i,\"[0.3f,,,ALIGNMENT_CENTER]\"); //can use string s; formatSelector(s);
 	}
 }
@@ -149,8 +152,8 @@ initTables() {
   // ------------ prepare tableHV and tableTemp Tables ------------
 	tableHV.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
     tableHV.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
-    tableHV.rowHeader(0, \"V\");
-    tableHV.rowHeader(1, \"C\");
+    tableHV.rowHeader(0, \"V (V)\");
+    tableHV.rowHeader(1, \"I (uA)\");
 	tableTemp.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\");
 }
 displayLvStatus()
@@ -332,14 +335,14 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
-0  8.833333333333304 65.32163382594416 278 122
+0  8.833333333333307 65.32163382594416 278 122
 EE 1 1 1 7 2 "1" 3 1 0 "s" 1
 LANG:1 5 DRIFT
 E
 1
 LANG:1 0 
 
-35 "2" 3 1 0 "s" 1
+33 "2" 3 1 0 "s" 1
 LANG:1 5 G1TOP
 E
 1
@@ -351,36 +354,36 @@ E
 1
 LANG:1 0 
 
-35 "4" 3 1 0 "s" 1
+34 "4" 3 1 0 "s" 1
 LANG:1 5 G2TOP
 E
 1
 LANG:1 0 
 
-35 "5" 3 1 0 "s" 1
+34 "5" 3 1 0 "s" 1
 LANG:1 5 G2BOT
 E
 1
 LANG:1 0 
 
-35 "6" 3 1 0 "s" 1
+34 "6" 3 1 0 "s" 1
 LANG:1 5 G3TOP
 E
 1
 LANG:1 0 
 
-35 "7" 3 1 0 "s" 1
+34 "7" 3 1 0 "s" 1
 LANG:1 5 G3BOT
 E
 1
 LANG:1 0 
 
-35 
+34 
 17 17 "" 1 1
-LANG:1 2  V
+LANG:1 4 V(V)
 "" 1 1
-LANG:1 2  C
-10 21
+LANG:1 6 I (uA)
+10 27
 1
 LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
 0 0 0 0 1 7
@@ -388,7 +391,7 @@ LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
 14 14
 "LvVoltageDisp"
 ""
-1 67.8333333333333 165.7843214872156 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 77.35620915032678 165.4509881538823 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 13 0 0 0 0 0
 E E E
@@ -400,12 +403,12 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
-0  66 160 134 179
+0  76 160 141 179
 3 "0s" 0 0 0 0 0 -1  E E E
 2 15
 "LvVoltage"
 ""
-1 42.83333333333328 162.5716338259441 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 47.49999999999994 162.5716338259441 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 14 0 0 0 0 0
 E E E
@@ -418,16 +421,16 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 21 162.5716338259441 65 175
-0 2 2 "0s" 0 0 0 193 0 0  42.83333333333328 162.5716338259441 1
+E E 0 1 3 2 1 E 1.053921568627451 0 1 -4.403594771241832 0 0 E 17 162.5716338259441 77 175
+0 2 2 "0s" 0 0 0 193 0 0  47.49999999999994 162.5716338259441 1
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
 0 1
-LANG:1 7 Voltage
+LANG:1 10 Voltage(V)
 14 16
 "LvCurrentDisp"
 ""
-1 199.8333333333333 164.8899982406757 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 207.1666666666666 164.8899982406757 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 15 0 0 0 0 0
 E E E
@@ -439,12 +442,12 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
-0  198 159 266 178
+0  205 159 270 178
 3 "0s" 0 0 0 0 0 -1  E E E
 2 17
 "LvCurrent"
 ""
-1 174.8333333333332 162.6966338259441 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 176.1666666666665 162.6966338259441 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 16 0 0 0 0 0
 E E E
@@ -457,12 +460,12 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 153 162.6966338259441 197 175
-0 2 2 "0s" 0 0 0 193 0 0  174.8333333333332 162.6966338259441 1
+E E 0 1 3 2 1 E U  0 E 145 162.6966338259441 207 175
+0 2 2 "0s" 0 0 0 193 0 0  176.1666666666665 162.6966338259441 1
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
 0 1
-LANG:1 7 Current
+LANG:1 10 Current(A)
 25 21
 "tableTemp"
 ""
@@ -587,7 +590,8 @@ T
 LANG:1 15 Change Settings
 "main(mapping event)
 {
-  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_ChangeSettings.pnl\",\"Settings\",makeDynString());
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_ChangeSettings.pnl\",\"Settings\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$dpLvchClicked:\"+LvchClicked,\"$ChamberName:\"+ChamberName,\"$ChamberNo:\"+CellNo,\"$Layer:\"+Layer));
+	removeSymbol(myModuleName(), \"\", \"refName\");
 }" 0
  E E E
 13 34
@@ -612,7 +616,8 @@ T
 LANG:1 14 Status Monitor
 "main(mapping event)
 {
-  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_StatusMonitor.pnl\",\"Monitor\",makeDynString());
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_StatusMonitor.pnl\",\"Monitor\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$dpLVBrdClicked:\"+LVBrdClicked,\"$dpLvchClicked:\"+LvchClicked,\"$ChamberName:\"+ChamberName,\"$ChamberNo:\"+CellNo,\"$Layer:\"+Layer,\"$dpEndcapName:\"+Endcap));
+	removeSymbol(myModuleName(), \"\", \"refName\");
 }" 0
  E E E
 13 35
@@ -662,7 +667,8 @@ T
 LANG:1 12 Alarm Screen
 "main(mapping event)
 {
-  ChildPanelOn(\"/fwAlarmHandling/fwAlarmHandlingScreen\", \"GEMM CAEN Alarms\",makeDynString(\"\"),0,0);
+	ChildPanelOn(\"/fwAlarmHandling/fwAlarmHandlingScreen\", \"GEMM CAEN Alarms\",makeDynString(\"\"),0,0);
+	removeSymbol(myModuleName(), \"\", \"refName\");
 }" 0
  E E E
 6 45

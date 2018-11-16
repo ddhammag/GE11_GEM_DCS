@@ -1,6 +1,6 @@
 V 14
 1
-LANG:1 0 
+LANG:1 12 refGemStatus
 PANEL,-1 -1 883 431 N {199,200,200} 5
 "$dpGChannelName"
 "$dpHvChannelName"
@@ -207,10 +207,14 @@ LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 
 P 
 4294967295
-"pictures/help.png"
+"pictures/help1.png"
 1
 LANG:1 12 PUSH_BUTTON1
-E E E E
+"main(mapping event)
+{
+   ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/help_panels/GEM_Status_Help.pnl\",\"GEM status help\",makeDynString());
+}" 0
+ E E E
 0
 LAYER, 1 
 1

@@ -1,0 +1,174 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 181 73 N "_3DFace" 4
+"$dpBcCellName"
+"$dpBcCellNo"
+"$dpBcLabel"
+"$dpLvBranchConName"
+"main()
+{
+ 	LvBranchConName=$dpLvBranchConName;
+	BcCellName=$dpBcCellName;
+	BcLabel=$dpBcLabel;
+	BcCellNo=$dpBcCellNo;
+	MAO.text=BcLabel;
+	
+	if (!isDollarDefined(\"$dpLvBranchConName\")) return; // ho dpLvBranchCon name defined
+
+//	DebugN(\"BcCellName=\",BcCellName,\"LvBranchConName =\",LvBranchConName);
+	dpConnect(\"status\",LvBranchConName);
+	//CAEN/GEM_CAEN_LV/branchController00.Actual.48VA1676
+}" 0
+ E E E E 1 -1 -1 0  14 16.24999999999989
+""0  1
+E "string LvBranchConName,BcCellName,BcLabel;
+int BcCellNo;
+
+status(string dpl,bool val)
+{
+   	string tag; 
+	tag=BcCellName; 
+	int i=1;
+    
+	if(val==TRUE)
+		setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==FALSE)  
+      	setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	/*
+    if(val==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+    if(val==1)  
+      	setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+    if(val==3)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val==5)
+      	setValue(tag,\"backCol\",\"FwStateAttention1\");
+    if(val>8)  
+      	setValue(tag,\"backCol\",\"FwStateAttention3\");
+	*/  
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE521"
+""
+1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
+ "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\", \"refName2\");
+}" 0
+ "main(mapping event)
+{
+	removeSymbol(myModuleName(), \"\", \"refName2\");
+	ChildPanelOn(\"/fwCaen/fwCaenBoardSY1527A1676Operation\", \"GEM CAEN CRATE LV\",makeDynString(\"$sDpName:\"+LvBranchConName),0,0);
+}" 0
+
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+		dyn_int popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);
+		removeSymbol(myModuleName(), \"\", \"refName2\");		
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupBranchController.pnl\");
+		getValue(\"FRAME7\",\"position\",FRAME1_x,FRAME1_y); 
+		getValue(\"FRAME7\",\"size\",FRAME2_x,FRAME2_y);
+//		DebugN(popupPnlXY);
+//		DebugN(mouseX, mouseY);
+//		DebugN(FRAME2_x, FRAME2_y);
+	/*	edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>targetPnlXY[1])
+			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		else
+			mouseX1=FRAME1_x+FRAME2_x-10; //15 just used for the adjustment
+		while(edgeY>(FRAME1_y+FRAME2_y)){
+			mouseY=mouseY-popupPnlXY[2]/20;
+			edgeY=mouseY+popupPnlXY[2];
+			DebugN(\"mouseY\", mouseY);
+			DebugN(\"edgeY\", edgeY);
+		}
+		mouseY1=mouseY; //15 just used for adjustment
+		DebugN(mouseX, mouseY);*/
+  		addSymbol(myModuleName(), myPanelName(),
+            \"/CMS_GEM_CAEN/popup_panels/refPopupBranchController.pnl\",\"refName2\",
+            makeDynString(\"$dpLvBranchConName:\"+LvBranchConName,\"$dpBcCellName:\"+BcCellName,\"$dpBcLabel:\"+BcLabel,\"$dpBcCellNo:\"+BcCellNo),mouseX, mouseY, 0, 1, 1);	
+}" 0
+ 0 1 3 2 1 E 1.263157894736842 0 2.052631578947368 -731.2631578947369 -1069.505898366606 1 E 590 529 704 548
+2 2
+"MAO"
+""
+1 85.99999999999977 29.33620689655163 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"transparentForMouse" ""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 29.99999999999989 29.33620689655163 141.9999999999999 44
+0 2 2 "0s" 0 0 0 193 0 0  85.99999999999977 29.33620689655163 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 17 Branch Controller
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+2 0 
+1 2 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

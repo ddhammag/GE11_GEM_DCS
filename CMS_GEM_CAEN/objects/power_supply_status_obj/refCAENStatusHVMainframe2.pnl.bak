@@ -1,0 +1,160 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 237 81 N "_3DFace" 4
+"$dpMainFrameName"
+"$dpMfCellName"
+"$dpMfCellNo"
+"$dpMfLabel"
+"main()
+{    
+	HvMFName=$dpMainFrameName;
+	HvMfCellName=$dpMfCellName;
+	HvMfLabel1=$dpMfLabel;
+	HvMfCellNo=$dpMfCellNo;
+
+	drawMainFrames();   
+}
+drawMainFrames()
+{
+	int i,j,noOfBoards;
+	float k1,x;
+	float scale;
+	int refRec_x,refRec_y; 
+	string HVbrdDp,RECTANGLE,Endcap;
+	string HVbrdCellName;
+	int HVbrdCellNo,HVbrdCellWidth,HVbrdCellHspace,channelNo,ChStartNo;
+	int HVbrdNo;
+ 
+	scale=1;
+	HVbrdCellWidth=10;
+	HVbrdCellHspace=1;
+	x=0;
+	
+	RECTANGLE=\"RECTANGLE1\"; //Rectangle 1 name
+	getValue(RECTANGLE,\"position\",refRec_x,refRec_y); // get ref point of RECTANGLE1
+//	DebugN(\"position=\",refRec_x,refRec_y);
+   
+//--------------------------------HV Board_CELL -------------------------
+	if(HvMfCellNo==1||HvMfCellNo==2)
+	{
+		Endcap=\"+\";  //1st and 2nd main frames are connected to endcap plus
+		j=0;			// just used to generate HV board number
+	}
+	else if(HvMfCellNo==3||HvMfCellNo==4)
+	{
+		Endcap=\"-\";  //3rd and 4th main frames are connected to endcap plus
+		j=2;			// just used to generate HV board number
+	}
+	if(HvMfCellNo%2==1)
+		noOfBoards=16;  //1st and 3rd main frame contains 16 HV boards
+	else if(HvMfCellNo%2==0)
+		noOfBoards=2;	//2nd and 4th main frame contains only 2 HV boards
+	for (i=1; i<=noOfBoards; i++)
+	{  				
+		HVbrdCellNo=i;
+		HVbrdNo=(HvMfCellNo-j-1)*16+HVbrdCellNo;
+		HVbrdCellName=Endcap+\"HvMf\"+HvMfCellNo+\"HVbrd_\"+HVbrdCellNo;  
+//		DebugN(\"HVbrdCellName=\",HVbrdCellName); 
+		HVbrdDp=HVboardDpGen(HVbrdNo);
+		k1=addSymbol(myModuleName(),\"\", 
+			\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refCAENStatusHVBoard.pnl\",  
+			HVbrdCellName,makeDynString(\"$dpHVbrdDp:\"+HVbrdDp,\"$dpHVbrdCellName:\"+HVbrdCellName,\"$dpHVbrdCellNo:\"+HVbrdCellNo,\"$dpEndcapName:\"+Endcap),
+			refRec_x+x,refRec_y,0,scale,scale);
+		
+		x=x+HVbrdCellWidth+HVbrdCellHspace-1;
+//    DebugN(\"x=\",x);	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		//return -- //CAEN/GEM_CAEN_HV_01/board00/channel000
+		//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status	
+	}  
+}" 0
+ E E E E 1 -1 -1 0  19 15
+""0  1
+E "string HvMFName,HvMfCellName,HvMfLabel1;
+int HvMfCellNo;
+
+string HVboardDpGen(int HVbrdNo)
+{
+	int GemCaenHvNo,CellNo;
+	string HvBrdClicked,boardNo;	
+
+	CellNo=HVbrdNo-1;
+	//---------------------------------------------------
+	if(CellNo <= 15)	
+	{
+		if(CellNo < 10)
+			boardNo=\"0\"+CellNo;
+		else 
+			boardNo=CellNo;
+//		GemCaenHvNo=1+CaenHvNo;
+	}
+	else if((CellNo > 15)&&(CellNo <= 17))
+	{
+		boardNo=\"0\"+(CellNo-16);
+//		GemCaenHvNo=2+CaenHvNo;
+	}
+	else DebugN(\"Hv Cell Number is not in range\");
+	//---------------------------------------------------
+	HvBrdClicked=(HvMFName+\"/board\"+boardNo);
+	
+//	DebugN(\"HVbrdNo=\",HVbrdNo,\"HvBrdClicked=\",HvBrdClicked,\"HvMFName=\",HvMFName);
+	return (HvBrdClicked);
+	//CAEN/GEM_CAEN_HV_01/board02.BdStatus
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE1"
+""
+1 836.3401059877631 640.5964404896253 E E E 1 E 1 E N {0,0,0} E N {113,119,121} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 0.2966867494290439 0 1.706646475162144 -230.1310274626515 -1079.271657163035 1 E 839.7106643356653 641.2820512820513 1379 670
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

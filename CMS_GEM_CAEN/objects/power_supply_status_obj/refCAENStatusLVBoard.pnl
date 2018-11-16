@@ -1,0 +1,133 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 38 77 N "_3DFace" 4
+"$dpEndcapName"
+"$dpLVbrdCellName"
+"$dpLVbrdCellNo"
+"$dpLVbrdDp"
+"main()
+{
+  	LVbrdDp=$dpLVbrdDp;
+	LVbrdCellName= $dpLVbrdCellName;
+	LVbrdCellNo= $dpLVbrdCellNo;
+	Endcap= $dpEndcapName;
+	
+	if (!isDollarDefined(\"$dpLVbrdDp\")) return; // ho Hvbrd name defined
+	LvbrdBdStatusDp= LVbrdDp+\".Actual.Status\";
+//	CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.Actual.Status		
+	dpConnect(\"brdStatusLV\",LvbrdBdStatusDp);	
+}" 0
+ E E E E 1 -1 -1 0  6 7
+""0  1
+E "string LVbrdDp,LvbrdBdStatusDp, Endcap,LVbrdCellName;
+int LVbrdCellNo;
+
+brdStatusLV(string dpl,int sval)
+{
+	string tag =LVbrdCellName;   
+   
+	if(sval==0)
+		setValue(tag,\"backCol\",\"FwStateOKNotPhysics\");
+	if(sval==1)  
+		setValue(tag,\"backCol\",\"FwStateOKPhysics\");
+	if(sval==3)  
+		setValue(tag,\"backCol\",\"FwStateAttention1\");
+	if(sval==5)  
+		setValue(tag,\"backCol\",\"FwStateAttention1\");
+	if(sval > 8)  
+		setValue(tag,\"backCol\",\"FwStateAttention3\");  	
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 2
+"RECTANGLE4"
+""
+1 841 551.7142857142857 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ "main(mapping event)
+{
+  removeSymbol(myModuleName(), \"\", \"refName3\");	
+}" 0
+ "main(mapping event)
+{
+  ChildPanelOn(\"/fwCaen/fwCaenBoardOperation\", \"GEM CAEN Board LV\",makeDynString(\"$sDpName:\"+LVbrdDp),0,0);
+}" 0
+
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E "main(mapping event)
+{/*
+	removeSymbol(myModuleName(), \"\", \"refName\");
+  	if(HvInOrExStatus)
+	{
+		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY;
+		dyn_int targetPnlXY,popupPnlXY;
+  		getCursorPosition(mouseX, mouseY);		
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl\");
+		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupHVBoard.pnl\");
+//		DebugN(targetPnlXY);
+//		DebugN(mouseX, mouseY);
+		edgeX=mouseX+popupPnlXY[1];
+		edgeY=mouseY+popupPnlXY[2];
+		if(edgeX>(targetPnlXY[1]-15))//15 just used for adjustment
+			mouseX1=mouseX-popupPnlXY[1]+15; //15 just used for adjustment
+		else
+			mouseX1=mouseX+15; //15 just used for adjustment
+		while(edgeY>targetPnlXY[2]){
+			mouseY=mouseY-popupPnlXY[2]/2;
+			edgeY=mouseY+popupPnlXY[2];
+		}
+		mouseY1=mouseY-15; //15 just used for adjustment
+//		DebugN(mouseX, mouseY);
+  		addSymbol(myModuleName(), \"\",
+            \"/CMS_GEM_CAEN/popup_panels/refPopupHVBoard.pnl\",\"refName\",
+            makeDynString(\"$dpHvBrdClicked:\"+HvbrdClicked,\"$dpCellNo:\"+HvCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+	}*/
+}" 0
+ 0 1 3 2 1 E 1.214285714285714 0 4.5 -1015.214285714286 -2476 1 E 841 552 855 566
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

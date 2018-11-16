@@ -1,0 +1,146 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 144 93 N "_3DFace" 4
+"$dpEcCellName"
+"$dpEcCellNo"
+"$dpEcLabel"
+"$dpLvEasyCrateName"
+"main()
+{    
+	LvEasyCrateDp=$dpLvEasyCrateName;
+	EcCellName=$dpEcCellName;
+	EcLabel=$dpEcLabel;
+	EcCellNo=$dpEcCellNo;
+
+	drawMainFrames();   
+}
+drawMainFrames()
+{
+	int i,noOfBoards;
+	float k1,x;
+	float scale;
+	int refRec_x,refRec_y; 
+	string LVbrdDp,RECTANGLE,Endcap;
+	string LVbrdCellName;
+	int LVbrdCellNo,LVbrdCellWidth,LVbrdCellHspace,channelNo,ChStartNo;
+	int LVbrdNo;
+ 
+	scale=1;
+	LVbrdCellWidth=16;
+	LVbrdCellHspace=1;
+	x=0;
+	
+	RECTANGLE=\"RECTANGLE1\"; //Rectangle 1 name
+	getValue(RECTANGLE,\"position\",refRec_x,refRec_y); // get ref point of RECTANGLE1
+//	DebugN(\"position=\",refRec_x,refRec_y);
+   
+//--------------------------------HV Board_CELL -------------------------
+	if((EcCellNo>=1)&&(EcCellNo<=4))
+		Endcap=\"+\";  //1st and 2nd main frames are connected to endcap plus
+	else if((EcCellNo>=4)&&(EcCellNo<=8))
+		Endcap=\"-\";  //3rd and 4th main frames are connected to endcap plus
+	if(EcCellNo%2==1)
+		noOfBoards=4;  //1st and 3rd main frame contains 16 HV boards
+	else if(EcCellNo%2==0)
+		noOfBoards=2;	//2nd and 4th main frame contains only 2 HV boards
+	for (i=1; i<=noOfBoards; i++)
+	{  				
+		LVbrdCellNo=i;
+//		LVbrdNo=(EcCellNo-1)*4+LVbrdCellNo;
+		LVbrdCellName=Endcap+\"EC\"+EcCellNo+\"LVbrd_\"+LVbrdCellNo;  
+//		DebugN(\"LVbrdCellName=\",LVbrdCellName); 
+		LVbrdDp=LVboardDpGen(LVbrdCellNo);
+//		DebugN(\"LVbrdDp=\",LVbrdDp);
+		k1=addSymbol(myModuleName(),\"\", 
+			\"/CMS_GEM_CAEN/objects/power_supply_status_obj/refCAENStatusLVBoard.pnl\",  
+			LVbrdCellName,makeDynString(\"$dpLVbrdDp:\"+LVbrdDp,\"$dpLVbrdCellName:\"+LVbrdCellName,\"$dpLVbrdCellNo:\"+LVbrdCellNo,\"$dpEndcapName:\"+Endcap),
+			refRec_x+x,refRec_y,0,scale,scale);
+		
+		x=x+LVbrdCellWidth+LVbrdCellHspace-1;
+//    DebugN(\"x=\",x);	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		//return -- //CAEN/GEM_CAEN_HV_01/board00/channel000
+		//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.Actual.Status		
+	}  
+}" 0
+ E E E E 1 -1 -1 0  19 15
+""0  1
+E "string LvEasyCrateDp,EcCellName,EcLabel;
+int EcCellNo;
+
+string LVboardDpGen(int LVbrdNo)
+{
+	string LvBrdDp;	
+	LvBrdDp=(LvEasyCrateDp+\"/\"+easyBoard(LVbrdNo));
+	
+//	DebugN(\"LVbrdNo=\",LVbrdNo,\"LvBrdDp=\",LvBrdDp,\"LvEasyCrateDp=\",LvEasyCrateDp);
+	return (LvBrdDp);
+	//CAEN/GEM_CAEN_LV/branchController00/easyCrate0/easyBoard00.BdStatus
+}
+string easyBoard(int i)
+{   
+	switch(i)
+	{
+		case 1: return(\"easyBoard00\"); break;
+		case 2: return(\"easyBoard04\"); break;	
+		case 3: return(\"easyBoard08\"); break;	
+		case 4: return(\"easyBoard12\"); break;
+	}  
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 1
+"RECTANGLE1"
+""
+1 839.7106643356652 641.1823849219103 E E E 1 E 1 E N {0,0,0} E N {113,119,121} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 0.1743034652895633 0 2.229089273681168 -127.3644786343077 -1414.25277670274 1 E 839.7106643356653 641.2820512820513 1379 670
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

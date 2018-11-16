@@ -210,7 +210,11 @@ P
 "pictures/help1.png"
 1
 LANG:1 12 PUSH_BUTTON1
-E E E E
+"main(mapping event)
+{
+   ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/help_panels/GEM_Status_Help.pnl\",\"GEM status help\",makeDynString());
+}" 0
+ E E E
 0
 LAYER, 1 
 1

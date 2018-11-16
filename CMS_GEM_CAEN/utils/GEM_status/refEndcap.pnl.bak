@@ -1,6 +1,6 @@
 V 14
 1
-LANG:1 0 
+LANG:1 9 refEndcap
 PANEL,-1 -1 456 418 N "_3DFace" 6
 "$dpEndcapName"
 "$dpGChannelName"
@@ -133,7 +133,7 @@ drawRingChambers()
 		L2LvchClicked=L2LVchannelClicked(L2CellNo);
 		k4=addSymbol(myModuleName(),\"\", // chamber itself
 			\"/CMS_GEM_CAEN/objects/GEM_status_obj/refChamberL2.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
-			L2CellName,makeDynString(\"$dpL2LvchClicked:\"+L2LvchClicked,\"$dpHvchClicked:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
+			L2CellName,makeDynString(\"$dpL2LvchClicked:\"+L2LvchClicked,\"$dpLVBrdClicked:\"+LVBrdDpL2,\"$dpHvchClicked:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
 			refCir_x[9]+x,refCir_y[9]-y,ag,scale,scale);
 	
 //		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
@@ -235,7 +235,7 @@ drawRingChambers()
 //		DebugN(\"L1CellName=\",L1CellName,\"LvchClicked=\",LvchClicked);
 		k8=addSymbol(myModuleName(),\"\", // chamber itself
 			\"/CMS_GEM_CAEN/objects/GEM_status_obj/refChamberL1.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
-			L1CellName,makeDynString(\"$dpL1LvchClicked:\"+L1LvchClicked,\"$dpHvchClicked:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
+			L1CellName,makeDynString(\"$dpL1LvchClicked:\"+L1LvchClicked,\"$dpLVBrdClicked:\"+LVBrdDpL1,\"$dpHvchClicked:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
 			refCir_x[9]+x,refCir_y[9]-y,ag,scale,scale);
 	
 //		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
@@ -285,7 +285,7 @@ drawRingChambers()
 //		DebugN(\"LvCellNo=\",LvCellName,\"LvchClicked=\",LvchClicked);
 		k10=addSymbol(myModuleName(),\"\", // chamber itself
 			\"/CMS_GEM_CAEN/objects/GEM_status_obj/refChamberLV.pnl\",  // modify CMS_ME11 to CMS_CSCfw_ME11HV 
-			LvCellName,makeDynString(\"$dpLvbrdClicked:\"+LvbrdClicked,\"$dpLvCellName:\"+LvCellName,\"$dpLvCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),
+			LvCellName,makeDynString(\"$dpLvbrdClicked:\"+LvbrdClicked,\"$dpHvMFName:\"+HvMF,\"$dpLvCellName:\"+LvCellName,\"$dpLvCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),
 			refCir_x[9]+x,refCir_y[9]-y,ag,scale,scale);
 	
 //		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
@@ -317,7 +317,7 @@ drawRingTexts()
  E E E E 1 -1 -1 0  214 210
 ""0  1
 E "string Gchannel,L2channel,L1channel,HvMF,LvMF;
-string GchClicked;
+string GchClicked,LVBrdDpL1,LVBrdDpL2;
 string Endcap,easyBoardName;
 string EndcapType;
 int branchConNo,CaenHvNo;
@@ -378,6 +378,7 @@ string L1LVchannelClicked(int L1CellNo)
 		LvcellNo=L1CellNo/3+1;
 
 	LVbrdClicked = LVboardClicked(LvcellNo);
+	LVBrdDpL1=LVbrdClicked;
 	if(L1CellNo%3==1)
 		LVchannelNo=0;
 	if(L1CellNo%3==2)
@@ -401,6 +402,7 @@ string L2LVchannelClicked(int L2CellNo)
 		LvcellNo=L2CellNo/3+1;
 
 	LVbrdClicked = LVboardClicked(LvcellNo);
+	LVBrdDpL2=LVbrdClicked;
 	if(L2CellNo%3==1)
 		LVchannelNo=1;
 	if(L2CellNo%3==2)
@@ -654,6 +656,22 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "1"
 E E 0 1 3 2 1 E 1 0 1 -506.357467712236 -62.78255367053211 1 E 720.2026809168211 272.5056551762315 40 40
+6 1164
+"RECTANGLE1"
+""
+1 54 53 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+1140 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E U  1 E 54 53 67 65
 0
 LAYER, 1 
 1

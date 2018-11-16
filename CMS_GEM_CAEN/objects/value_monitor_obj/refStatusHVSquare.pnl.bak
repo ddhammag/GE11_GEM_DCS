@@ -91,37 +91,35 @@ LANG:1 0
 E "main(mapping event)
 {
 	if(ChmbrInOrExStatus)
-	{		
-		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+	{
+		int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y;
 		dyn_int targetPnlXY,popupPnlXY;
-  		getCursorPosition(mouseX, mouseY);
-		removeSymbol(myModuleName(), \"\", \"refName3\");	
-		targetPnlXY=getPanelSize(\"sub_pannels_main_DCS//refValue_monitor_HV.pnl\");	
+		
+		removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+		
+		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_HV.pnl\");	
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupGEMfoilStatus.pnl\");
-		getValue(\"\",\"position\",FRAME1_x,FRAME1_y); 
-		getValue(\"\",\"size\",FRAME2_x,FRAME2_y);
-//		DebugN(targetPnlXY);
-//		DebugN(popupPnlXY);
-//		DebugN(mouseX, mouseY);
-//		DebugN(FRAME1_x, FRAME1_y);
-//		DebugN(FRAME2_x, FRAME2_y);
-		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
-		edgeY=mouseY+popupPnlXY[2];
-		if(edgeX>targetPnlXY[1])
-			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
+		getValue(\"\",\"position\",pos_X,pos_Y);	// get reference point of a clicked cell
+
+//		DebugN(pos_X, pos_Y);
+		edgeX=pos_X+popupPnlXY[1]+15; //x ref point of a clicked cell+ popup panel width + cell width
+		edgeY=pos_Y+popupPnlXY[2]+5;	//y ref point of a clicked cell+ popup panel height + adjustment
+		
+		if(edgeX>targetPnlXY[1])		// check popup x axis is inside the tab area
+			coordi_X=pos_X-popupPnlXY[1]+10;//10 just used for the adjustment
 		else
-			mouseX1=mouseX+10; //15 just used for the adjustment
-		while(edgeY>targetPnlXY[2]){
-			mouseY=mouseY-popupPnlXY[2]/20;
-			edgeY=mouseY+popupPnlXY[2];
-//			DebugN(\"mouseY\", mouseY);
+			coordi_X=pos_X+18; 			//18 just used for the adjustment
+		while(edgeY>targetPnlXY[2])	// check popup y axis is inside the tab area
+		{
+			pos_Y=pos_Y-popupPnlXY[2]/20;
+			edgeY=pos_Y+popupPnlXY[2];
 //			DebugN(\"edgeY\", edgeY);
 		}
-		mouseY1=mouseY; //15 just used for adjustment
-//		DebugN(mouseX, mouseY);
+		coordi_Y=pos_Y;
+//		DebugN(coordi_X, coordi_Y);
   		addSymbol(myModuleName(),\"\",
             \"/CMS_GEM_CAEN/popup_panels/refPopupGEMfoilStatus.pnl\",\"refName3\",
-            makeDynString(\"$dpHVChannelName:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpGfCellName:\"+GfCellName,\"$dpGfCellNo:\"+GfCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
+            makeDynString(\"$dpHVChannelName:\"+HvchClicked,\"$dpChmbrInOrEx:\"+ChmbrInOrExDp,\"$dpGfCellName:\"+GfCellName,\"$dpGfCellNo:\"+GfCellNo,\"$dpEndcapName:\"+Endcap),coordi_X, coordi_Y, 0, 1, 1);
 	}
 }" 0
  0 1 3 2 1 E 1 0 1 -827 -543 1 E 841 552 855 566

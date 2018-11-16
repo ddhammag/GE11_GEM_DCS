@@ -1,13 +1,15 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 291 227 N {198,195,198} 3
+PANEL,-1 -1 291 227 N {198,195,198} 4
 "$dpCellNo"
 "$dpEndcapName"
+"$dpHvMFName"
 "$dpLvBrdClicked"
 "main()
 {
 	LvBrdClicked=$dpLvBrdClicked;
+	HvMF=$dpHvMFName;
 	CellNo= $dpCellNo;
 	Endcap= $dpEndcapName;
 //	Debug(\"LvBrdClicked=\",LvBrdClicked);
@@ -35,18 +37,19 @@ PANEL,-1 -1 291 227 N {198,195,198} 3
 }" 0
  E E E E 1 -1 -1 0  5 1
 ""0  1
-E "string LvBrdClicked,LvBrdStatus,LvBrdOpMode,Endcap;
+E "string LvBrdClicked,HvMF,LvBrdStatus,LvBrdOpMode,Endcap;
+string LvBrdName;
 int CellNo;
 dyn_string LvChannelStatusDps,LvChannelVmonDps,LvChannelImonDps;
 
 displayDeviceName()
 {	
-	string DeviceName,tag;
+	string tag;
 	
 	tag=\"PopupDeviceName\";
 	
-	DeviceName=\"GE\"+Endcap+\"1/1 LVBrd\"+CellNo;
-	setValue(tag, \"text\", DeviceName); 
+	LvBrdName=\"GE\"+Endcap+\"1/1 LVBrd\"+CellNo;
+	setValue(tag, \"text\", LvBrdName); 
 }
 displayLVBoardOpMode(string LVBoardDp, int BoardOpMode)
 {
@@ -267,30 +270,30 @@ LANG:1 0
 LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
 0  9.789049186108388 58.9406814449918 277.615800865801 197
 EE 1 1 1 4 6 "1" 5 1 0 "s" 1
-LANG:1 7 Voltage
+LANG:1 11 Voltage (V)
 E
 1
 LANG:1 0 
 
-48 "2" 5 1 0 "s" 1
-LANG:1 7 Current
+48 "2" 6 1 0 "s" 1
+LANG:1 11 Current (A)
 E
 1
 LANG:1 0 
 
-48 "3" 8 1 0 "s" 1
+51 "3" 8 1 0 "s" 1
 LANG:1 12 SChmbr. Name
 E
 1
 LANG:1 0 
 
 68 "4" 5 1 0 "s" 1
-LANG:1 5 Layer
+LANG:1 9     Layer
 E
 1
 LANG:1 0 
 
-48 
+45 
 19 19 "" 1 1
 LANG:1 9 Channel 0
 "" 1 1
@@ -372,7 +375,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 15 Change Settings
-E E E E
+"main(mapping event)
+{
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refLv_ChangeSettings.pnl\",\"Settings\",makeDynString(\"$dpLvBrdClicked:\"+LvBrdClicked,\"$dpHvMFName:\"+HvMF,\"$LvBrdName:\"+LvBrdName,\"$LvBrdNo:\"+CellNo,\"$dpEndcapName:\"+Endcap));
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 13 34
 "StatusMonitor"
 ""
@@ -393,7 +401,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 14 Status Monitor
-E E E E
+"main(mapping event)
+{
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refLv_StatusMonitor.pnl\",\"Monitor\",makeDynString(\"$dpLvBrdClicked:\"+LvBrdClicked,\"$LvBrdName:\"+LvBrdName,\"$LvBrdNo:\"+CellNo,\"$dpEndcapName:\"+Endcap));
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 13 35
 "ShowTrends"
 ""
@@ -435,7 +448,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 12 Alarm Screen
-E E E E
+"main(mapping event)
+{
+	ChildPanelOn(\"/fwAlarmHandling/fwAlarmHandlingScreen\", \"GEMM CAEN Alarms\",makeDynString(\"\"),0,0);
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 6 45
 "PopupDeviceNameBack"
 ""

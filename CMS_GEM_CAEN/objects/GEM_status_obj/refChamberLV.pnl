@@ -1,14 +1,16 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 94 108 N "_3DFace" 4
+PANEL,-1 -1 94 120 N "_3DFace" 5
 "$dpEndcapName"
+"$dpHvMFName"
 "$dpLvCellName"
 "$dpLvCellNo"
 "$dpLvbrdClicked"
 "main()
 {
   	LvbrdClicked=$dpLvbrdClicked;
+	HvMF=$dpHvMFName;
 	LvCellNo= $dpLvCellNo;
 	LvCellName=$dpLvCellName;
 	Endcap= $dpEndcapName;
@@ -23,7 +25,7 @@ PANEL,-1 -1 94 108 N "_3DFace" 4
 }" 0
  E E E E 1 -1 -1 0  28 102
 ""0  1
-E "string LvbrdClicked,LvBrdStatusDp;
+E "string LvbrdClicked,LvBrdStatusDp,HvMF;
 string Endcap,LvCellName;
 int LvCellNo;
 bool LvInOrExStatus;
@@ -120,32 +122,34 @@ LANG:1 0
 "antiAliased" "1"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName\");	
+	removeSymbol(myModuleName(), \"\", \"refName\");	//close previous popup panels	
   	if(LvInOrExStatus)
 	{
-		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY;
+		int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,size_X,size_Y;
 		dyn_int targetPnlXY,popupPnlXY;
-  		getCursorPosition(mouseX, mouseY);	
+	
 		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/GEM_status/refGemStatus.pnl\");
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLVEasyBoard.pnl\");
-//		DebugN(targetPnlXY);
-//		DebugN(mouseX, mouseY);
-		edgeX=mouseX+popupPnlXY[1];
-		edgeY=mouseY+popupPnlXY[2];
-		if(edgeX>targetPnlXY[1]-15)//15 just used for adjustment
-			mouseX1=mouseX-popupPnlXY[1]+15; //15 just used for adjustment
+		getValue(\"\",\"position\",pos_X,pos_Y);	// get reference point of the clicked cell
+//		DebugN(pos_X, pos_Y);
+		edgeX=pos_X+popupPnlXY[1]; //x ref point of a clicked cell+ popup panel width
+		edgeY=pos_Y+popupPnlXY[2];	//y ref point of a clicked cell+ popup panel height
+
+		if(edgeX>targetPnlXY[1])	// check popup x axis is inside the tab area
+			coordi_X=pos_X-popupPnlXY[1];
 		else
-			mouseX1=mouseX+15; //15 just used for adjustment
-		while(edgeY>targetPnlXY[2]){
-			mouseY=mouseY-popupPnlXY[2]/2;
-			edgeY=mouseY+popupPnlXY[2];
+			coordi_X=pos_X; 			
+		while(edgeY>targetPnlXY[2])	// check popup y axis is inside the tab area
+		{
+			pos_Y=pos_Y-popupPnlXY[2]/20;
+			edgeY=pos_Y+popupPnlXY[2]-15;	//15 just used for the adjustment
+//			DebugN(\"edgeY\", edgeY);
 		}
-		mouseY1=mouseY-15; //15 just used for adjustment
-//		DebugN(mouseX, mouseY);
+		coordi_Y=pos_Y-20;	//20 just used for adjustment
+//		DebugN(coordi_X, coordi_Y);
   		addSymbol(myModuleName(), \"\",
             \"/CMS_GEM_CAEN/popup_panels/refPopupLVEasyBoard.pnl\",\"refName\",
-            makeDynString(\"$dpLvBrdClicked:\"+LvbrdClicked,\"$dpCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),mouseX1, mouseY1, 0, 1, 1);
-
+            makeDynString(\"$dpLvBrdClicked:\"+LvbrdClicked,\"$dpHvMFName:\"+HvMF,\"$dpCellNo:\"+LvCellNo,\"$dpEndcapName:\"+Endcap),coordi_X, coordi_Y, 0, 1, 1);
 	}
 }" 0
  0 1 3 2 1 E 0.03461961706425164 0.1292021698223655 -0.1292022797491424 0.03461964651904272 12.27448212088279 -118.9377317609151 1 E 80 872.7004406028178 212.7203138813401

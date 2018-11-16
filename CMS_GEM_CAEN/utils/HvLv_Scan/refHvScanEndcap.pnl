@@ -173,8 +173,9 @@ initScanTable()
 scanChannel(dyn_string HVchannels)
 {
   	time t,t1,t2;
-  	float eTime,stepTime,rUp;
-  	float vMonVal,vSetVal;
+  	float eTime,rUp;
+	dyn_float stepTime;
+  	float vMonVal,vSetVal,vSet;
   	float iMonVal,steps; 
 	string HVchDp;
 	float iSetVal=0; //degug line, must remove++++++++++++++++++++++++++++++++++++++++++
@@ -199,7 +200,7 @@ scanChannel(dyn_string HVchannels)
 	                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)*/
 	    		dpSet(HVchDp+\".settings.rUp\",rUp);
 	  		}
-	  		stepTime=step/rUp;  //time taken to increase by one voltage step
+	  		stepTime[j]=(float)dividerVoltage(j,step)/rUp;  //time taken to increase by one voltage step
 			dpSet(HVchDp+\".settings.onOff\",1);
 	  		dpGet(HVchDp+\".actual.vMon\",vMonVal);
   
@@ -212,93 +213,98 @@ scanChannel(dyn_string HVchannels)
 	      		//dpGet(HVchDp+\".actual.vMon\",vMonVal);
 	    		}
 	  		}
-	  		if(ScanState)	// check if user terminate the scan by pressing stop bttn
-	  		{ 
-	    		for(int i=0; i <= steps; i++)
-	    		{  
-	      		if(i==steps)
-	      			vSetVal=stop; 
-	      		else    
-	      			vSetVal=start+(i*step);
-					iSetVal=iSetVal+(rand()%10)*0.011111;  //degug line, must remove+++++++++++++++++++++++++++++
-	      		if(!scanStop)
-	      		{
-	        			dpSetWait(HVchDp+\".settings.v0\",vSetVal);
-						dpSetWait(HVchDp+\".actual.iMon\",iSetVal);  //degug line, must remove +++++++++++++++  
-	        			t1=getCurrentTime();
-	        			dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
-	        			eTime=0;
-	        			while(vMonVal<=0.98*vSetVal || eTime < (stepTime+holdTime))
-	        			{ 
-	         		 	if(!scanStop)	// check if user terminate the scan by pressing stop bttn
-	          			{
-								dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); ++++
-	            		//	dpGet(HVchDp+\".actual.vMon\",vMonVal);
-	            			t2=getCurrentTime();
-	            			t=t2-t1;
-	            			eTime=t;    //time elapsed
-	            			eTime=(60*minute(t))+second(t);    //time elapsed in seconds
-	          			}
-	          			else  
-	            			break;      
-	        			}
-	        			if(write)
-	        			{
-				         //**********show data in the table*************
-							dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
-							//dpGet(HVchDp+\".actual.vMon\",vMonVal);
-							dpGet(HVchDp+\".actual.iMon\",iMonVal);
-							iMonVal=round(iMonVal); //round off the iMonVal value				
-							if(rowBegin+i>=ScanTable.lineCount()) // add new line to end of the table with bacgroud colors
-							{
-								ScanTable.appendLine(\"1\",\"\");
-								ScanTable.cellBackColRC(rowBegin+i, 1, \"{204,204,204}\");
-								for(int k=2;k<=15;k++)
-								{
-									if(k%4==2){
-										ScanTable.cellBackColRC(rowBegin+i, k, \"{222,234,246}\");
-										ScanTable.cellBackColRC(rowBegin+i, k+1, \"{222,234,246}\");
-									}
-									if(k%4==0){
-										ScanTable.cellBackColRC(rowBegin+i, k, \"{205,230,245}\");
-										ScanTable.cellBackColRC(rowBegin+i, k+1, \"{205,230,245}\");
-									}
-								}
-							}
-							ScanTable.cellValueRC(rowBegin+i,j*2,vMonVal);							
-							ScanTable.cellValueRC(rowBegin+i,(j*2+1),iMonVal);
-							rowLast=rowBegin+i;
-							//**********end of show data in the table*********
-	        			}
-	      		}
-	    		}
-			}  
-	  		if(swopt) 
-	    		dpSet(HVchDp+\".settings.onOff\",0);
 		}
 	}
+  	if(ScanState)	// check if user terminate the scan by pressing stop bttn
+  	{ 
+    	for(int i=0; i <= steps; i++)
+    	{
+			//********************add new line to end of the table with bacgroud colors if colored lines are finished********
+			if(rowBegin+i>=ScanTable.lineCount()) // add new line to end of the table with bacgroud colors
+			{
+				ScanTable.appendLine(\"1\",\"\");
+				ScanTable.cellBackColRC(rowBegin+i, 1, \"{204,204,204}\");
+				for(int k=2;k<=15;k++)
+				{
+					if(k%4==2){
+						ScanTable.cellBackColRC(rowBegin+i, k, \"{222,234,246}\");
+						ScanTable.cellBackColRC(rowBegin+i, k+1, \"{222,234,246}\");
+					}
+					if(k%4==0){
+						ScanTable.cellBackColRC(rowBegin+i, k, \"{205,230,245}\");
+						ScanTable.cellBackColRC(rowBegin+i, k+1, \"{205,230,245}\");
+					}
+				}
+			}
+			//***********************************************************************************************************
+			for(int j=1;j<=7;j++)
+			{  
+				HVchDp=HVchannels[j];
+      		if(i==steps)
+      			vSet=stop; 
+      		else    
+      			vSet=start+(i*step);
+				vSetVal=dividerVoltage(j,vSet);
+				iSetVal=iSetVal+(rand()%10)*0.011111;  //degug line, must remove+++++++++++++++++++++++++++++
+      		if(!scanStop)
+      		{
+        			dpSetWait(HVchDp+\".settings.v0\",vSetVal);
+					dpSetWait(HVchDp+\".actual.iMon\",iSetVal);  //degug line, must remove +++++++++++++++  
+        			t1=getCurrentTime();
+        			dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
+        			eTime=0;
+        			while(vMonVal<=0.98*vSetVal || eTime < (stepTime[j]+holdTime))
+        			{ 
+        		 		if(!scanStop)	// check if user terminate the scan by pressing stop bttn
+         			{
+							dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); ++++
+            		//	dpGet(HVchDp+\".actual.vMon\",vMonVal);
+            			t2=getCurrentTime();
+            			t=t2-t1;
+            			eTime=t;    //time elapsed
+            			eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+          			}
+          			else  
+            			break;      
+        			}
+        			if(write)
+        			{
+			    	//**********show data in the table*************
+						dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
+						//dpGet(HVchDp+\".actual.vMon\",vMonVal);
+						dpGet(HVchDp+\".actual.iMon\",iMonVal);
+						iMonVal=round(iMonVal); //round off the iMonVal value				
+					
+						ScanTable.cellValueRC(rowBegin+i,j*2,vMonVal);							
+						ScanTable.cellValueRC(rowBegin+i,(j*2+1),iMonVal);					
+					//**********end of show data in the table*********
+        			}
+      		}
+    		}
+			rowLast=rowBegin+i;
+		}
+	}  
+	if(swopt) 
+	{
+		for(int j=1;j<=7;j++) 
+	    	dpSet(HVchannels[j]+\".settings.onOff\",0);
+	}
 }
-//***************round off the iMonVal value***************
+//***************round***************: 
+/**  round off any value according to the user input decimal places.
+      @param v: The value to be converted.
+*/
 float round(float v)
 {
-  int c, r, m,deciPoints;  
-  deciPoints=(int)deciPoints1.text+1;
-  m = v*power(10,deciPoints); //v*1000; //v = 838.274 m = 838274
-  c = m%10; // c = 4
-  r = m/10; // r = 83827
-  if(c>=5){r++;}
-  v = (float)r/power(10,deciPoints-1);//(float)r/100;
-  return v;
+	int deciPoints;
+	float roundedVal;
+	string val;
+	deciPoints=(int)deciPoints1.text;		//get the user input from spin bttn (no. of deci points)
+	sprintf(val, \"%8.\"+deciPoints+\"f\", v);	//fromat the float value (round off)
+	roundedVal=(float)val;						//convert val (srting value) to float value
+	return roundedVal;
 }
-int power(int base, int expo)
-{
-    int result = 1;
-    while(expo) { result *= base; expo--; }
-    return result;
-}
-//***************end of round off the iMonVal value***************
-//****************************end of Scan for single channel*************************
-//*************************************************************************************
+//************************************:
 drawRingChambers()
 {
 	int i;
@@ -416,13 +422,13 @@ initEndcap()
 	{
 		EndcapType= \"Plus\";
 //		branchConNo=0;
-//		CaenHvNo=0;
+		CaenHvNo=0;
 	}
 	else if(Endcap== \"-\")
 	{
 		EndcapType= \"Minus\";
 //		branchConNo=2;
-//		CaenHvNo=2;
+		CaenHvNo=2;
 	}
 	else
 		Debug(\"Endcap name error (should be + or -)\");
@@ -459,6 +465,24 @@ string HVboardClicked(int LayerCellNo)
 	return (HvbrdClicked);
 	//return -- //CAEN/GEM_CAEN_HV_01/board00
 	//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+}
+string dividerVoltage(int i,float V)
+{   //************calculate voltages***********************
+	float divVoltage;
+	string divVolt;
+	float Req=625+525+875+550+438+560+1125;
+	switch(i)
+	{
+		case 1: divVoltage=625*V/Req; break;	//VG3bot
+		case 2: divVoltage=525*V/Req; break;	//VG3top	
+		case 3: divVoltage=875*V/Req; break;	//VG2bot	
+		case 4: divVoltage=550*V/Req; break;	//VG2top
+		case 5: divVoltage=438*V/Req; break;	//VG1bot
+		case 6: divVoltage=560*V/Req; break;	//VG1top
+		case 7: divVoltage=1125*V/Req; break;	//Vdrift
+	} 
+	sprintf(divVolt,\"%5.1f\",divVoltage);
+	return (divVolt); 
 }" 0
  3
 "CBRef" "1"
@@ -1117,7 +1141,6 @@ Selected Layers
 	bool statusChangedOk;
 	string sys=getSystemName(); 
 	
-	string uiDp = \"_Ui_1\";
 	langString msgText;
 	
 	for(int i=1; i<=72; i++)
@@ -1207,7 +1230,9 @@ Selected Layers
 	else
 		msgText = \"Pleace Select a Chamber\";
 //---------------popupMessage----------------
-	popupMessage(uiDp, msgText);	
+	bool answ;
+	dyn_string exceptionInfo; 
+	fwGeneral_openMessagePanel(msgText, answ , exceptionInfo, \"Massage!\", true );
 }" 0
  E E E
 25 87
@@ -1229,31 +1254,7 @@ LANG:1 0
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 0  596.0208333333334 4.792019015314055 1343.645833333334 641.7920190153141
-E"main(int row, string column, string value)
-{
-	if(statusCurnt[row+1]==TRUE)
-	{
-		if(column==5)
-		{
-			if(statusChanged[row+1]==FALSE)
-			{
-				LvPowerCycleTable.cellValueRC(row,\"5\",\"Power Cycle\");
-				LvPowerCycleTable.cellBackColRC(row, \"5\", \"red\");
-				statusSet[row+1]=!statusCurnt[row+1];
-				statusChanged[row+1]=TRUE;
-			return;
-			}
-			if(statusChanged[row+1]==TRUE)
-			{
-				LvPowerCycleTable.cellValueRC(row,\"5\",\"Click here\\n to select\");
-				LvPowerCycleTable.cellBackColRC(row, \"5\", \"white\");
-				statusSet[row+1]=statusCurnt[row+1];
-				statusChanged[row+1]=FALSE;
-			}
-		}
-	}
-}" 0
- 1 0 1 15 0 "1" 6 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+EE 1 0 1 15 0 "1" 6 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
 LANG:1 15  Supper Chamber
 E
 1

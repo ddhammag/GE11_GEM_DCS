@@ -1,0 +1,298 @@
+V 14
+1
+LANG:1 4 help
+PANEL,-1 -1 637 621 N "white" 0
+"main()
+{
+	
+	ZoomModule(\"help\",2, -1, -1);
+//  set(330,1650, false);
+}" 0
+ E E E E 3 -1 -1 0  100 1000
+""0  1
+E E 4
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+"sizePolicy" "Expanding Expanding"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 2308
+"RECTANGLE480"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2284 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.6848484848485263 -1077.042969270659 553.884848484844 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+13 2310
+"PUSH_BUTTON59"
+""
+1 550.5550292620569 600.3863636363619 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+2286 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  548.5550292620568 594.3863636363619 608.5550292620569 618.3863636363619
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+   PanelOff(\"\");
+}" 0
+ E E E
+6 2297
+"RECTANGLE469"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2273 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.411483886483849 -1077.042969270659 227.4430019895968 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+2 2163
+"PRIMITIVE_TEXT1395"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2139 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.036037948555314 0 1 -2.577928407821361 -238 0 E 19.14764672288163 722.1883116883138 601 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 87 Indicates the High Volatage (HV) Main Frame status. Background color of the box will be
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 84 changed according to the status. "Main Frame 1" and "Main Frame 2" are connected to 
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 80 ENDCAP Plus and "Main Frame 3" and "Main Frame 4" are connected to ENDCAP Minus.
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 2164
+"PRIMITIVE_TEXT1396"
+""
+1 16.61645430403573 557 E E E 1 E 1 E N "FwStateAttention3" E N "_Window" E E
+ E E
+2140 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 16.61645430403573 557 375 573
+0 2 2 "0s" 0 0 0 192 0 0  16.61645430403573 557 1
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 54 Click on "Main Frame _"  box to see status popup panel
+2 2179
+"PRIMITIVE_TEXT1411"
+""
+1 22.40089946854633 251.6883116883142 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2155 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 22.40089946854633 251.6883116883142 165 267
+0 2 2 "0s" 0 0 0 192 0 0  22.40089946854633 251.6883116883142 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 20 HV Main Frame Status
+6 2306
+"RECTANGLE478"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2282 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.317636684303322 -1077.777202072539 -19.80516273849333 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+6 2311
+"RECTANGLE481"
+""
+1 620.5840707964602 953.9999999999998 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2287 0 0 0 0 0
+E E "main(bool enter)
+{
+/*	if(enter)
+	{
+		this.scale(2,2);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+	*/
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.369490032134465 0 1.392000000000002 -535.3227999876372 -1047.968000000002 2  1 0  "pictures/help/HVCrate.jpg" 4294967295 E 398 954 622 1079
+6 2307
+"RECTANGLE479"
+""
+1 620.5840707964602 1001.238372093023 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2283 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.5,1.5);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.231979185479502 0 1.376 -138.327715820842 -1030.704 2  1 0  "pictures/help/HV_Crate_popup.jpg" 4294967295 E 398 954 622 1079
+6 2282
+"RECTANGLE1"
+""
+1 315.9442028087043 10 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2258 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.3,1.3);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 0.8357269503910134 0 0.9362373737373747 52.82814715163503 5.940656565656357 2  1 0  "pictures/help/powerSupply_status.jpg" 4294967295 E 18 10 613 250
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

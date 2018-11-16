@@ -1,7 +1,7 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 880 538 N {134,142,144} 2
+PANEL,-1 -1 880 461 N {134,142,144} 2
 "$dpEndcapName"
 "$dpLvMFName"
 "#uses \"fwFsmUi.ctl\"
@@ -13,7 +13,7 @@ main()
 	initEndcap();
 	
 	dyn_string L1L2LvChActStatusDps,L1LvChActVmonImonDps,L2LvChActVmonImonDps;
-	int n,ref_Px,ref_Py,ref_Sx,ref_Sy;
+	int n;
 	
 	ChmbrInOrExDp=(dpNames(\"ENDCAP_\"+EndcapType+\".GEMINI*\"+\".Layer*\"+\".IncludeExclude\",\"GEMChamberIncludeExclude\"));
 //	ENDCAP_Minus.GEMINI01.Layer1.IncludeExclude  --- e.g dp name
@@ -54,10 +54,6 @@ main()
 	dpConnect(\"updateTableLayer2\",L2LvChActVmonImonDps);
 	dpConnect(\"updateTableStatus\",L1L2LvChActStatusDps);
 //	dpConnect(\"dispalyMassages\",\"ENDCAP_Minus.message\");
-	
-//	getValue(\"FrameMassages\",\"position\",ref_Px,ref_Py);
-//	getValue(\"FrameMassages\",\"size\",ref_Sx,ref_Sy);
-//	fwFsmUi_addMessageBox(ref_Px-2, ref_Py-5,ref_Sx-8,\"ENDCAP_Minus\");
 }" 0
  E E E E 1 -1 -1 0  775 79
 ""0  1
@@ -121,6 +117,8 @@ initTable()
 {
   // ------------ prepare table ------------
 	LvPowerCycleTable.sortOnClick(FALSE);
+	LvPowerCycleTable.columnHeader(2, \"     Voltage\\n       (V)\");
+	LvPowerCycleTable.columnHeader(3, \"    Current\\n       (A)\");
 	LvPowerCycleTable.columnHeader(4, \"    Enable/ Disable\"\"\\n\");
 	for(int i=1;i<=36;i++)
 	{
@@ -197,6 +195,12 @@ updateTableStatus(dyn_string dp3,dyn_int LVsatus)
 		LvPowerCycleTable.cellBackColRC(i-1, \"3\", statusColor);
 		LvPowerCycleTable.cellBackColRC(i-1, \"4\", statusColor);
 	}
+}
+powerCycle(string LvChDp)
+{
+	dpSetWait(LvChDp+\".settings.onOff\",0);
+	delay(3); 
+	dpSetWait(LvChDp+\".settings.onOff\",1);
 }
 drawRingChambers()
 {
@@ -661,20 +665,13 @@ LANG:1 14 Power Cycle LV
 			{
 				SCNo=(i+1)/2;
 				LayerNo=\"Layer 1\";
-				if(SCNo<=9)
-					SCNumber=\"0\"+SCNo;
-				else
-					SCNumber=SCNo;
 			}
 			else
 			{
 				SCNo=i/2;
 				LayerNo=\"Layer 2\";
-				if(SCNo<=9)
-					SCNumber=\"0\"+SCNo;
-				else
-					SCNumber=SCNo;
 			}
+			sprintf(SCNumber, \"%02d\", SCNo);	//this will put a zero infront of if the value is a single digit
 			msg=\"*** INFO -\";
      		msg=msg+\" Powercycling GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" started\";
      		dpSet(sys+\"ENDCAP_Minus.message\",msg);
@@ -683,9 +680,7 @@ LANG:1 14 Power Cycle LV
      
      		if(!mask)
 			{
-       		dpSetWait(L1andL2LvChDp[i]+\".settings.onOff\",0);
-       		delay(3); 
-       		dpSetWait(L1andL2LvChDp[i]+\".settings.onOff\",1);
+				startThread(\"powerCycle\", L1andL2LvChDp[i]);	//parallel powercycle
 		   } 
     		else
 			{
@@ -706,9 +701,11 @@ LANG:1 14 Power Cycle LV
 		statusSet[i]=statusCurnt[i];
 	}
 //---------------popupMessage----------------
-	string uiDp = \"_Ui_1\";
+	bool answ;
+	dyn_string exceptionInfo; 
+	
 	langString msgText = \"Powercycle Completed Successfully\";
-	popupMessage(uiDp, msgText);
+	fwGeneral_openMessagePanel(msgText, answ , exceptionInfo, \"Massage!\", true );
 }" 0
  E E E
 6 65
@@ -841,26 +838,6 @@ E E 0 2 3 2 1 E 1.044794188861985 0 1 -3.313559322033897 0 0 E 7 -3 834 459
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 0 1
 LANG:1 0 
-30 73
-"FrameMassages"
-""
-1 0.9026651216685808 656.0588235294117 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
- E E
-72 0 0 0 0 0
-E E E
-1
-1
-LANG:1 0 
-
-3
-"layoutAlignment" "AlignNone"
-"dashclr"N "_Transparent"
-"antiAliased" "0"
-E E 0 1 3 2 1 E 1.10783055198973 0 1.249999999999999 4.00000000000002 -354.2499999999994 0 E 0 649 780 710
-1
-LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
-0 1
-LANG:1 8 Massages
 0
 LAYER, 1 
 1

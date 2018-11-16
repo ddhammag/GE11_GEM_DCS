@@ -1,0 +1,929 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 288 157 N {198,195,198} 1
+"$dpe_value"
+"main()
+{/*
+	MFrameName=$dpMainFrameName;
+	MfCellName=$dpMfCellName; //HvMf_1
+	MfLabel=$dpMfLabel;
+	MfCellNo= $dpMfCellNo;
+
+	string MfActStatusDp,MfPrimaryPSDp,MfConnStatusDp,MfOvCDp,MfOvVDp,MfUnVDp,MfOvTDp,MfFanFailDp,MfChOnDp;
+	dyn_string MfFanStatusDps,MfFanSpeedDps;
+	if (!isDollarDefined(\"$dpMainFrameName\")) return; // no MFrame Name defined
+	
+	MfActStatusDp=MFrameName+\".PWstatus.ACstatus\";
+//	CAEN/GEM_CAEN_HV_01.PWstatus.ACstatus
+	MfPrimaryPSDp=MFrameName+\".PWstatus.PrimaryPS\";
+//	CAEN/GEM_CAEN_HV_01.PWstatus.PrimaryPS
+	MfOvCDp=MFrameName+\".FrontPanOutP.OVC\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.OVC
+	MfUnVDp=MFrameName+\".FrontPanOutP.UNV\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.UNV
+	MfOvVDp=MFrameName+\".FrontPanOutP.OVV\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.OVV
+	MfChOnDp=MFrameName+\".FrontPanOutP.CHON\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.CHON
+	MfFanFailDp=MFrameName+\".FrontPanOutP.FanFailure\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.FanFailure
+	MfOvTDp=MFrameName+\".FrontPanOutP.OVT\";
+//	CAEN/GEM_CAEN_HV_01.FrontPanOutP.OVT	
+	MfConnStatusDp=MFrameName+\".Communication.ConnStatus\";
+//	CAEN/GEM_CAEN_HV_01.Communication.ConnStatus
+	
+	MfFanStatusDps=(dpNames(MFrameName+\".FanStatus.StatFan*\",\"FwCaenCrateSY1527\"));
+//	CAEN/GEM_CAEN_HV_01.FanStatus.StatFan1
+	MfFanSpeedDps=(dpNames(MFrameName+\".FanStatus.SpeedFan*\",\"FwCaenCrateSY1527\"));
+//	CAEN/GEM_CAEN_HV_01.FanStatus.SpeedFan1
+
+	displayDeviceName();
+	initTables();
+	dpConnect(\"displayMfStatus\",MfActStatusDp);
+	dpConnect(\"displayFanStatus\",MfFanStatusDps);
+	dpConnect(\"displayFanSpeeds\",MfFanSpeedDps);
+	dpConnect(\"displayValues\",MfActStatusDp,MfPrimaryPSDp,MfConnStatusDp,MfOvCDp,MfOvVDp,MfUnVDp,MfOvTDp,MfFanFailDp,MfChOnDp);
+*/}" 0
+ E E E E 1 -1 -1 0  5 1
+""0  1
+E "string MFrameName,MfCellName,MfLabel,Endcap;
+int MfCellNo,Status;
+dyn_string HvChannelStatusDps,HvChannelVmonDps,HvChannelImonDps;
+
+displayDeviceName()
+{	
+	string DeviceName,tag,MfNo;	
+	tag=\"PopupDeviceName\";
+	MfNo=uniSubStr(MfCellName,5,1);
+	DeviceName=\"GE\"+\"1/1 MFrame0\"+MfNo;
+	setValue(tag, \"text\", DeviceName); 
+}
+displayValues(string dp1,bool MfActStatus, string dp2,bool MfPrimaryPS, string dp3,string MfConnStatus,
+			string dp4,bool MfOvC, string dp5,bool MfOvV, string dp6, bool MfUnV, string dp7,bool MfOvT,
+			string dp8,bool MfFanFail, string dp9,bool MfChOn)
+{
+	string  tagACStatus,tagPPSStatus,tagCommStatus,tagOvC,tagOvV,tagUnV,tagOvT,tagFanFail,tagChOn;
+	tagACStatus=\"ACStatus\";
+	tagPPSStatus=\"PrimaryPSStatus\";	
+	tagCommStatus=\"CommStatus\";	
+	tagOvC=\"CIRCLE_OvC\";
+	tagOvV=\"CIRCLE_OvV\";
+	tagUnV=\"CIRCLE_UnV\";
+	tagOvT=\"CIRCLE_OvT\";
+	tagFanFail=\"CIRCLE_FanFail\";
+	tagChOn=\"CIRCLE_ChOn\";
+	
+	setValue(tagCommStatus,\"text\",MfConnStatus);
+	if(MfActStatus==TRUE)
+		setValue(tagACStatus,\"backCol\",\"FwStateOKPhysics\");
+	else
+		setValue(tagACStatus,\"backCol\",\"FwStateOKNotPhysics\");
+	if(MfPrimaryPS==TRUE)
+		setValue(tagPPSStatus,\"backCol\",\"FwStateOKPhysics\");
+	else
+		setValue(tagPPSStatus,\"backCol\",\"FwStateOKNotPhysics\");
+	setValue(tagOvC,\"backCol\",StatusColor(MfOvC));
+	setValue(tagOvV,\"backCol\",StatusColor(MfOvV));
+	setValue(tagUnV,\"backCol\",StatusColor(MfUnV));
+	setValue(tagOvT,\"backCol\",StatusColor(MfOvT));
+	setValue(tagFanFail,\"backCol\",StatusColor(MfFanFail));		
+	if(MfChOn==TRUE)
+		setValue(tagChOn,\"backCol\",\"FwStateOKPhysics\");
+   if(MfChOn==FALSE)  
+    	setValue(tagChOn,\"backCol\",\"STD_grey_middle\");
+}
+displayMfStatus(string dp1, bool MfStatus)
+{
+	time MfStatusTime;
+	string tagMfStatusTime,localTime;		
+	string tagState;
+	
+	tagState=\"MfStatus\";
+	tagMfStatusTime=\"LastUpdatedTime\";
+	
+	if(MfStatus==TRUE){
+		setValue(tagState,\"backCol\",\"FwStateOKPhysics\");
+		setValue(tagState,\"text\",\"ON\");
+	}
+	if(MfStatus==FALSE){
+	  	setValue(tagState,\"backCol\",\"FwStateOKNotPhysics\");
+		setValue(tagState,\"text\",\"STANDBY\");
+	}
+//-----------------------------------------------------
+	dpGet(MFrameName+\".PWstatus.ACstatus:_online.._stime\",MfStatusTime);
+	localTime = timeFormat(MfStatusTime);	//format Time as \"%Y.%m.%d %H:%M\"
+	setValue(tagMfStatusTime,\"text\", localTime);
+//----------------------------------------------------- 
+}
+displayFanStatus(dyn_string MfFanStatusDp,dyn_bool MfFanStatus)
+{
+	for(int i=1;i<=6;i++)
+	{
+		if(MfFanStatus[i]==TRUE)
+		{
+			tableFan.cellValueRC(0,i,\"error\");
+			tableFan.cellFontRC(0,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //11 for 8pt 9 for 7pt //75 for bold 50 for normal
+			tableFan.cellFormatRC(0,i,\"[0s,,,ALIGNMENT_CENTER]\"); //can use string s; formatSelector(s);
+			tableFan.cellBackColRC(0, i, \"FwStateAttention3\");
+		}
+		else
+		{
+			tableFan.cellValueRC(0,i,\"ok\");
+			tableFan.cellFontRC(0,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //11 for 8pt 9 for 7pt //75 for bold 50 for normal
+			tableFan.cellFormatRC(0,i,\"[0s,,,ALIGNMENT_CENTER]\"); //can use string s; formatSelector(s);
+			tableFan.cellBackColRC(0, i, \"FwStateOKPhysics\");
+		}
+	}
+}
+displayFanSpeeds(dyn_string MfFanSpeedsDp,dyn_float MfFanSpeeds)
+{
+	for(int i=1;i<=6;i++)
+	{
+		tableFan.cellValueRC(1,i,MfFanSpeeds[i]);
+		tableFan.cellFontRC(1,i,\"Arial,-1,10,5,75,0,0,0,0,0\");  //can use string s; fontSelector(s); //10 for 7.5pt 12 for 9pt //75 for bold 50 for normal
+		tableFan.cellFormatRC(1,i,\"[0.1f,,,ALIGNMENT_CENTER]\"); //can use string s; formatSelector(s);
+	}
+}
+initTables() {
+  // ------------ prepare tableFan Table ------------
+	tableFan.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\");
+   tableFan.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\");
+   tableFan.rowHeader(0, \"Status\");
+   tableFan.rowHeader(1, \"Speed\");
+}
+string StatusColor(bool sval)
+{
+	string statusColor;
+	if(sval==TRUE)
+		statusColor = \"FwStateAttention3\";
+    if(sval==FALSE)  
+		statusColor = \"STD_grey_middle\";
+	return(statusColor);
+}
+/* Format time as a string. */
+string timeFormat(time t) {
+  return formatTime(\"%Y.%m.%d  %H:%M\", t);
+}" 0
+ 4
+"CBRef" "1"
+"EClose" E
+"windowIcon" "cmsLogo_image.jpg"
+"dpi" "96"
+0 1 9 9 9 9 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 38
+"PopupBack"
+""
+1 2.499999999999979 6.988300492610847 E E E 1 E 1 E N {0,0,0} E N {198,195,198} E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 5.336300562182911 0 2.805572986565459 -3.295468257232749 -9.498855550661981 1 E 2.499999999999979 6.988300492610847 52.49999999999998 56.98830049261085
+6 44
+"PopupHVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.953405017921147 0 1.441176470588234 3.415573394329442 -40.88235294117635 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+6 39
+"PopupDeviceBack"
+""
+1 322 53 E E E 1 E 1 E N "_Transparent" E N {154,236,30} E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"_Transparent\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.383419689119172 0 0.5244444444444446 -435.2872402665911 -17.68822402214644 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.302,WF_Text,0.946,{134,142,144}]" E 322 53 515 98
+30 1
+"PopupFrame"
+""
+1 4.999999999999986 0.9999999999999432 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"hoverfclr" "N \"_Transparent\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "white"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.9495171983135131 0 0.3747120728830355 5.483364430559584 1.625287927117043 0 E 5 1 287 398
+1
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+25 10
+"tableFan"
+""
+1 11.00915261209391 92.79989469550938 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
+0  9.009152612093901 90.79989469550938 278.1758192787606 147.4782608695652
+EE 1 1 1 6 2 "1" 4 1 0 "s" 1
+LANG:1 5 Fan 1
+E
+1
+LANG:1 0 
+
+38 "2" 4 1 0 "s" 1
+LANG:1 5 Fan 2
+E
+1
+LANG:1 0 
+
+38 "3" 4 1 0 "s" 1
+LANG:1 5 Fan 3
+E
+1
+LANG:1 0 
+
+37 "4" 4 1 0 "s" 1
+LANG:1 5 Fan 4
+E
+1
+LANG:1 0 
+
+37 "5" 4 1 0 "s" 1
+LANG:1 5 Fan 5
+E
+1
+LANG:1 0 
+
+37 "6" 4 1 0 "s" 1
+LANG:1 5 Fan 6
+E
+1
+LANG:1 0 
+
+37 
+17 17 "" 1 1
+LANG:1 6 Status
+"" 1 1
+LANG:1 5 Speed
+10 40
+1
+LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
+0 0 0 0 1 7
+1 0
+2 25
+"LastUpdatedTag"
+""
+1 219.3793025362319 12.10411899313501 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 189 12.10411899313501 249 22
+0 2 2 "0s" 0 0 0 193 0 0  219.3793025362319 12.10411899313501 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Last Updated
+2 26
+"LastUpdatedTime"
+""
+1 220.0459692028985 23.12751800791329 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 182 23.12751800791329 258 33
+0 2 2 "0s" 0 0 0 193 0 0  220.0459692028985 23.12751800791329 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 17 2018.08.15  14.23
+6 45
+"PopupDeviceNameBack"
+""
+1 240 90 E E E 1 E 1 E N {0,0,0} E N {198,195,198} E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N {0,0,0}"
+"hoverbclr" "N {176,174,176}"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E 1 0 1 12.45833333333325 12.90733153340911 1 E 100 19 0 -1
+2 46
+"PopupDeviceName"
+""
+1 15.45833333333325 14.90733153340911 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 15.45833333333325 14.90733153340911 101 28
+0 2 2 "0s" 0 0 0 192 0 0  15.45833333333325 14.90733153340911 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 13 HV Board Name
+2 50
+"ACStatusTxt"
+""
+1 19.61221227621479 35.27733375959085 E E E 1 E 1 E N "white" E N "_Transparent" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 19.61221227621479 35.27733375959085 76 45
+0 2 2 "0s" 0 0 0 192 0 0  19.61221227621479 35.27733375959085 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 13 AC Status   :
+6 53
+"PopupLVBack"
+""
+1 8 52 E E E 1 E 1 E N {0,0,0} E N {154,236,30} E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 0.9569892473118279 0 0.2568840470148102 2.389369169729798 132.6609816176602 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+14 68
+"MfStatus"
+""
+1 293.4583333333333 50.18123449317778 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  110 9.94736842105263 164 33.94736842105263
+2 "0s" 0 0 0 1 0 -1  E E E
+2 74
+"OvC"
+""
+1 32.18342391304349 63.29485558959841 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+73 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 32.18342391304349 63.29485558959841 53 73
+0 2 2 "0s" 0 0 0 192 0 0  32.18342391304349 63.29485558959841 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 OvC
+LANG:10001 3 OvC
+7 98
+"CIRCLE_OvC"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+92 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 28.54234945122411 71.82906890902707 1 E 140 100 78 81
+2 102
+"OvV"
+""
+1 114.3502038043479 63.2948555895984 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+96 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 114.3502038043479 63.2948555895984 134 73
+0 2 2 "0s" 0 0 0 192 0 0  114.3502038043479 63.2948555895984 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 OvV
+LANG:10001 3 OvC
+2 103
+"UnV"
+""
+1 73.2321253619553 63.2948555895984 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+97 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 73.2321253619553 63.2948555895984 94 73
+0 2 2 "0s" 0 0 0 192 0 0  73.2321253619553 63.2948555895984 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 UnV
+LANG:10001 3 OvC
+2 104
+"OvT"
+""
+1 154.6524601185139 63.34466200812702 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+98 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 154.6524601185139 63.34466200812702 173 73
+0 2 2 "0s" 0 0 0 192 0 0  154.6524601185139 63.34466200812702 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 3 OvT
+LANG:10001 3 OvC
+2 105
+"FanFailure"
+""
+1 186.7098896576557 63.15829736001663 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 186.7098896576557 63.15829736001663 222 73
+0 2 2 "0s" 0 0 0 192 0 0  186.7098896576557 63.15829736001663 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 7 FanFail
+LANG:10001 3 OvC
+2 106
+"CHON"
+""
+1 229.6157007250012 62.51541097277576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 229.6157007250012 62.51541097277576 259 73
+0 2 2 "0s" 0 0 0 192 0 0  229.6157007250012 62.51541097277576 1
+2
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 4 CHON
+LANG:10001 3 OvC
+7 116
+"CIRCLE_UnV"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+105 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 69.85667590013593 71.82906890902707 1 E 140 100 78 81
+7 117
+"CIRCLE_OvV"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+106 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 110.3419418425285 71.82906890902707 1 E 140 100 78 81
+7 118
+"CIRCLE_OvT"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+107 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 150.7637633740858 71.82906890902707 1 E 140 100 78 81
+7 119
+"CIRCLE_FanFail"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+108 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 190.6847668316902 71.82906890902707 1 E 140 100 78 81
+7 120
+"CIRCLE_ChOn"
+""
+1 140 100 E E E 1 E 1 E N {0,0,0} E N "STD_grey_middle" E "// SimpleCtrlScriptStart {valid}
+main(int iType)
+{
+std_quittScript($dpe_value, iType);
+}
+// SimpleCtrlScript {EP_confirm}
+// dpCount {1}
+// dp1 {$dpe_value}
+// SimpleCtrlScriptEnd {EP_confirm}
+" 0
+
+ E E
+109 0 0 0 0 0
+E E E
+0
+4
+LANG:1 0 
+LANG:10000 0 
+LANG:10001 0 
+LANG:10027 0 
+
+6
+"shadowOffset" "[3,3]"
+"shadowColor" "{63,63,63,131}"
+"shadowRadius" "18"
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 1 0 1 E 0.09289917317448625 0 0.09137623590933057 230.7402512631819 71.82906890902707 1 E 140 100 78 81
+2 123
+"CommTxt"
+""
+1 142.642171717454 39.77078005115094 E E E 1 E 1 E N "white" E N "_Transparent" E E
+ E E
+112 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 142.642171717454 39.77078005115094 219 50
+0 2 2 "0s" 0 0 0 192 0 0  142.642171717454 39.77078005115094 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 14 Communication:
+14 124
+"CommStatus"
+""
+1 289.159925406318 55.2570856860578 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+113 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  218 37.29571611253199 272 55.29571611253199
+2 "0s" 0 0 0 1 0 -1  E E E
+2 125
+"PrimaryPSTxt"
+""
+1 18.28266935861385 46.48969534270135 E E E 1 E 1 E N "white" E N "_Transparent" E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"transparentForMouse" ""
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  1 E 18.28266935861385 46.48969534270135 76 56
+0 2 2 "0s" 0 0 0 192 0 0  18.28266935861385 46.48969534270135 1
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0 1
+LANG:1 12 Primary PS :
+14 127
+"ACStatus"
+""
+1 276.6524601185139 55.89575256585322 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+116 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  79.04374813905866 33.63866687979542 112.0437481390587 46.63866687979542
+2 "0s" 0 0 0 1 0 -1  E E E
+14 128
+"PrimaryPSStatus"
+""
+1 296.6524601185139 55.00193335740848 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+117 0 0 0 0 0
+E E E
+0
+1
+LANG:1 6 Status
+
+1
+"layoutAlignment" "AlignVCenter"
+1
+LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
+0  79.04374813905866 44.74484767135068 112.0437481390587 57.74484767135068
+2 "0s" 0 0 0 1 0 -1  E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 8 "SHAPE_GROUP8" -1
+2 0 
+26 25 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 27 "SHAPE_GROUP27" -1
+3 0 
+68 45 46 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 28 "SHAPE_GROUP28" -1
+12 0 
+120 119 118 117 116 98 74 103 102 104 105 106 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

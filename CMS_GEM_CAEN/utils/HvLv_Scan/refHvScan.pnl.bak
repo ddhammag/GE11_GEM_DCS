@@ -29,7 +29,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
-0  -3.33066907387547e-015 -3 1359 674
+0  -2.664535259100376e-015 -3 1359 674
 E2 "1" 1
 LANG:1 11 ENDCAP Plus
 1 "CMS_GEM_CAEN/utils/HvLv_Scan/refHvScanEndcap.pnl" 1

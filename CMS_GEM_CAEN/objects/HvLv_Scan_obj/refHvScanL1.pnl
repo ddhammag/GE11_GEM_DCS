@@ -15,7 +15,7 @@ PANEL,-1 -1 94 43 N "_3DFace" 5
 	L1CellNo=$dpL1CellNo;
 	Endcap= $dpEndcapName;
 	
-	dyn_string HvChannels;
+//	dyn_string HvChannels;
 	
 	if (!isDollarDefined(\"$dpL1HvBrd\")) return; // no L1Lvch Dp defined
 	if (!isDollarDefined(\"$dpChamberInOrExDp\")) return; // no chamber InOrExDp defined

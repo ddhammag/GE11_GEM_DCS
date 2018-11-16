@@ -15,7 +15,7 @@ PANEL,-1 -1 94 43 N "_3DFace" 5
 	L1CellNo=$dpL1CellNo;
 	Endcap= $dpEndcapName;
 	
-	dyn_string HvChannels;
+//	dyn_string HvChannels;
 	
 	if (!isDollarDefined(\"$dpL1HvBrd\")) return; // no L1Lvch Dp defined
 	if (!isDollarDefined(\"$dpChamberInOrExDp\")) return; // no chamber InOrExDp defined
@@ -98,34 +98,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "1"
-E "main(mapping event)
-{
-	
-  if(statusCurnt[1]==TRUE)
-	{
-		if(column==3)
-		{
-			if(statusChanged[1]==FALSE)
-			{
-				ChamberTable.cellValueRC(1,\"3\",\"Selected\");
-				ChamberTable.cellBackColRC(1, \"3\", \"red\");
-				statusSet[row+1]=!statusCurnt[1];
-				statusChanged[1]=TRUE;				
-				setValue(cellNames[1], \"backCol\", \"red\");
-			return;
-			}
-			if(statusChanged[1]==TRUE)
-			{
-				ChamberTable.cellValueRC(1,\"3\",\"Click here\\n to select\");
-				ChamberTable.cellBackColRC(1, \"3\", \"white\");
-				statusSet[1]=statusCurnt[1];
-				statusChanged[1]=FALSE;
-				setValue(cellNames[1], \"backCol\", \"kobaltblau\");			
-			}
-		}
-	}
-}" 0
- 0 1 3 2 1 E 0.01165794595092171 0.1332509319617998 -0.1332510453333127 0.01165795586964386 83.26735182076584 -151.4646311026797 1 E 41 1151.99393758342 425.4918581620204
+E E 0 1 3 2 1 E 0.01165794595092171 0.1332509319617998 -0.1332510453333127 0.01165795586964386 83.26735182076584 -151.4646311026797 1 E 41 1151.99393758342 425.4918581620204
 1171 423.9999999999999
 1171 423.9999999999999
 1195 421.9999999999999

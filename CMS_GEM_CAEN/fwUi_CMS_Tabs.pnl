@@ -1,7 +1,7 @@
 V 14
 2
-LANG:10001 0 
 LANG:1 0 
+LANG:10001 0 
 PANEL,-1 -1 1920 1200 N "STD_grey_light" 0
 E E E E E 1 -1 -1 0  0 0
 ""0  1
@@ -14,7 +14,7 @@ E E 3
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
-LANG:10001 0 
+LANG:1 0 
 28 0
 "CentralDCSFsmTab"
 ""
@@ -55,14 +55,14 @@ void closeTab(int tabIndex) {
 E E E
 0
 2
-LANG:10001 0 
 LANG:1 0 
+LANG:10001 0 
 
 1
 "layoutAlignment" "AlignCenter"
 2
-LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 0  -1.5 -1.5 1921.5 1201.5
 "main()
 {
@@ -70,37 +70,37 @@ LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 }
 " 0
 1 "#1" 2
-LANG:10001 2 #1
 LANG:1 2 #1
+LANG:10001 2 #1
 0
 
 0
 LAYER, 1 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 2 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 3 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 4 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 5 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 6 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 LAYER, 7 
 1
-LANG:10001 0 
+LANG:1 0 
 0
 0

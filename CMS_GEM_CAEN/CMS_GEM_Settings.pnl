@@ -1,10 +1,38 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 330 225 N {199,200,200} 0
-E E E E E 1 -1 -1 0  54 51
+PANEL,-1 -1 330 225 N {199,200,200} 3
+"$dpHvMainFrameName"
+"$dpLvChannelName"
+"$dpLvMainFrameName"
+"main()
+{
+	HvMFName=$dpHvMainFrameName; 
+	LvMFName=$dpLvMainFrameName;
+	LvBrnchContName=$dpLvChannelName;
+	dyn_string exceptionInfo;
+  	fwAccessControl_setupPanel( \"ApplyPanelAccessControl\", exceptionInfo);
+}
+void ApplyPanelAccessControl(string s1, string s2)
+{
+	bool hasControl, hasModify;
+	dyn_string exceptionInfo;
+
+	// check privileges:
+	fwAccessControl_isGranted( \"CMS_GEM:Control\", hasControl, exceptionInfo);
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo);
+
+	if (dynlen(exceptionInfo)) { fwExceptionHandling_display(exceptionInfo); return;}
+
+	// enable/disable panel functionality:
+	if (hasControl) allowAccess=FALSE;
+	if (hasModify) allowAccess=TRUE;
+}" 0
+ E E E E 1.3 -1 -1 0  54 51
 ""0  1
-E E 3
+E "string HvMFName,LvMFName,LvBrnchContName;
+bool allowAccess=FALSE;" 0
+ 3
 "CBRef" "1"
 "EClose" E
 "dpi" "96"
@@ -80,7 +108,14 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-     ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamberSettings.pnl\",\"ChamberSettings\",makeDynString());
+	dyn_string exceptionInfo;
+	bool hasModify,answ;
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo); 
+	
+	if (hasModify)
+		ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamberSettings.pnl\",\"ChamberSettings\",makeDynString());
+	else
+		fwGeneral_openMessagePanel(\"You do not have expert privileges!\", answ , exceptionInfo, \"Error!\", true );
 }" 0
  0 1 3 2 1 E 1.549222797927462 0 0.5333333333333332 -486.849740932643 -7.559349593495938 1 E 322 53 515 98
 2 7
@@ -141,7 +176,18 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "FwStateOKPhysics"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1.549222797927462 0 0.5333333333333332 -486.849740932643 27.73333333333335 1 E 322 53 515 98
+E "main(mapping event)
+{
+	dyn_string exceptionInfo;
+	bool hasModify,answ;
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo); 
+	
+	if (hasModify)
+		ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/power_supply_status/refCAENStatus.pnl\",\"CAENStatus\",makeDynString(\"$dpHvMainFrameName:\"+HvMFName,\"$dpLvMainFrameName:\"+LvMFName,\"$dpLvChannelName:\"+LvBrnchContName));
+	else
+		fwGeneral_openMessagePanel(\"You do not have expert privileges!\", answ , exceptionInfo, \"Error!\", true );
+}" 0
+ 0 1 3 2 1 E 1.549222797927462 0 0.5333333333333332 -486.849740932643 27.73333333333335 1 E 322 53 515 98
 2 11
 "PRIMITIVE_TEXT3"
 ""
@@ -159,12 +205,12 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 78 60.49999999999999 244 75
+E E 0 1 3 2 1 E U  0 E 116 60.49999999999999 206 75
 0 2 2 "0s" 0 0 0 193 0 0  161.4999999999999 60.49999999999999 1
 1
 LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
 0 1
-LANG:1 24 LV Power Supply Settings
+LANG:1 13 CAEN Settings
 6 12
 "RECTANGLE5"
 ""
@@ -204,7 +250,7 @@ E E 0 1 3 2 1 E 1.549222797927462 0 0.5333333333333332 -486.849740932643 66.4406
 2 14
 "PRIMITIVE_TEXT4"
 ""
-1 161.4999999999999 99.20731707317071 E E E 1 E 1 E N "white" E N "_Window" E E
+1 161.4999999999999 99.20731707317071 E E E 1 E 0 E N "white" E N "_Window" E E
  E E
 13 0 0 0 0 0
 E E E
@@ -263,7 +309,7 @@ E E 0 1 3 2 1 E 1.549222797927462 0 0.5333333333333332 -486.3497409326432 102.44
 2 17
 "PRIMITIVE_TEXT5"
 ""
-1 161.9999999999998 135.2073170731707 E E E 1 E 1 E N "white" E N "_Window" E E
+1 161.9999999999998 135.2073170731707 E E E 1 E 0 E N "white" E N "_Window" E E
  E E
 16 0 0 0 0 0
 E E E

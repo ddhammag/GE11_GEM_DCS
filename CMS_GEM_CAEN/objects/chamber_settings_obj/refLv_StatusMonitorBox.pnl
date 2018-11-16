@@ -1,0 +1,640 @@
+V 14
+1
+LANG:1 0 
+PANEL,-1 -1 867 53 N "_3DFace" 4
+"$LvBrdName"
+"$LvBrdNo"
+"$dpChamberName"
+"$dpLvchClicked"
+"main()
+{
+	ChamberName=$dpChamberName;
+	LvchClicked=$dpLvchClicked;
+	LvBrdName=$LvBrdName;
+	LvBrdNo=$LvBrdNo;
+	
+	if (!isDollarDefined(\"$dpLvchClicked\")) return; // no Hv Brd defined
+	if (!isDollarDefined(\"$LvBrdName\")) return; // no chamber name defined
+}" 0
+ E E E E 1 -1 -1 0  16 13
+""0  1
+E "string LvchClicked,LvBrdName,ChamberName;
+int LvBrdNo;" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+14 2
+"onOffReadback"
+""
+1 585.9835188692229 408.874918877667 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  432.2692307692306 11.12491813527021 490.2692307692306 38.12491813527021
+2 "0s" 0 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+  
+  //this.text=\"aaa\";
+  backCol(); //change color if readbacksetting is different from setting
+}
+
+backCol()
+{
+  string setting, text;
+  getValue(\"\", \"text\", text);
+  if (text==\"Off\") text=\"FALSE\";
+  if (text==\"On\")  text=\"TRUE\";
+  dpGet(LvchClicked+\".settings.onOff\", setting);
+  //DebugTN(\"text=\",text,\"  setting=\",setting);
+
+ // if (text != setting) {setValue(\"\", \"backCol\", \"red\");}
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists(LvchClicked+\".readBackSettings.onOff:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.onOff:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+ // DebugTN(dpValToString(dp, boNewValue, TRUE));
+  string newText=\"\";
+  if ( dpValToString(dp, boNewValue, TRUE)==TRUE ) newText=\"On\";
+  if ( dpValToString(dp, boNewValue, TRUE)==FALSE ) newText=\"Off\";
+  setValue(\"\", \"text\", newText );
+}" 0
+ E
+14 3
+"onOffActual"
+""
+1 614.9835188692229 408.874918877667 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  486.2692307692306 11.12491813527021 544.2692307692305 38.12491813527021
+2 "0s" 0 0 0 1 0 -1  E "// SimpleCtrlScriptStart {invalid}
+main()
+{
+  EP_textFieldIn();
+  
+  backCol(); //change color if actual is different from setting
+}
+
+backCol()
+{
+  string setting, text;
+  getValue(\"\", \"text\", text);
+  if (text==\"Off\") text=\"FALSE\";
+  if (text==\"On\")  text=\"TRUE\";
+  dpGet(LvchClicked+\".settings.onOff\", setting);
+  //DebugTN(\"text=\",text,\"  setting=\",setting);
+
+ // if (text != setting) {setValue(\"\", \"backCol\", \"red\");}
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists(LvchClicked+\".actual.isOn:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".actual.isOn:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+}
+
+EP_textFieldInCB(string dp, bool boNewValue)
+{
+ // DebugTN(dpValToString(dp, boNewValue, TRUE));
+  string newText=\"\";
+  if ( dpValToString(dp, boNewValue, TRUE)==TRUE ) newText=\"On\";
+  if ( dpValToString(dp, boNewValue, TRUE)==FALSE ) newText=\"Off\";
+  setValue(\"\", \"text\", newText );
+}" 0
+ E
+14 4
+"V0"
+""
+1 256.3347575708723 345.2638072097583 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  163.2692307692308 11.37491813527026 221.2692307692308 38.37491813527026
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();  
+  //this.text=10.50;
+  backCol(); //change color if readbacksetting is different from setting
+}
+
+backCol()
+{
+  float setting, text;
+  getValue(\"\", \"text\", text);
+  dpGet(LvchClicked+\".settings.v0\", setting);
+  //DebugTN(\"text=\",text,\"  setting=\",setting);
+
+ // if (text != setting) {setValue(\"\", \"backCol\", \"red\");}
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.v0:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.v0:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 5
+"Vmon"
+""
+1 262.7383265615309 347.6730776654737 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  324.0240384615385 10.92307692307691 382.0240384615385 37.92307692307691
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".actual.vMon:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".actual.vMon:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 6
+"V1"
+""
+1 582.983518869223 347.8749188776671 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  540.2692307692305 11.12491813527027 598.2692307692305 38.12491813527026
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.v1:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.v1:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 7
+"I0"
+""
+1 308.9835188692231 348.1249188776671 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  216.2692307692308 11.37491813527026 274.2692307692307 38.37491813527026
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.i0:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.i0:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 8
+"Imon"
+""
+1 471.1565957923 347.6562507423969 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  378.4423076923076 11 436.4423076923076 38
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".actual.iMon:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".actual.iMon:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 9
+"I1"
+""
+1 636.8288293361972 347.8609869891222 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  594.1145412362048 11.11098624672542 652.1145412362048 38.11098624672541
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.i1:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.i1:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 10
+"Vcon"
+""
+1 374.8489034846078 347.8846161270122 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  270.1346153846154 11.13461538461536 328.1346153846154 38.13461538461536
+2 "0.3f" 4 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".actual.vCon:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.rUp:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 12
+"TripTime"
+""
+1 690.6462381795509 347.6153853577814 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  647.9319500795585 11.11538461538459 705.9319500795585 38.11538461538459
+2 "0s" 0 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.tripTime:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.tripTime:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 14
+"vMaxSoftVal"
+""
+1 925.8590730014348 347.3218299114195 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  701.8550270026359 11 759.8550270026359 38
+2 "0s" 0 0 0 1 0 -1  E "main()
+{
+  EP_textFieldIn();
+}
+
+EP_textFieldIn()
+{
+dyn_errClass err;
+
+  if( !dpExists( LvchClicked+\".readBackSettings.vMaxSoftValue:_online.._value\"))
+  {
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+    return;
+  }
+
+  dpConnect(\"EP_textFieldInCB\",
+            LvchClicked+\".readBackSettings.vMaxSoftValue:_online.._value\");
+  err = getLastError();
+  if (dynlen(err) > 0)
+    setValue(\"\", \"color\", \"_dpdoesnotexist\");
+
+}
+
+EP_textFieldInCB(string dp, float fNewValue)
+{
+  setValue(\"\", \"text\", dpValToString(dp, fNewValue, TRUE) );
+}" 0
+ E
+14 18
+"ChamberName"
+""
+1 657.875 47.25 E E E 1 E 1 E N "_WindowText" E N "white" E E
+ E E
+17 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  14 11 167 38
+2 "0s" 0 0 0 1 0 -1  E "main()
+{
+	setValue(\"\", \"text\",ChamberName);
+}" 0
+ E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

@@ -37,18 +37,18 @@ PANEL,-1 -1 291 239 N {198,195,198} 3
 }" 0
  E E E E 1 -1 -1 0  5 1
 ""0  1
-E "string HvBrdClicked,HvBrdStatus,HvBrdOpMode,Endcap;
+E "string HvBrdClicked,HvBrdStatus,HvBrdOpMode,Endcap,HvBrdName;
 int CellNo,HvStatus;
 dyn_string HvChannelStatusDps,HvChannelVmonDps,HvChannelImonDps;
 
 displayDeviceName()
 {	
-	string DeviceName,tag;
+	string tag;
 	
 	tag=\"PopupDeviceName\";
 	
-	DeviceName=\"GE\"+Endcap+\"1/1 HVBrd\"+CellNo;
-	setValue(tag, \"text\", DeviceName); 
+	HvBrdName=\"GE\"+Endcap+\"1/1 HVBrd\"+CellNo;
+	setValue(tag, \"text\", HvBrdName); 
 }
 displayTableNames()
 {
@@ -165,12 +165,12 @@ initTables() {
   // ------------ prepare tableHV1 and tableHV2 Tables ------------
 	tableHV1.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
     tableHV1.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
-    tableHV1.rowHeader(0, \"V\");
-    tableHV1.rowHeader(1, \"C\");
+    tableHV1.rowHeader(0, \"V (V)\");
+    tableHV1.rowHeader(1, \"I (uA)\");
 	tableHV2.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
     tableHV2.appendLine(\"1\",\"loading\",\"2\",\"loading\",\"3\",\"loading\",\"4\",\"loading\",\"5\",\"loading\",\"6\",\"loading\",\"7\",\"loading\");
-    tableHV2.rowHeader(0, \"V\");
-    tableHV2.rowHeader(1, \"C\");
+    tableHV2.rowHeader(0, \"V (V)\");
+    tableHV2.rowHeader(1, \"I (uA)\");
 }
 /* Format time as a string. */
 string timeFormat(time t) {
@@ -280,7 +280,7 @@ E
 1
 LANG:1 0 
 
-35 "2" 3 1 0 "s" 1
+33 "2" 3 1 0 "s" 1
 LANG:1 4 Ch 1
 E
 1
@@ -292,36 +292,36 @@ E
 1
 LANG:1 0 
 
-35 "4" 3 1 0 "s" 1
+33 "4" 3 1 0 "s" 1
 LANG:1 4 Ch 3
 E
 1
 LANG:1 0 
 
-35 "5" 3 1 0 "s" 1
+33 "5" 3 1 0 "s" 1
 LANG:1 4 Ch 4
 E
 1
 LANG:1 0 
 
-35 "6" 3 1 0 "s" 1
+34 "6" 3 1 0 "s" 1
 LANG:1 4 Ch 5
 E
 1
 LANG:1 0 
 
-35 "7" 3 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+34 "7" 3 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
 LANG:1 4 Ch 6
 E
 1
 LANG:1 0 
 
-35 
+34 
 17 17 "" 1 1
-LANG:1 2  V
+LANG:1 5 V (V)
 "" 1 1
-LANG:1 2  C
-10 21
+LANG:1 6 I (uA)
+10 30
 1
 LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
 0 0 0 0 1 7
@@ -390,7 +390,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 15 Change Settings
-E E E E
+"main(mapping event)
+{
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refHv_ChangeSettings.pnl\",\"Settings\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$HvBrdName:\"+HvBrdName,\"$HvBrdNo:\"+CellNo,\"$dpEndcapName:\"+Endcap));
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 13 34
 "StatusMonitor"
 ""
@@ -411,7 +416,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 14 Status Monitor
-E E E E
+"main(mapping event)
+{
+	ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refHv_StatusMonitor.pnl\",\"Monitor\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$HvBrdName:\"+HvBrdName,\"$HvBrdNo:\"+CellNo,\"$dpEndcapName:\"+Endcap));
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 13 35
 "ShowTrends"
 ""
@@ -453,7 +463,12 @@ LANG:1 25 Arial,-1,9,5,75,0,0,0,0,0
 T 
 1
 LANG:1 12 Alarm Screen
-E E E E
+"main(mapping event)
+{
+	ChildPanelOn(\"/fwAlarmHandling/fwAlarmHandlingScreen\", \"GEMM CAEN Alarms\",makeDynString(\"\"),0,0);
+	removeSymbol(myModuleName(), \"\", \"refName\");
+}" 0
+ E E E
 6 45
 "PopupDeviceNameBack"
 ""
@@ -643,7 +658,7 @@ E
 1
 LANG:1 0 
 
-35 "2" 3 1 0 "s" 1
+33 "2" 3 1 0 "s" 1
 LANG:1 4 Ch 8
 E
 1
@@ -655,36 +670,36 @@ E
 1
 LANG:1 0 
 
-35 "4" 3 1 0 "s" 1
+33 "4" 3 1 0 "s" 1
 LANG:1 5 Ch 10
 E
 1
 LANG:1 0 
 
-35 "5" 3 1 0 "s" 1
+33 "5" 3 1 0 "s" 1
 LANG:1 5 Ch 11
 E
 1
 LANG:1 0 
 
-35 "6" 3 1 0 "s" 1
+34 "6" 3 1 0 "s" 1
 LANG:1 5 Ch 12
 E
 1
 LANG:1 0 
 
-35 "7" 3 1 0 "s" 1
+34 "7" 3 1 0 "s" 1
 LANG:1 5 Ch 13
 E
 1
 LANG:1 0 
 
-35 
+34 
 17 17 "" 1 1
 LANG:1 2  V
 "" 1 1
 LANG:1 2  C
-10 21
+10 30
 1
 LANG:1 25 Arial,-1,8,5,75,0,0,0,0,0
 0 0 0 0 1 7

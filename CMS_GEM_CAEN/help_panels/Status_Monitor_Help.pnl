@@ -1,0 +1,1079 @@
+V 14
+1
+LANG:1 4 help
+PANEL,-1 -1 637 1677 N "white" 0
+"main()
+{
+	ZoomModule(\"M1\", 1.5, 500, 500);
+//	panelZoomIn(\"\", 2);
+  set(330,1650, false);
+}" 0
+ E E E E 1 -1 -1 0  100 1000
+""0  1
+E E 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 2308
+"RECTANGLE480"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2284 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.6848484848485263 -1076.492094724766 1472.680303030298 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+13 2310
+"PUSH_BUTTON59"
+""
+1 549.8297556922522 1518.386363636362 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+2286 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  547.8297556922521 1512.386363636362 607.8297556922522 1536.386363636362
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+   PanelOff(\"\");
+}" 0
+ E E E
+6 2297
+"RECTANGLE469"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2273 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.411483886483849 -1077.042969270659 358.4430019895968 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+2 2163
+"PRIMITIVE_TEXT1395"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2139 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.036037948555314 0 1 -2.577928407821361 -121 0 E 19.14764672288163 722.1883116883138 589 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 86 Indicates the Low Volatage (LV) Main Frame status. Background color of the box will be
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 83 changed according to the status. There are one LV Main Frame in GE1/1 and connected
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 32 to ENDCAP Plus and ENDCAP Minus.
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 2164
+"PRIMITIVE_TEXT1396"
+""
+1 16.61645430403573 669 E E E 1 E 1 E N "FwStateAttention3" E N "_Window" E E
+ E E
+2140 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 16.61645430403573 669 363 685
+0 2 2 "0s" 0 0 0 192 0 0  16.61645430403573 669 1
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 52 Click on "Main Frame"  box to see status popup panel
+2 2179
+"PRIMITIVE_TEXT1411"
+""
+1 15.69223508676095 382.6883116883142 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2155 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 15.69223508676095 382.6883116883142 157 398
+0 2 2 "0s" 0 0 0 192 0 0  15.69223508676095 382.6883116883142 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 20 LV Main Frame Status
+6 2306
+"RECTANGLE478"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2282 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.317636684303322 -1077.777202072539 -19.80516273849333 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+6 2312
+"RECTANGLE481"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2288 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.411483886483849 -1077.042969270659 675.4430019895967 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+2 2313
+"PRIMITIVE_TEXT1412"
+""
+1 15.69223508676095 699.6883116883141 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2289 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 15.69223508676095 699.6883116883141 193 715
+0 2 2 "0s" 0 0 0 192 0 0  15.69223508676095 699.6883116883141 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 27 LV Branch Controller Status
+2 2314
+"PRIMITIVE_TEXT1413"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2290 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.005630077702908 0 1 -7.513040084520217 190 0 E 19.14764672288163 722.1883116883138 628 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 93 Indicates the Branch Controller status. Background color of the box will be changed according
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 92 to the status.  "Branch Controller 1" and "Branch Controller 2" are connected to ENDCAP Plus
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 82 and "Branch Controller 3" and "Branch Controller 4" are connected to ENDCAP Minus.
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 2315
+"PRIMITIVE_TEXT1414"
+""
+1 9.582671236429214 982 E E E 1 E 1 E N "FwStateAttention3" E N "_Window" E E
+ E E
+2291 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 9.582671236429214 982 401 998
+0 2 2 "0s" 0 0 0 192 0 0  9.582671236429214 982 1
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 60 Click on "Branch Controller_"  box to see status popup panel
+6 2316
+"RECTANGLE482"
+""
+1 509.8633641989036 999.0581395348838 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2292 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.5,1.5);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.714285714285714 0 1.376 -571.0852645514408 -590.7040000000002 2  1 0  "pictures/help/LV_branchController_popup.jpg" 4294967295 E 398 954 622 1079
+6 2317
+"RECTANGLE483"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2293 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.411483886483849 -1074.751633652445 986.4430019895967 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+2 2318
+"PRIMITIVE_TEXT1415"
+""
+1 15.69223508676095 1009.688311688314 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2294 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 15.69223508676095 1009.688311688314 183 1025
+0 2 2 "0s" 0 0 0 192 0 0  15.69223508676095 1009.688311688314 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 24 48 V Power Module Status
+2 2319
+"PRIMITIVE_TEXT1416"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2295 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.005630077702908 0 1 -7.513040084520217 504 0 E 19.14764672288163 722.1883116883138 637 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 93 Indicates the 48 V Power Module status. Background color of the box will be changed according
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 90 to the status. "Power Convertor 1 - 4" are connected to ENDCAP Plus and "Power Convertor 5
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 35 - 8" are connected to ENDCAP Minus.
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 2320
+"PRIMITIVE_TEXT1417"
+""
+1 11.87400685464383 1290 E E E 1 E 1 E N "FwStateAttention3" E N "_Window" E E
+ E E
+2296 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 11.87400685464383 1290 399 1306
+0 2 2 "0s" 0 0 0 192 0 0  11.87400685464383 1290 1
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 58 Click on "Power Convertor_"  box to see status popup panel
+6 2321
+"RECTANGLE484"
+""
+1 509.8633641989036 999.0581395348838 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2297 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.5,1.5);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.714285714285714 0 1.376 -568.7939289332262 -279.7040000000002 2  1 0  "pictures/help/LV_Power Converter_popup.jpg" 4294967295 E 398 954 622 1079
+6 2322
+"RECTANGLE485"
+""
+1 322 53 E E E 1 E 1 E N "white" E N {154,236,30} E E
+ E E
+2298 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+5
+"hoverfclr" "N \"white\""
+"hoverbclr" "N \"white\""
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 3.33160621761658 0 0.411483886483849 -1084.757861922887 1294.420274716867 4 "[linear,reflect,0.988,0.482,0.988,1.23,0.322,{0,21,85},0.95,{5,8,184}]" E 322 53 515 98
+2 2323
+"PRIMITIVE_TEXT1418"
+""
+1 15.69223508676095 1317.665584415584 E E E 1 E 1 E N "white" E N "_Window" E E
+ E E
+2299 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 15.69223508676095 1317.665584415584 132 1333
+0 2 2 "0s" 0 0 0 192 0 0  15.69223508676095 1317.665584415584 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 17 EASY Crate Status
+2 2324
+"PRIMITIVE_TEXT1419"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2300 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.005630077702908 0 0.4144475441711205 -3.09571132094943 1107.173943659252 0 E 19.14764672288163 722.1883116883138 367 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 54 Currently, there are no options for EASY Crate status.
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+6 2326
+"RECTANGLE486"
+""
+1 509.8633641989036 999.0581395348838 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2302 0 0 0 0 0
+E E "main(bool enter)
+{/*
+	if(enter)
+	{
+		this.scale(1.5,1.5);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}*/
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.015560522687704 0 1.256181818181838 -20.44408121824137 145.5798181817968 2  1 0  "pictures/help/LV_Easy_crate.png" 4294967295 E 398 954 622 1079
+13 2327
+"PUSH_BUTTON58"
+""
+1 581.9259524941443 5.440699866890405 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+2303 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0  579.9259524941442 -0.5593001331095959 639.9259524941443 23.44069986689041
+
+T 
+1
+LANG:1 5 Close
+"main(mapping event)
+{
+   PanelOff(\"\");
+}" 0
+ E E E
+2 2440
+"PRIMITIVE_TEXT1438"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2416 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.005630077702908 0 1.122752888349888 16.25252208098106 -617.5686308844106 0 E 19.14764672288163 722.1883116883138 486 795
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 4
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 49  1 :- Super Chamber HV status tab for ENDCAP Plus
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 50  2 :- Super Chamber HV status tab for ENDCAP Minus
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 58  3 :- Chamber LV status tab for both ENDCAP Plus and Minus
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 67  4 :- Chamber Temperature status tab for both ENDCAP Plus and Minus
+2 2442
+"PRIMITIVE_TEXT1440"
+""
+1 19.14764672288163 722.1883116883138 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2418 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E 1.005630077702908 0 1.122752888349888 5.168515556256626 -391.0460844380198 0 E 19.14764672288163 722.1883116883138 250 833
+0 2 2 "0s" 0 0 0 192 0 0  19.14764672288163 722.1883116883138 6
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 35  A :- DRIFT board and GEM foils    
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 26  B :- Super Chamber Number
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 34  1 :- DRIFT board or GEM foil name
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 31  2 :- Status of the HV channel 
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 32  3 :- Last Updated date and time
+1
+LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
+0 1
+LANG:1 24  4 :- Over current error
+6 2282
+"RECTANGLE1"
+""
+1 315.9442028087043 10 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2258 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.3,1.3);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.001680672268908 0 0.6612373737373745 0.4697478991593727 13.71085858585849 2  1 0  "pictures/help/Status_Monitor.jpg" 4294967295 E 18 10 613 250
+6 2307
+"RECTANGLE479"
+""
+1 509.8633641989036 999.0581395348838 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+2283 0 0 0 0 0
+E E "main(bool enter)
+{
+	if(enter)
+	{
+		this.scale(1.5,1.5);
+		setValue(\"\",\"border\",\"[solid,oneColor,JoinMiter,CapNotLast,1]\");
+	}
+	else
+	{
+		this.scale(1,1);
+		setValue(\"\",\"border\",\"[none,oneColor,JoinMiter,CapNotLast,0]\");
+	}
+}" 0
+
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 1.525685593533623 0 1.504 -321.2228662263819 -1030.816 2  1 0  "pictures/help/HV_status_monitor_popup.jpg" 4294967295 E 398 954 622 1079
+2 2433
+"PRIMITIVE_TEXT1432"
+""
+1 24.45963436341859 22.646464646465 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2409 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 20 22.646464646465 28 40
+1 2 2 "0s" 0 0 0 193 0 0  24.45963436341859 22.646464646465 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 1
+2 2434
+"PRIMITIVE_TEXT1433"
+""
+1 140.627957565891 22.05922598073801 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2410 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 137 22.05922598073801 145 39
+1 2 2 "0s" 0 0 0 193 0 0  140.627957565891 22.05922598073801 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 2
+2 2435
+"PRIMITIVE_TEXT1434"
+""
+1 262.8374884566171 22.32323232323279 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2411 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 259 22.32323232323279 267 39
+1 2 2 "0s" 0 0 0 193 0 0  262.8374884566171 22.32323232323279 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 3
+2 2436
+"PRIMITIVE_TEXT1435"
+""
+1 304.9999999999996 22.64646464646487 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2412 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 301 22.64646464646487 309 40
+1 2 2 "0s" 0 0 0 193 0 0  304.9999999999996 22.64646464646487 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 4
+2 2409
+"PRIMITIVE_TEXT1379"
+""
+1 355.4596343634191 456 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2385 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 351 456 359 473
+1 2 2 "0s" 0 0 0 193 0 0  355.4596343634191 456 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 1
+2 2422
+"PRIMITIVE_TEXT1452"
+""
+1 273.6730098488206 481.3680469496806 E E E 1 E 1 E N "white" E N "STD_dp_not_existing" E E
+ E E
+2398 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 273.6730098488206 481.3680469496806 284 496
+0 2 2 "0s" 0 0 0 192 0 0  273.6730098488206 481.3680469496806 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 1 A
+2 2424
+"PRIMITIVE_TEXT1423"
+""
+1 477.1279575658912 454.7674418604652 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2400 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 473 454.7674418604652 481 472
+1 2 2 "0s" 0 0 0 193 0 0  477.1279575658912 454.7674418604652 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 2
+2 2425
+"PRIMITIVE_TEXT1424"
+""
+1 570.3374884566173 437 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2401 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 566 437 574 454
+1 2 2 "0s" 0 0 0 193 0 0  570.3374884566173 437 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 3
+2 2426
+"PRIMITIVE_TEXT1425"
+""
+1 365 484 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2402 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 361 484 369 501
+1 2 2 "0s" 0 0 0 193 0 0  365 484 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 4
+2 2427
+"PRIMITIVE_TEXT1426"
+""
+1 421.4596343634191 484 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2403 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 417 484 425 501
+1 2 2 "0s" 0 0 0 193 0 0  421.4596343634191 484 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 5
+2 2428
+"PRIMITIVE_TEXT1427"
+""
+1 471.6863102852893 484.2954545454549 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2404 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 468 484.2954545454549 476 501
+1 2 2 "0s" 0 0 0 193 0 0  471.6863102852893 484.2954545454549 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 6
+2 2429
+"PRIMITIVE_TEXT1428"
+""
+1 525.4596343634191 484.2954545454549 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2405 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 521 484.2954545454549 529 501
+1 2 2 "0s" 0 0 0 193 0 0  525.4596343634191 484.2954545454549 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 7
+2 2430
+"PRIMITIVE_TEXT1429"
+""
+1 576 484 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2406 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 572 484 580 501
+1 2 2 "0s" 0 0 0 193 0 0  576 484 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 8
+2 2431
+"PRIMITIVE_TEXT1430"
+""
+1 361 509 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2407 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 357 509 365 526
+1 2 2 "0s" 0 0 0 193 0 0  361 509 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 1 9
+2 2432
+"PRIMITIVE_TEXT1431"
+""
+1 496.9514197159067 508.7954545454549 E E E 1 E 1 E N "white" E N "FwStateAttention3" E E
+ E E
+2408 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 489 508.7954545454549 505 526
+1 2 2 "0s" 0 0 0 193 0 0  496.9514197159067 508.7954545454549 1
+1
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+0 1
+LANG:1 2 10
+2 2441
+"PRIMITIVE_TEXT1439"
+""
+1 324.0808742435561 426.5454545454547 E E E 1 E 1 E N "white" E N "STD_dp_not_existing" E E
+ E E
+2417 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  1 E 324.0808742435561 426.5454545454547 335 442
+0 2 2 "0s" 0 0 0 192 0 0  324.0808742435561 426.5454545454547 1
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 1 B
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP0" -1
+12 0 
+2409 2441 2422 2426 2431 2427 2428 2424 2425 2430 2429 2432 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0

@@ -1,8 +1,16 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 884 565 N {134,142,144} 0
-E E E E E 1 -1 -1 0  5 4
+PANEL,-1 -1 882 568 N {134,142,144} 0
+"main()
+{
+	int ref_Px,ref_Py,ref_Sx,ref_Sy;
+	
+	getValue(\"FrameMassages\",\"position\",ref_Px,ref_Py);
+	getValue(\"FrameMassages\",\"size\",ref_Sx,ref_Sy);
+	fwFsmUi_addMessageBox(ref_Px-7, ref_Py-28,ref_Sx-7,\"ENDCAP_Minus\");
+}" 0
+ E E E E 1 -1 -1 0  5 4
 ""0  1
 E E 3
 "CBRef" "1"
@@ -29,7 +37,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
-0  -3.108624468950438e-015 -3 878.0000000000001 562.9999999999999
+0  -3.108624468950438e-015 -3 878.0000000000001 482
 E2 "1" 1
 LANG:1 11 ENDCAP Plus
 1 "CMS_GEM_CAEN/utils/power_cycle/refLvPowerCycleEndcap.pnl" 1
@@ -47,6 +55,26 @@ LANG:1 0
 "$dpLvMFName""\"CAEN/GEM_CAEN_LV/branchController\""
 
 
+30 2
+"FrameMassages"
+""
+1 0.9026651216685808 656.0588235294117 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+1 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.120667522464698 0 1.21666666666667 2.99999999999995 -297.6166666666686 0 E 0 649 780 710
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 0 
 0
 LAYER, 1 
 1

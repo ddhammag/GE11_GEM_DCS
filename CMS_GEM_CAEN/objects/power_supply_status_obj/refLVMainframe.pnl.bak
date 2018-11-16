@@ -81,33 +81,31 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
-		dyn_int popupPnlXY;
-  		getCursorPosition(mouseX, mouseY);
-		removeSymbol(myModuleName(), \"\", \"refName2\");		
-		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\");
-		getValue(\"FRAME6\",\"position\",FRAME1_x,FRAME1_y); 
-		getValue(\"FRAME6\",\"size\",FRAME2_x,FRAME2_y);
-//		DebugN(popupPnlXY);
-//		DebugN(mouseX, mouseY);
-//		DebugN(FRAME2_x, FRAME2_y);
-		edgeX=mouseX+popupPnlXY[1]; //15 just used for adjustment
-		edgeY=mouseY+popupPnlXY[2];
-	/*	if(edgeX>targetPnlXY[1])
-			mouseX1=mouseX-popupPnlXY[1];//15 just used for the adjustment
-		else*/
-			mouseX1=FRAME1_x+FRAME2_x-10; //15 just used for the adjustment
-		while(edgeY>(FRAME1_y+FRAME2_y)){
-			mouseY=mouseY-popupPnlXY[2]/20;
-			edgeY=mouseY+popupPnlXY[2];
-//			DebugN(\"mouseY\", mouseY);
-//			DebugN(\"edgeY\", edgeY);
+	removeSymbol(myModuleName(), \"\", \"refName2\");	//close previous popup panels
+	int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
+	dyn_int popupPnlXY;
+
+	popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\");
+	getValue(\"FRAME6\",\"position\",FRAME1_x,FRAME1_y); 
+	getValue(\"FRAME6\",\"size\",FRAME2_x,FRAME2_y);
+	getValue(\"\",\"position\",pos_X,pos_Y);	// get reference point of a clicked cell
+//	DebugN(popupPnlXY);
+
+	edgeX=pos_X+popupPnlXY[1];
+	edgeY=pos_Y+popupPnlXY[2];
+
+	coordi_X=FRAME1_x+FRAME2_x-10; //10 just used for the adjustment
+	while(edgeY>(FRAME1_y+FRAME2_y))
+	{
+		pos_Y=pos_Y-popupPnlXY[2]/20;
+		edgeY=pos_Y+popupPnlXY[2];
+//		DebugN(\"edgeY\", edgeY);
 		}
-		mouseY1=mouseY; //15 just used for adjustment
-//		DebugN(mouseX, mouseY);
+		coordi_Y=pos_Y+30;//10 just used for the adjustment
+//		DebugN(coordi_X, coordi_Y);
   		addSymbol(myModuleName(), myPanelName(),
             \"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\",\"refName2\",
-            makeDynString(\"$dpMainFrameName:\"+LvMFrameName,\"$dpMfCellName:\"+MfCellName,\"$dpMfLabel:\"+MfLabel,\"$dpMfCellNo:\"+MfCellNo),mouseX1, mouseY1, 0, 1, 1);
+            makeDynString(\"$dpMainFrameName:\"+LvMFrameName,\"$dpMfCellName:\"+MfCellName,\"$dpMfLabel:\"+MfLabel,\"$dpMfCellNo:\"+MfCellNo),coordi_X, coordi_Y, 0, 1, 1);
 }" 0
  0 1 3 2 1 E 0.6052631578947368 0 1.605263157894737 -347.7994182728329 -834.9168435276632 1 E 590 529 704 548
 2 2

@@ -1,0 +1,1311 @@
+V 14
+2
+LANG:1 0 
+LANG:10001 0 
+PANEL,-1 -1 952 348 N "_3DFace" 5
+"$ChamberName"
+"$ChamberNo"
+"$Layer"
+"$dpHvBrdClicked"
+"$dpLvchClicked"
+"main()
+{
+	HvBrdClicked=$dpHvBrdClicked;
+	LvchClicked=$dpLvchClicked;
+	ChamberName=$ChamberName;
+	ChamberNo=$ChamberNo;
+	Layer=$Layer;
+	
+	if (!isDollarDefined(\"$dpHvBrdClicked\")) return; // no Hv Brd defined
+	if (!isDollarDefined(\"$ChamberName\")) return; // no chamber name defined
+	
+	dyn_string exceptionInfo;
+	drawPanel();
+	delay(0);
+	DisableAllInPanel();
+	fwAccessControl_setupPanel( \"ApplyPanelAccessControl\", exceptionInfo);
+}
+void ApplyPanelAccessControl(string s1, string s2)
+{
+	bool hasControl, hasModify;
+	dyn_string exceptionInfo;
+
+	// revoke all previous rights:
+	DisableAllInPanel();
+
+	// check privileges:
+	fwAccessControl_isGranted( \"CMS_GEM:Control\", hasControl, exceptionInfo);
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo);
+
+	if (dynlen(exceptionInfo)) { fwExceptionHandling_display(exceptionInfo); return;}
+
+	// enable/disable panel functionality:
+  if (hasControl) setOperatorRights();
+  if (hasModify) setExpertRights();
+
+}
+void DisableAllInPanel()
+{
+	setAllInPanel(false);
+}
+void setExpertRights()
+{
+	setAllInPanel(true);
+}
+void setOperatorRights()
+{
+	setAllInPanel(false);
+}
+
+void setAllInPanel(bool set)
+{
+	string onOrderName,offOrderName,iMRangeName,ZCAdjustName,ZCDetectName,vMaxSoftValueName;
+//	****************board Settings***************
+	CASCADE_OpMode.enabled = set;
+	BUTTON_applyOpMode.enabled = set; 
+//	*****************-----------***************** 
+//	***************chamber Settings**************
+	for(int i=1;i<=7;i++)
+	{
+		onOrderName=\"onOrder_\"+i;
+		offOrderName=\"offOrder_\"+i;
+		iMRangeName=\"iMRange_\"+i;
+		ZCAdjustName=\"ZCAdjust_\"+i;
+		ZCDetectName=\"ZCDetect_\"+i;
+		vMaxSoftValueName=\"vMaxSoftValue_\"+i;
+		
+		setValue(onOrderName, \"enabled\", set);
+		setValue(offOrderName, \"enabled\", set);
+		setValue(iMRangeName, \"enabled\", set);
+		setValue(ZCAdjustName, \"enabled\", set);
+		setValue(ZCDetectName, \"enabled\", set);
+		setValue(vMaxSoftValueName, \"enabled\", set);
+	}
+	BUTTON_SAVE_CONFIGS.enabled = set;
+	BUTTON_LOAD_DEFAULT.enabled = set;
+	BUTTON_APPLY_CONFIGS.enabled = set;
+//	*****************-----------*****************
+}" 0
+ E E E E 2 -1 -1 0  33.99999999999989 87
+""0  1
+E "string HvBrdClicked,LvchClicked,ChamberName,Layer;
+int ChamberNo;
+dyn_string HvchannelsDps;
+dyn_string textBoxNames, sDp_textBoxes;
+
+drawPanel()
+{    
+	float k1,k2,x,y;
+	float scale; 
+	string HvchClicked;
+	string cellName,layerName,chNo,ChmbrNo,ChmbrName,toolTip;
+	int channelNo,CellHeight,GEMfoilNo;
+	int j;
+	int refRec1_x,refRec1_y;	
+	getValue(\"RECTANGLE1\",\"position\",refRec1_x,refRec1_y); // get ref point of RECTANGLE1
+//	DebugN(\"position=\",refRec1_x,refRec1_y);	
+	 
+	scale=1;
+	CellHeight=24;
+	y=0;
+	x=0;
+	if(ChamberNo%2==0)
+		j=7;
+	else if(ChamberNo%2==1)
+		j=0;
+//--------------------------------draw_table -------------------------
+	for (int i=1; i<=7; i++)
+	{ 
+		cellName=\"boxRow\"+i;	
+		GEMfoilNo=i;
+		channelNo=j+(7-i);
+		if(channelNo<=9)
+			chNo=\"0\"+channelNo;
+		else
+			chNo=channelNo;
+		HvchClicked = HvBrdClicked+\"/channel0\"+chNo;
+		HvchannelsDps[i]=HvchClicked;
+//		DebugN(\"HvchClicked=\",HvchClicked);
+//		CAEN/GEM_CAEN_HV_01/board00/channel000
+//		***************show HvchClicked as tooltip**********
+		toolTip=\"TEXT\"+i;
+		setValue(toolTip, \"toolTipText\", HvchClicked);
+//		***************---------------------------**********
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamber_ChangeSettings2HvBox.pnl\", 
+			cellName,makeDynString(\"$dpHvchClicked:\"+HvchClicked,\"$ChamberName:\"+ChamberName,\"$ChamberNo:\"+ChamberNo,\"$Layer:\"+Layer,\"$GEMfoilNo:\"+GEMfoilNo),
+			refRec1_x+x,refRec1_y+y,0,scale,scale);		
+			
+		y=y+CellHeight-1;	
+	}
+	BoardDpText.text(HvBrdClicked);
+}
+bool Crosscheck_table_dpesettings()
+{
+	dyn_float settings_texts;
+	bool changecolor=0;
+	float tmp=-1;
+	bool tmpbool=-1;
+	string tmpstring=\"\";
+	
+	for (int i=1; i<=42; i++) 
+	{
+		settings_texts[i]=0;
+	}
+	getTextBoxNameList();
+	getDpList();
+	
+	dpGet(sDp_textBoxes , settings_texts);
+//	DebugTN(\"settings_texts=\", settings_texts);
+
+	for (int i=1; i<=dynlen(textBoxNames); i++)
+	{
+		getValue(textBoxNames[i],\"text\",tmp);
+		if (settings_texts[i] != tmp) changecolor=1;
+		tmp=-1;
+//		DebugTN(\"changecolor=\",changecolor,\"   i=\",i);
+	}
+	return changecolor; //this value valid for changecolor and showmessage
+}
+bool Crosscheck_board_dpesettings()
+{	
+	bool setting_OpMode,tmpbool;
+	bool showmessage=0;
+	string text_OpMode;
+	dpGet(HvBrdClicked+\".readBackSettings.opMode:_original.._value\" , setting_OpMode);
+	getValue(\"CASCADE_OpMode\",\"text\",text_OpMode);
+
+//	DebugTN(\"text_OpMode\",text_OpMode);
+	if (text_OpMode == \"FREE\")  tmpbool = FALSE ;
+	if (text_OpMode == \"GEM\")  tmpbool = TRUE  ;
+  
+	if (setting_OpMode != tmpbool) showmessage = 1;
+//	DebugTN(\"setting_OpMode\",setting_OpMode, \"    tmpobool\",tmpbool);
+	
+	return showmessage;
+}
+getDpList()
+{
+	int m=0;
+	for (int i=1; i<=7; i++) 
+	{
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.onOrder:_original.._value\";
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.offOrder:_original.._value\";
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.iMRange:_original.._value\";
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.ZCAdjust:_original.._value\";
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.ZCDetect:_original.._value\";
+		sDp_textBoxes[++m]=HvchannelsDps[i]+\".settings.vMaxSoftValue:_original.._value\";
+	}
+}
+getTextBoxNameList()
+{
+	int n=0;
+	for (int i=1; i<=7; i++) 
+	{
+		textBoxNames[++n]=\"onOrder_\"+i;
+		textBoxNames[++n]=\"offOrder_\"+i;
+		textBoxNames[++n]=\"iMRange_\"+i;
+		textBoxNames[++n]=\"ZCAdjust_\"+i;
+		textBoxNames[++n]=\"ZCDetect_\"+i;
+		textBoxNames[++n]=\"vMaxSoftValue_\"+i;
+	}
+}" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+2 240
+"PRIMITIVE_TEXT124"
+""
+1 1079 160.5 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+240 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 5 1 2 1 E 0.9622973893857479 0 0.3558823529411768 -269.9091757472729 89.65784313725479 0 E 1079 160.5 1219 330.5
+0 2 2 "0s" 0 0 0 64 0 0  1079 160.5 4
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 2
+LANG:1 24 iMonRange = FALSE = High
+LANG:10001 20 iMonRange=FALSE=High
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 2
+LANG:1 25 ZCAdjust    = FALSE = Dis
+LANG:10001 18 ZCAdjust=FALSE=Dis
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 2
+LANG:1 25 ZCDetect    =FALSE  = Off
+LANG:10001 18 ZCDetect=FALSE=Off
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 2
+LANG:1 0 
+LANG:10001 0 
+30 479
+"FRAME2"
+""
+1 30 214 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+479 0 0 0 0 0
+E E E
+1
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 0 1 0 1 E 10.37956487956488 0 1.397849462365592 -303.6785370895346 -231.9731182795699 0 E 30 214 121 401
+2
+LANG:1 35 MS Shell Dlg 2,-1,16,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,16,5,50,0,0,0,0,0
+0 2
+LANG:1 16 Channel settings
+LANG:10001 6 LAYER1
+30 482
+"FRAME3"
+""
+1 30 214 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+482 0 0 0 0 0
+E E E
+1
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 0 1 0 1 E 8.766666666666669 0 0.3333333333333334 -255.130751541749 -67.16666666666657 0 E 30 214 121 401
+2
+LANG:1 35 MS Shell Dlg 2,-1,16,5,50,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,16,5,50,0,0,0,0,0
+0 2
+LANG:1 14 BOARD settings
+LANG:10001 14 BOARD settings
+13 485
+"BUTTON_APPLY_CONFIGS"
+""
+1 823.8692484582512 301.9666666666668 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+485 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  821.8692484582512 292.1666666666668 920.8692484582512 322.1666666666665
+
+T 
+2
+LANG:1 5 Apply
+LANG:10001 5 Apply
+"main(mapping event)
+{
+	dyn_string exceptionInfo;
+	bool answ;
+	fwGeneral_openMessagePanel(\"Do you really want to apply changes?\", answ , exceptionInfo, \"Confirm\", false );
+//	DebugTN(\"answer\",answ);  
+	if (answ)
+		applyChanges();
+}
+
+void applyChanges()
+{
+	getTextBoxNameList();
+	getDpList();
+	
+	if (dynlen(textBoxNames)==dynlen(sDp_textBoxes))
+	{
+		for (int i=1; i<=dynlen(textBoxNames); i++)  
+			EP_textFieldOut( textBoxNames[i] , sDp_textBoxes[i] );
+	}
+}
+EP_textFieldOut(string text, string sDp_text) //applies to Dps values written in text fields
+{
+	float fNewValue;
+	dyn_errClass err;
+	string sTmp;
+	string sFormat, sDp;
+
+	getValue(text, \"text\", sTmp);
+	sscanf(sTmp, \"%f\", fNewValue);
+
+	sDp = dpSubStr(sDp_text,  DPSUB_SYS_DP_EL);
+	if ( strpos(sDp,\".\") < 1 )
+		sDp += \".\";
+
+	sFormat = dpGetFormat( sDp );
+	if( !checkStringFormat(sTmp, sFormat) )
+	{
+		ChildPanelOnCentral( \"vision/MessageWarning\",
+                         getCatStr( \"e_para\", \"warning\" ),
+                         makeDynString( getCatStr( \"e_para\", \"wrongFormat\" )));
+		return;
+	}
+
+	dpSetWait(sDp_text, sTmp);
+	err = getLastError();
+	if (dynlen(err) > 0)
+		errorDialog(err);
+}" 0
+ E E E
+2 486
+"PRIMITIVE_TEXT38"
+""
+1 24.76988948389216 33.16666666666677 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+486 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 24.76988948389216 33.16666666666677 141 50
+0 2 2 "0s" 0 0 0 192 0 0  24.76988948389216 33.16666666666677 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 14 Operating Mode
+LANG:10001 14 Operating Mode
+13 487
+"BUTTON_applyOpMode"
+""
+1 236.9365561505589 20.66666666666677 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+487 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  238.8692484582512 26.66666666666677 337.8692484582512 56.66666666666677
+
+T 
+2
+LANG:1 5 Apply
+LANG:10001 5 Apply
+"main(mapping event)
+{
+	dyn_string exceptionInfo;
+	bool answ;
+	fwGeneral_openMessagePanel(\"Do you really want to apply changes?\", answ , exceptionInfo, \"Confirm\", false );
+//	DebugTN(\"answer\",answ);
+  
+	if (answ)
+		applyChanges();
+}
+
+void applyChanges()
+{
+	EP_idFieldOut( \"CASCADE_OpMode\" , HvBrdClicked + \".settings.opMode\" );
+    
+	setValue(\"BUTTON_applyOpMode\",\"backCol\",\"_Button\");
+	setValue(\"BUTTON_applyOpMode\",\"foreCol\",\"darkgrey\");
+}
+
+EP_idFieldOut(string cascade , string sDp_cascade)  //applies to OnOff Dpes values written in related cascades
+{
+//	DebugTN(\"Applying new setting to\", sDp_cascade);
+	string id=-1;
+	bool newStatus;
+	int exitStatus;
+	dyn_errClass err;
+	
+	getValue(cascade, \"text\", id);
+
+	if (id == \"FREE\")
+		newStatus = FALSE;
+
+	if (id == \"GEM\")
+		newStatus = TRUE;
+// DebugTN(\"id=\",id,\"    newStatus=\",newStatus);
+	
+	exitStatus=dpSetWait(sDp_cascade, newStatus);
+	err = getLastError();
+	if (dynlen(err) > 0)
+		errorDialog(err);
+  
+	if (exitStatus)
+		DebugTN(\"New OpMode not applied\");
+}
+" 0
+ E E E
+13 490
+"BUTTON_LOAD_DEFAULT"
+""
+1 574.6765109890117 224.1666666666666 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+490 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  572.6765109890116 211.6666666666666 690.3234890109884 250.6666666666667
+
+T 
+2
+LANG:1 19 Load default
+values
+LANG:10001 20 Load default 
+values
+"main() 
+{
+	int x,row;
+	int err; // error code
+	file f;
+	dyn_string value;
+	string onOrderName,offOrderName,iMRangeName,ZCAdjustName,ZCDetectName,vMaxSoftValueName;
+	
+	string path=\"C:/..../Default_2.txt\"; 
+//	x=fileSelector(path, \"C:/\", FALSE, \"*.txt\", FALSE, \"myId\");
+//	DebugTN(\"path is\", path);
+// if (path == \"\") errorDialog();
+//  
+	f=fopen(path,\"r\"); // open for reading
+	err=ferror(f); // export error
+	if (err!=0) 
+	{
+		DebugN(\"Error no. \",err,\" occurred\");
+		DebugTN(\"Could not find the file\",path);
+//		exit(0) ;
+	} 
+	else if (patternMatch(\"*.txt\", path) || patternMatch(\"*.TXT\", path))
+	{
+//		f=fopen(path,\"r\"); //creates a file for reading
+//		rewind(f); //back to the beginning of the file 
+	
+		for (int i=1;i<=42;i++)
+		{
+	 		fscanf (f,\"%s\",value[i]); //reads the values from the file
+//			DebugTN(value[i]); 
+		}
+		fclose(f);//closes the file
+		for (int i=1; i<=7; i++) 
+		{
+			onOrderName=\"onOrder_\"+i;
+			offOrderName=\"offOrder_\"+i;
+			iMRangeName=\"iMRange_\"+i;
+			ZCAdjustName=\"ZCAdjust_\"+i;
+			ZCDetectName=\"ZCDetect_\"+i;
+			vMaxSoftValueName=\"vMaxSoftValue_\"+i;
+		
+			row=i-1;
+			
+			setValue(onOrderName,\"text\",value[(row*6)+1]);
+			setValue(offOrderName,\"text\",value[(row*6)+2]);
+			setValue(iMRangeName,\"text\",value[(row*6)+3]);
+			setValue(ZCAdjustName,\"text\",value[(row*6)+4]);
+			setValue(ZCDetectName,\"text\",value[(row*6)+5]);
+			setValue(vMaxSoftValueName,\"text\",value[(row*6)+6]);
+		}
+// 	Check if some loaded values have changed w.r.t. previous values. If so change \"apply\" button color.
+		bool changecolor=Crosscheck_table_dpesettings();
+// 	DebugTN(changecolor);
+		if (changecolor)  
+		{
+			setValue(\"BUTTON_LOAD_DEFAULT\",\"backCol\",\"black\");
+			setValue(\"BUTTON_LOAD_DEFAULT\",\"foreCol\",\"_ButtonText\");
+			setValue(\"BUTTON_APPLY_CONFIGS\",\"foreCol\",\"_ButtonText\");
+		}
+	}
+}" 0
+ E E E
+26 498
+"CASCADE_OpMode"
+""
+1 153.9365561505589 25.66666666666677 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+498 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignNone"
+2
+LANG:1 35 MS Shell Dlg 2,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0  152 24 216 58.99999999999999
+ 0 2
+LANG:1 0 
+LANG:10001 0 
+"" 0 0 0 0 0
+ 2 1 2
+LANG:1 4 FREE
+LANG:10001 4 FREE
+"1" 0 0 0 0 0
+ 1 2
+LANG:1 3 GEM
+LANG:10001 3 GEM
+"3" 0 0 0 0 0
+ "main()
+{
+	dyn_errClass err;  
+  
+	if( !dpExists(HvBrdClicked + \".readBackSettings.opMode:_online.._value\"))
+	{
+		setValue(\"\", \"color\", \"_dpdoesnotexist\");
+		return;
+	}
+
+	dpConnect(\"InitCascade\", HvBrdClicked + \".readBackSettings.opMode:_online.._value\");
+//	CAEN/GEM_CAEN_HV_01/board12.settings.opMode
+
+	err = getLastError();
+	if (dynlen(err) > 0)
+		setValue(\"\", \"color\", \"_dpdoesnotexist\");
+}
+
+InitCascade(string dp, bool bNewValue)
+{
+	dpGet(dp, bNewValue);
+
+	if (bNewValue == TRUE)
+		setValue(\"\",  \"text\", \"GEM\" );
+
+	if (bNewValue == FALSE)
+		setValue(\"\", \"text\", \"FREE\");
+}" 0
+ "main(string id)
+{
+// **** this code shows the new selected value, but DOES NOT apply (\"apply\" button must be clicked) ****
+	bool newStatus;
+	dyn_errClass err;
+	string OpMode;
+	string OpModeText;
+
+	if (id == 1)
+	{
+		newStatus = FALSE;
+		OpMode=\"0\";
+		OpModeText=\"FREE\";
+	}
+	if (id == 3)
+	{
+		newStatus = TRUE;
+		OpMode=\"1\";
+		OpModeText=\"GEM\";
+	}
+	this.text(OpModeText);
+
+	bool changecolor=Crosscheck_OpMode();
+//	DebugTN(changecolor);
+	if (changecolor)  
+	{
+//		setValue(\"BUTTON_applyOpMode\",\"backCol\",\"black\");
+		setValue(\"BUTTON_applyOpMode\",\"foreCol\",\"_ButtonText\");
+	}
+/*    **** alternatively, THIS CODE DIRECTLY APPLIES CHANGES TO SETTINGS WHEN THE VALUE IS CHANGED !! ****      
+	bool newStatus;
+	dyn_errClass err;
+	if (id == 1)
+		newStatus = FALSE;
+
+	if (id == 3)
+		newStatus = TRUE;
+
+	int exitStatus;
+	exitStatus=dpSetWait(\"CAEN/GEM_CAEN_HV/board12.settings.opMode\", newStatus);
+	err = getLastError();
+	if (dynlen(err) > 0)
+		errorDialog(err);
+  
+	if (exitStatus)
+		DebugTN(\"New Operating Mode not applied\");  
+*/
+}
+
+bool Crosscheck_OpMode()
+{
+	bool changecolor=0 ;
+	bool setting_OpMode ;
+	bool tmpbool;
+	string text_OpMode;
+	dpGet(HvBrdClicked + \".settings.opMode:_original.._value\" , setting_OpMode);
+	getValue(\"CASCADE_OpMode\",\"text\",text_OpMode);
+
+	if (text_OpMode == \"FREE\")  tmpbool = FALSE ;
+	if (text_OpMode == \"GEM\")  tmpbool = TRUE  ;
+  
+	if (setting_OpMode != tmpbool) changecolor = 1;
+
+	return changecolor;
+}" 0
+0 
+2 502
+"PRIMITIVE_TEXT233"
+""
+1 860 310 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+502 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 5 1 2 1 E 1.32 0 1.337394308469786 -635.46 -133.149089277544 0 E 846 310 860 322
+0 2 2 "0s" 0 0 0 194 0 0  860 310 1
+2
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+LANG:10001 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 2
+LANG:1 3 (V)
+LANG:10001 3 (V)
+6 511
+"RECTANGLE472"
+""
+1 16 40 E E E 1 E 1 E N {0,0,0} E N {8,255,222} E E
+ E E
+511 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1.122950819672131 0 0.8194444444444444 357.9020353434971 -11.98611111111086 1 E 16 40 382 67
+2 512
+"BoardDp"
+""
+1 384.5025817915844 25.4975113146012 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+512 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 384.5025817915844 25.4975113146012 449 40
+0 2 2 "0s" 0 0 0 192 0 0  384.5025817915844 25.4975113146012 1
+2
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 9 Board Dp:
+LANG:10001 6 OpMode
+14 513
+"BoardDpText"
+""
+1 464.2859151249178 26.26742665124527 E E E 1 E 1 E N "_WindowText" E N {8,255,222} E E
+ E E
+513 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  462.2859151249178 20.66666666666706 778.7025817915844 43.66666666666708
+3 "0s" 0 0 0 0 0 -1  E E E
+6 514
+"RECTANGLE1"
+""
+1 93.06730769230768 125.9999999999999 E E E 1 E 1 E N {0,0,0} E N "_Transparent" E E
+ E E
+514 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E -1 1 3 2 1 E 0.9713251093412016 0 1 20.81689060032609 -10.83333333333322 1 E 93.06730769230768 125.9999999999999 519.0673076923076 286.9999999999999
+2 515
+"offOrder"
+""
+1 187.6817597771823 98.44447087162027 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+515 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 187.6817597771823 98.44447087162027 241 113
+0 2 2 "0s" 0 0 0 192 0 0  187.6817597771823 98.44447087162027 1
+2
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 8 offOrder
+LANG:10001 2 V0
+2 516
+"iMRange"
+""
+1 258.2933678146794 98.44447087162027 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+516 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 258.2933678146794 98.44447087162027 309 112
+0 2 2 "0s" 0 0 0 192 0 0  258.2933678146794 98.44447087162027 1
+2
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 7 iMRange
+LANG:10001 2 V1
+2 517
+"ZCAdjust"
+""
+1 326.0921614851603 98.44447087162027 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+517 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 326.0921614851603 98.44447087162027 379 112
+0 2 2 "0s" 0 0 0 192 0 0  326.0921614851603 98.44447087162027 1
+2
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 8 ZCAdjust
+LANG:10001 2 I0
+2 521
+"ZCDetect"
+""
+1 394.9459836528542 99.19447087162027 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+521 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 394.9459836528542 99.19447087162027 448 113
+0 2 2 "0s" 0 0 0 192 0 0  394.9459836528542 99.19447087162027 1
+2
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 8 ZCDetect
+LANG:10001 8 TripTime
+2 522
+"SoftValue"
+""
+1 462.1811958226568 98.42103337162027 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+522 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 462.1811958226568 98.42103337162027 519 112
+0 2 2 "0s" 0 0 0 192 0 0  462.1811958226568 98.42103337162027 1
+2
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 9 SoftValue
+LANG:10001 4 Imon
+2 523
+"vMax"
+""
+1 474.9133386797997 81.69883757657388 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+523 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 474.9133386797997 81.69883757657388 506 96
+0 2 2 "0s" 0 0 0 192 0 0  474.9133386797997 81.69883757657388 1
+2
+LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 4 vMax
+LANG:10001 4 Vmon
+2 524
+"onOrder"
+""
+1 118.7048482500793 98.58379838152817 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+524 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 118.7048482500793 98.58379838152817 172 114
+0 2 2 "0s" 0 0 0 192 0 0  118.7048482500793 98.58379838152817 1
+2
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 7 onOrder
+LANG:10001 8 iMonReal
+2 527
+"TEXT1"
+""
+1 56.22227043627234 117.4166666666667 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+527 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627234 117.4166666666667 89 134
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627234 117.4166666666667 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 Drfit
+LANG:10001 5 Drift
+2 528
+"TEXT2"
+""
+1 56.22227043627234 140.4166666666667 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+528 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627234 140.4166666666667 105 157
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627234 140.4166666666667 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G1Top
+LANG:10001 5 G1Top
+2 529
+"TEXT3"
+""
+1 56.22227043627234 164.0049019607844 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+529 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627234 164.0049019607844 103 181
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627234 164.0049019607844 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G1Bot
+LANG:10001 5 G1Bot
+2 530
+"TEXT4"
+""
+1 56.22227043627234 187.0049019607843 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+530 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627234 187.0049019607843 105 204
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627234 187.0049019607843 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G2Top
+LANG:10001 5 G2Top
+2 531
+"TEXT5"
+""
+1 56.22227043627234 210.0049019607843 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+531 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627234 210.0049019607843 103 227
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627234 210.0049019607843 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G2Bot
+LANG:10001 5 G2Bot
+2 532
+"TEXT6"
+""
+1 56.22227043627228 233.0049019607843 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+532 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627228 233.0049019607843 105 250
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627228 233.0049019607843 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G3Top
+LANG:10001 5 G3Top
+2 533
+"TEXT7"
+""
+1 56.22227043627228 256.0049019607841 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+533 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+3
+"layoutAlignment" "AlignCenter"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 1 2 1 E U  0 E 56.22227043627228 256.0049019607841 103 273
+0 2 2 "0s" 0 0 0 192 0 0  56.22227043627228 256.0049019607841 1
+2
+LANG:1 26 Arial,-1,15,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0 2
+LANG:1 5 G3Bot
+LANG:10001 5 G3Bot
+13 536
+"BUTTON_CLOSE"
+""
+1 831.6886165901203 29.74166666666672 E E E 1 E 1 E N "_ButtonText" E N "FwStateOKNotPhysics" E E
+ E E
+536 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0  830 23 916 51
+
+T 
+1
+LANG:1 5 Close
+"main()
+{
+	bool showmessage=Crosscheck_table_dpesettings()&&Crosscheck_board_dpesettings();
+//	DebugTN(showmessage);
+	if (showmessage)  { sdOpenPopup(\"\",\"CMS_GEM_CAEN/utils/chamber_settings/refMessage_closeSettings\", \"Warning - Settings not applied\", 30, 30, 0, \"\"); }
+	else  { PanelOff(\"CMS_GEM_CAEN/utils/chamber_settings/refChamber_ChangeSettings.pnl\"); }
+}" 0
+ E E E
+2 537
+"PRIMITIVE_TEXT1571"
+""
+1 741.869248458251 306.1666666666667 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+537 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 671 306.1666666666667 813 318
+0 2 2 "0s" 0 0 0 193 0 0  741.869248458251 306.1666666666667 1
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 31 Click "Apply" to apply settings
+2 538
+"PRIMITIVE_TEXT1572"
+""
+1 449.869248458251 49.1666666666666 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+538 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 379 49.1666666666666 521 61
+0 2 2 "0s" 0 0 0 193 0 0  449.869248458251 49.1666666666666 1
+1
+LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
+0 1
+LANG:1 31 Click "Apply" to apply settings
+13 539
+"BUTTON_SAVE_CONFIGS"
+""
+1 490.4999999999999 193.6666666666665 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+539 0 0 0 0 0
+E E E
+0
+2
+LANG:1 0 
+LANG:10001 0 
+
+1
+"layoutAlignment" "AlignCenter"
+2
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
+0  572.4999999999999 142.6666666666667 690.4999999999998 181.6666666666667
+
+T 
+2
+LANG:1 27 Save current
+settings to...
+LANG:10001 27 Save current
+settings to...
+"main()
+{
+	int x,row;
+	file f;
+	dyn_anytype value;
+	string onOrderName,offOrderName,iMRangeName,ZCAdjustName,ZCDetectName,vMaxSoftValueName;
+	
+	string path=\"null\"; 
+	x=fileSelector(path, \"C:/\", FALSE, \"*.txt\", FALSE, \"myId\");
+	if (path == \"null\") exit(0) ;
+	if (!patternMatch(\"*.txt\", path) && !patternMatch(\"*.TXT\", path))  
+		path = path + \".txt\" ;
+//	DebugTN(\"path is\", path);
+
+	for (int i=1; i<=7; i++) 
+	{
+		onOrderName=\"onOrder_\"+i;
+		offOrderName=\"offOrder_\"+i;
+		iMRangeName=\"iMRange_\"+i;
+		ZCAdjustName=\"ZCAdjust_\"+i;
+		ZCDetectName=\"ZCDetect_\"+i;
+		vMaxSoftValueName=\"vMaxSoftValue_\"+i;
+		
+		row=i-1;
+		
+		getValue(onOrderName,\"text\",value[(row*6)+1]);
+		getValue(offOrderName,\"text\",value[(row*6)+2]);
+		getValue(iMRangeName,\"text\",value[(row*6)+3]);
+		getValue(ZCAdjustName,\"text\",value[(row*6)+4]);
+		getValue(ZCDetectName,\"text\",value[(row*6)+5]);
+		getValue(vMaxSoftValueName,\"text\",value[(row*6)+6]);
+	}
+
+	f=fopen(path,\"w\"); //creates a file for writing
+
+	for (int i=1;i<=42;i++) 
+	{
+//		DebugTN(\"value at\",i,\"is\",value[i]);
+		fprintf(f,\"%s\\t\",value[i]);
+		if (i%6==0) fprintf(f,\"\\n\");
+	}
+	fclose(f);//closes the file
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+1 0 "SHAPE_GROUP15" -1
+3 0 
+511 512 513 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 1 "SHAPE_GROUP3" -1
+7 0 
+527 528 529 530 531 532 533 
+
+"layoutAlignment" "AlignNone"
+"" ""
+1 2 "SHAPE_GROUP2" -1
+2 0 
+522 523 
+
+"layoutAlignment" "AlignNone"
+"" ""
+0
