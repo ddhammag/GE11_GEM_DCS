@@ -2,19 +2,23 @@ V 14
 2
 LANG:1 0 
 LANG:10001 0 
-PANEL,-1 -1 953 413 N "_3DFace" 5
+PANEL,-1 -1 953 413 N "_3DFace" 7
 "$ChamberName"
 "$ChamberNo"
 "$Layer"
+"$dpEndcapName"
 "$dpHvBrdClicked"
+"$dpLVBrdClicked"
 "$dpLvchClicked"
 "main()
 {
 	HvBrdClicked=$dpHvBrdClicked;
-	LvchClicked=$dpLvchClicked;
+	LvBrdClicked=$dpLVBrdClicked;
+  LvchClicked=$dpLvchClicked;
 	ChamberName=$ChamberName;
 	ChamberNo=$ChamberNo;
 	Layer=$Layer;
+  Endcap= $dpEndcapName;
 	
 	string ChmbrNo,layerName,ChmbrName;
 	
@@ -35,9 +39,9 @@ PANEL,-1 -1 953 413 N "_3DFace" 5
 	ChmbrNameText.text(ChmbrName);
 //**************--------------------*****************	
 }" 0
- E E E E 1.5 -1 -1 0  20 30
+ E E E E 1 -1 -1 0  20 30
 ""0  1
-E "string HvBrdClicked,LvchClicked,ChamberName,Layer;
+E "string HvBrdClicked,LvBrdClicked,LvchClicked,ChamberName,Layer,Endcap;
 int ChamberNo;" 0
  3
 "CBRef" "1"
@@ -150,7 +154,7 @@ T
 LANG:1 14 Status Monitor
 "main(mapping event)
 {
-  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_StatusMonitor.pnl\",\"Monitor\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$dpLvchClicked:\"+LvchClicked,\"$ChamberName:\"+ChamberName,\"$ChamberNo:\"+ChamberNo,\"$Layer:\"+Layer));
+  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/chamber_settings/refChamber_StatusMonitor.pnl\",\"Monitor\",makeDynString(\"$dpHvBrdClicked:\"+HvBrdClicked,\"$dpLVBrdClicked:\"+LvBrdClicked,\"$dpLvchClicked:\"+LvchClicked,\"$ChamberName:\"+ChamberName,\"$ChamberNo:\"+CellNo,\"$Layer:\"+Layer,\"$dpEndcapName:\"+Endcap));
 }" 0
  E E E
 6 19

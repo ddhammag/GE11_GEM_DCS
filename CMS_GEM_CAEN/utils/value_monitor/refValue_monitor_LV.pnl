@@ -68,7 +68,21 @@ drawLvStatus(string Endcap,int layer,int refRec_x,int refRec_y)
 		//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status	
 	}	
 }" 0
- E E E E 1 -1 -1 0  6.144667832170171 19.75511048091676
+ E "main(int x, int y, mapping event)
+{
+  if(shapeExists(\"refName3\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+  }
+}" 0
+ "main(mapping event)
+{
+  if(shapeExists(\"refName3\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+  }
+}" 0
+ E 1 -1 -1 0  6.144667832170171 19.75511048091676
 ""0  1
 E "string Endcap,LvMF,easyBoardName;
 

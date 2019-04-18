@@ -64,11 +64,17 @@ LANG:1 0
 1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
  "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName2\");
+	if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 	ChildPanelOn(\"/fwCaen/fwCaenBoardSY1527A1676Operation\", \"GEM CAEN CRATE LV\",makeDynString(\"$sDpName:\"+LvBranchConName),0,0);
 }" 0
 
@@ -87,7 +93,10 @@ E "main(mapping event)
 		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
 		dyn_int popupPnlXY;
   		getCursorPosition(mouseX, mouseY);
-		removeSymbol(myModuleName(), \"\", \"refName2\");		
+		if(shapeExists(\"refName2\"))
+    {
+  	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+    }	
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupBranchController.pnl\");
 		getValue(\"FRAME7\",\"position\",FRAME1_x,FRAME1_y); 
 		getValue(\"FRAME7\",\"size\",FRAME2_x,FRAME2_y);
@@ -130,7 +139,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 29.99999999999989 29.33620689655163 141.9999999999999 44
+E E 0 1 3 2 1 E U  0 E 30 29.33620689655163 142 44
 0 2 2 "0s" 0 0 0 193 0 0  85.99999999999977 29.33620689655163 1
 1
 LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0

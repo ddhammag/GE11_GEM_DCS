@@ -67,9 +67,19 @@ LANG:1 0
 1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
- E
+ "main(mapping event)
+{
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
+}" 0
+
 0 0 0 0 0 0
 E E E
 0
@@ -82,13 +92,16 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName2\");	//close previous popup panels
+	if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 	int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,FRAME1_x,FRAME1_y;
 	dyn_int targetPnlXY,popupPnlXY;
 				
 	targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/power_supply_status/refHVMainFrameStatus.pnl\");
 	popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\");
-	getValue(\"FRAME5\",\"position\",FRAME1_x,FRAME1_y); // get ref point of ellipse1-ellipse7
+	getValue(\"FRAME5\",\"position\",FRAME1_x,FRAME1_y); 
 	getValue(\"\",\"position\",pos_X,pos_Y);	// get reference point of a clicked cell
 //	DebugN(targetPnlXY);
 	edgeX=pos_X+popupPnlXY[1]; 

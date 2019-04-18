@@ -38,7 +38,10 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\",\"refName\");
+	if(shapeExists(\"refName\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName\"); //close previous popup panels	
+  }
 }" 0
  -1 1 3 2 1 E 1.069825436408978 0 1.012135922330097 -21.95401608774463 -5.234313947106928 1 E 12 7 814 419
 7 1

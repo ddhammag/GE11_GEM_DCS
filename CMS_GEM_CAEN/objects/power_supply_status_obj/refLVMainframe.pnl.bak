@@ -66,7 +66,10 @@ LANG:1 0
 1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
  E
 0 0 0 0 0 0
@@ -81,7 +84,10 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName2\");	//close previous popup panels
+	if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 	int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
 	dyn_int popupPnlXY;
 
@@ -100,12 +106,12 @@ E "main(mapping event)
 		pos_Y=pos_Y-popupPnlXY[2]/20;
 		edgeY=pos_Y+popupPnlXY[2];
 //		DebugN(\"edgeY\", edgeY);
-		}
-		coordi_Y=pos_Y+30;//10 just used for the adjustment
-//		DebugN(coordi_X, coordi_Y);
-  		addSymbol(myModuleName(), myPanelName(),
-            \"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\",\"refName2\",
-            makeDynString(\"$dpMainFrameName:\"+LvMFrameName,\"$dpMfCellName:\"+MfCellName,\"$dpMfLabel:\"+MfLabel,\"$dpMfCellNo:\"+MfCellNo),coordi_X, coordi_Y, 0, 1, 1);
+	}
+	coordi_Y=pos_Y+30;//30 just used for the adjustment
+//	DebugN(coordi_X, coordi_Y);
+  	addSymbol(myModuleName(), myPanelName(),
+       \"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\",\"refName2\",
+       makeDynString(\"$dpMainFrameName:\"+LvMFrameName,\"$dpMfCellName:\"+MfCellName,\"$dpMfLabel:\"+MfLabel,\"$dpMfCellNo:\"+MfCellNo),coordi_X, coordi_Y, 0, 1, 1);
 }" 0
  0 1 3 2 1 E 0.6052631578947368 0 1.605263157894737 -347.7994182728329 -834.9168435276632 1 E 590 529 704 548
 2 2

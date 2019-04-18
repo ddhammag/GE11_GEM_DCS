@@ -423,7 +423,7 @@ string HVboardClicked(int HvCellNo)
 
 	CellNo=HvCellNo-1;
 	//---------------------------------------------------
-	if(CellNo <= 15)	
+	if(CellNo <= 8)	
 	{
 		if(CellNo < 10)
 			boardNo=\"0\"+CellNo;
@@ -431,9 +431,9 @@ string HVboardClicked(int HvCellNo)
 			boardNo=CellNo;
 		GemCaenHvNo=1+CaenHvNo;
 	}
-	else if((CellNo > 15)&&(CellNo <= 17))
+	else if((CellNo > 8)&&(CellNo <= 17))
 	{
-		boardNo=\"0\"+(CellNo-16);
+		boardNo=\"0\"+(CellNo-9);
 		GemCaenHvNo=2+CaenHvNo;
 	}
 	else DebugN(\"Hv Cell Number is not in range\");
@@ -489,7 +489,7 @@ easyBoard(int i)
  3
 "CBRef" "1"
 "EClose" E
-"dpi" "96"
+"dpi" "120"
 0 0 0
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0

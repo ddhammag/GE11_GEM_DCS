@@ -28,7 +28,24 @@ PANEL,-1 -1 640 51 N "_3DFace" 4
  E E E E 1 -1 -1 0  18 15.99999999999989
 ""0  1
 E "string HvchClicked,HvBrdName;
-int HvBrdNo,channelNo;" 0
+int HvBrdNo,channelNo;
+
+updateSum()
+{
+	float sum1=0;
+	float sum2=0;
+	dyn_float values1;
+	dyn_float values2;
+	for(int i=1; i<=7; i++)
+	{
+		getValue(\"V0_\"+i, \"text\", values1[i]);
+		getValue(\"V0_\"+(7+i), \"text\", values2[i]);
+		sum1=sum1+values1[i];	
+		sum2=sum2+values2[i];
+	}
+	setValue(\"TEXT_Sum1\", \"text\", sum1);
+	setValue(\"TEXT_Sum2\", \"text\", sum2);
+}" 0
  3
 "CBRef" "1"
 "EClose" E

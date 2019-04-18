@@ -64,7 +64,10 @@ LANG:1 0
 1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
  E
 0 0 0 0 0 0
@@ -79,8 +82,11 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName2\");	//close previous popup panels
-	int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,size_X,size_Y;
+	if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
+	int pos_X,pos_Y,coordi_X,coordi_Y,size_X,size_Y;
 	dyn_int popupPnlXY;
 	
   	popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupBranchController.pnl\");

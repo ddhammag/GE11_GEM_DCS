@@ -1,7 +1,7 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 1350 679 N {134,142,144} 2
+PANEL,-1 -1 1360 679 N {134,142,144} 2
 "$dpEndcapName"
 "$dpHvMFName"
 "main()
@@ -10,17 +10,16 @@ PANEL,-1 -1 1350 679 N {134,142,144} 2
 	Endcap= $dpEndcapName;
 	initEndcap();
 	
-	dyn_string L1L2LvChActStatusDps,L1LvChActVmonImonDps,L2LvChActVmonImonDps;
-	int n,ref_Px,ref_Py,ref_Sx,ref_Sy;
+	int n;
 	
 	ScanState=FALSE;
 	scanStop=FALSE;
 	vFrom.text=100;
-  	stepSize.text=100;
-  	vTo.text=3000;
-  	hTime.text=2;
-  	pbScan.enabled=TRUE;
-  	pbStop.enabled=FALSE;
+  stepSize.text=100;
+  vTo.text=3000;
+  hTime.text=2;
+  pbScan.enabled=TRUE;
+  pbStop.enabled=FALSE;
 	rowBegin=0;
 	rowLast=0;
 	
@@ -31,10 +30,9 @@ PANEL,-1 -1 1350 679 N {134,142,144} 2
 	for (int i=1; i<=36; i++)
 	{  
 		int ChmbrNo=i;
-		L1andL2HvBrdDp[++n]=HVboardClicked(ChmbrNo);
-		cellNames[n]=Endcap+\"L1_\"+i;
-		L1andL2HvBrdDp[++n]=L1andL2HvBrdDp[n];
-		cellNames[n]=Endcap+\"L2_\"+i;
+		HvBrdDp[i]=HVboardClicked(ChmbrNo);
+		cellNames[++n]=Endcap+\"L1_\"+i;
+		cellNames[++n]=Endcap+\"L2_\"+i;
 	}
 	drawRingChambers();
 	drawRingTexts();  
@@ -45,55 +43,52 @@ PANEL,-1 -1 1350 679 N {134,142,144} 2
  E E E E 1 -1 -1 0  775 79
 ""0  1
 E "string Gchannel,L2channel,L1channel,HvMF,LvMF;
-string ChamberInOrExDp;
-string Endcap,EndcapType,easyBoardName,scanChmbrName;
-int branchConNo,CaenHvNo,rowBegin,rowLast;
+string ChamberInOrExDp,excludeColor,sys;
+string Endcap,EndcapType,easyBoardName;
+int branchConNo,CaenHvNo,rowBegin,rowLast,noOfRows;
 float start,stop,step,holdTime;
-bool ScanState,swopt,scanStop,write;
-dyn_string ChmbrInOrExDp,L1andL2HvBrdDp,cellNames;
-dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
-dyn_bool statusSet,statusCurnt;
+bool ScanState,swopt,scanStop,write,ramping;
+dyn_string ChmbrInOrExDp,HvBrdDp,cellNames,ErrorChambr;
+dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+dyn_bool statusSet,statusCurnt,ChmbrInOrExStatus;
 dyn_bool statusSet=statusChanged;
+
 drawTable(dyn_string Dp,dyn_bool InOrExDp)
 {
 	SelectAllCBox1.state(0,FALSE);
-	statusCurnt=InOrExDp;
+	ChmbrInOrExStatus=InOrExDp;
 	string includeColor=\"FwStateOKPhysics\";
-	string excludeColor=\"FwEquipmentDisabled\";
+	excludeColor=\"FwEquipmentDisabled\";
 	string excludeFontColor=\"{234,234,234}\";
-	for(int i=1;i<=72;i++)
+	for(int i=1;i<=36;i++)
 	{
-		if(InOrExDp[i]==TRUE)
+		if(InOrExDp[i*2-1] && InOrExDp[i*2])
 		{
-			if(i%4==1){
+      statusCurnt[i]=TRUE;
+			if(i%2==1){
 				ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
-				ChamberTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
-				ChamberTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
-				ChamberTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
 			}
-			if(i%4==3){
+			if(i%2==0){
 				ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
-				ChamberTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
-				ChamberTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
-				ChamberTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
 			}
-			ChamberTable.cellBackColRC(i-1, \"3\", \"white\");
-			ChamberTable.cellValueRC(i-1,\"3\",\"Click here\\n to select\");	
-			for(int j=1;j<3;j++)
-			{
-				ChamberTable.cellForeColRC(i-1,j, \"black\");
-			}
+			ChamberTable.cellBackColRC(i-1, \"2\", \"white\");
+			ChamberTable.cellValueRC(i-1,\"2\",\"Click here\\n to select\");	
+			ChamberTable.cellForeColRC(i-1,\"1\", \"black\");
+		}
+    else if(InOrExDp[i*2-1] != InOrExDp[i*2])
+		{
+      statusCurnt[i]=TRUE;
+      ChamberTable.cellBackColRC(i-1, \"1\", excludeColor);	
+      ChamberTable.cellBackColRC(i-1, \"2\", excludeColor);
+      ChamberTable.cellValueRC(i-1,\"2\",\"Click here\\n to select\");	
 		}
 		else
 		{
+      statusCurnt[i]=FALSE;
 			ChamberTable.cellBackColRC(i-1, \"1\", excludeColor);
-			for(int k=2;k<=3;k++)
-			{
-				ChamberTable.cellBackColRC(i-1, k, excludeColor);
-				ChamberTable.cellForeColRC(i-1,k, excludeFontColor);
-			}	
-			ChamberTable.cellValueRC(i-1,\"3\",\"Excluded\");	
+			ChamberTable.cellBackColRC(i-1, \"2\", excludeColor);
+			ChamberTable.cellForeColRC(i-1, \"2\", excludeFontColor);	
+			ChamberTable.cellValueRC(i-1,\"2\",\"Excluded\");	
 		}
 	}
 }	
@@ -102,30 +97,22 @@ initChamberTable()
   // ------------ prepare table ------------
 	ChamberTable.sortOnClick(FALSE);
 	ChamberTable.columnHeader(0, \"     Supper \\n   Chamber\");
-	ChamberTable.columnHeader(2, \"       Select\"\"\\n\");
+	ChamberTable.columnHeader(1, \"       Select\"\"\\n\");
 	for(int i=1;i<=36;i++)
 	{
-   	ChamberTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"Layer 1\",\"3\",\"\");
-		ChamberTable.appendLine(\"1\",\"\",\"2\",\"Layer 2\",\"3\",\"\");
+   	ChamberTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"\");
 	}
-	for(int i=1;i<=72;i++)
+	for(int i=1;i<=36;i++)
 	{
-		if(i%4==1){
+		if(i%2==1){
 			ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
-			ChamberTable.cellBackColRC(i, \"1\", \"{222,234,246}\");
-			ChamberTable.cellBackColRC(i-1, \"2\", \"{222,234,246}\");
-			ChamberTable.cellBackColRC(i, \"2\", \"{222,234,246}\");
 		}
-		if(i%4==3){
+		if(i%2==0){
 			ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
-			ChamberTable.cellBackColRC(i, \"1\", \"{189,214,238}\");
-			ChamberTable.cellBackColRC(i-1, \"2\", \"{189,214,238}\");
-			ChamberTable.cellBackColRC(i, \"2\", \"{189,214,238}\");
 		}
 	}
 	ChamberTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
 	ChamberTable.columnFormat(\"2\",\"[0s,,,ALIGNMENT_CENTER]\");
-	ChamberTable.columnFormat(\"3\",\"[0s,,,ALIGNMENT_CENTER]\");
 }
 initScanTable() 
 {
@@ -170,125 +157,236 @@ initScanTable()
 //********************************************************************************
 // For A1526,\"output voltage range is 0 V to 15 kV with 1 V monitor resolution\" (datsheet)
 //The HV RAMP-UP and RAMP-DOWN rates may be selected independently for each channel in the range 1? 500 V/s in 1 V/s steps.
-scanChannel(dyn_string HVchannels)
+scanChannel(dyn_string HVchannels, int rowFirst,string scanChmbrName,int SCNo)
 {
-  	time t,t1,t2;
-  	float eTime,rUp;
+  time t,t1,t2;
+  float eTime,rUp;
 	dyn_float stepTime;
-  	float vMonVal,vSetVal,vSet;
-  	float iMonVal,steps; 
-	string HVchDp;
-	float iSetVal=0; //degug line, must remove++++++++++++++++++++++++++++++++++++++++++
+  float vMonVal,vSetVal,vSet,vSetstart;
+  float iMonVal,steps; 
+	string HVchDp,msg,msgText;
+  int chStatus;
+  dyn_int allChStatus;
+  bool Eror, timeExceeded;
   //***********************************************/  
+  Eror=FALSE;
+  timeExceeded=FALSE;
 	steps=(stop-start)/step;
 	steps=ceil(steps);
-	
-	ScanTable.cellValueRC(rowBegin,1,uniSubStr(scanChmbrName,0,5));	//select \"GE1/1\"	 from \"GE1/1+GEMINI_01 Layer 1\"					
-	ScanTable.cellValueRC(rowBegin+1,1,uniSubStr(scanChmbrName,5,10));//select \"+GEMINI_01\"	 from \"GE1/1+GEMINI_01 Layer 1\"
-	ScanTable.cellValueRC(rowBegin+2,1,uniSubStr(scanChmbrName,16,7));//select \"Layer 1\"	 from \"GE1/1+GEMINI_01 Layer 1\"
+  //***************display scanning started massaege ****************/ 
+  msg=\"*** INFO -\";
+  msg=msg+\"Please wait until \"+ scanChmbrName + \" initialize\";
+	dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  fwFsmUi_report(msg,\"dist_1\");
+  //*****************************************************************/
+  //*******display the name of scanning S.chamber on the table*******/    
+	ScanTable.cellValueRC(rowFirst,1,uniSubStr(scanChmbrName,0,5));	//select \"GE1/1\"	 from \"GE1/1+GEMINI_01\"					
+	ScanTable.cellValueRC(rowFirst+1,1,uniSubStr(scanChmbrName,5,10));//select \"+GEMINI_01\"	 from \"GE1/1+GEMINI_01\"
+  //*****************************************************************/
+  //*****initialize the HV chanls and set the corresponding start voltages for 7 HV channels********/
 	for(int j=1;j<=7;j++)
 	{
-		if(ScanState) // check if user terminate the scan by pressing stop bttn
-  		{
+		if(ScanState || !Eror) // check if user terminate the scan by pressing stop bttn or error occurred
+  	{
 			HVchDp=HVchannels[j];
-	  		dpGet(HVchDp+\".readBackSettings.rUp\",rUp);    //(deltaV/deltaT)
-//			Debug(\"HVchDp=\",HVchDp);
-	  		if(rUp==0);
-	  		{
-	    		rUp=50;        //*The HV RAMP-UP and RAMP-DOWN rates may be selected 
+	  	dpGet(HVchDp+\".readBackSettings.rUp\",rUp);    //(deltaV/deltaT)
+//		Debug(\"HVchDp=\",HVchDp);
+      //***check if there is any error occurred on HV cahannel (actual.status)***/
+      dpGet(HVchDp+\".actual.status\",chStatus);
+      if(chStatus > 8){
+        Eror=TRUE;
+      }
+      //************************************************************************/    
+	  	if(rUp==0)
+	  	{
+	    	rUp=50;        //*The HV RAMP-UP and RAMP-DOWN rates may be selected 
 	                   //independently for each channel in 
-	                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)*/
-	    		dpSet(HVchDp+\".settings.rUp\",rUp);
-	  		}
-	  		stepTime[j]=(float)dividerVoltage(j,step)/rUp;  //time taken to increase by one voltage step
-			dpSet(HVchDp+\".settings.onOff\",1);
-	  		dpGet(HVchDp+\".actual.vMon\",vMonVal);
-  
-			if(vMonVal>start)
-	  		{ 
-	    		dpSetWait(HVchDp+\".settings.v0\",start); 
-	    		while(vMonVal>start)
-	    		{
-					dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
-	      		//dpGet(HVchDp+\".actual.vMon\",vMonVal);
-	    		}
-	  		}
+	                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)
+	    	dpSet(HVchDp+\".settings.rUp\",rUp);
+	  	}
+	  	stepTime[j]=(float)dividerVoltage(j,step)/rUp;  //time taken to increase by one voltage step
+			dpSetWait(HVchDp+\".settings.onOff\",1);          //switch on the HV channel
+      dpGet(HVchDp+\".actual.vMon\",vMonVal);           //get current vMon value  
+      
+      vSetstart=dividerVoltage(j,start);  //get the divider voltage using start value for the corresponding channel
+                
+      //**if current vMon is greater than vSetstart, set and wait until it rampdown upto vSetstart value***/
+      //if(vMonVal > vSetstart)
+      //{ 
+        dpSetWait(HVchDp+\".settings.v0\",vSetstart);
+     // }
 		}
-	}
-  	if(ScanState)	// check if user terminate the scan by pressing stop bttn
-  	{ 
-    	for(int i=0; i <= steps; i++)
-    	{
-			//********************add new line to end of the table with bacgroud colors if colored lines are finished********
-			if(rowBegin+i>=ScanTable.lineCount()) // add new line to end of the table with bacgroud colors
-			{
-				ScanTable.appendLine(\"1\",\"\");
-				ScanTable.cellBackColRC(rowBegin+i, 1, \"{204,204,204}\");
-				for(int k=2;k<=15;k++)
-				{
-					if(k%4==2){
-						ScanTable.cellBackColRC(rowBegin+i, k, \"{222,234,246}\");
-						ScanTable.cellBackColRC(rowBegin+i, k+1, \"{222,234,246}\");
-					}
-					if(k%4==0){
-						ScanTable.cellBackColRC(rowBegin+i, k, \"{205,230,245}\");
-						ScanTable.cellBackColRC(rowBegin+i, k+1, \"{205,230,245}\");
-					}
-				}
-			}
-			//***********************************************************************************************************
-			for(int j=1;j<=7;j++)
+	}/*
+  //********wait until rampdown is finished for all channels*********
+  ramping = TRUE;
+  eTime=0;
+  t1=getCurrentTime();
+  while(eTime<2)
+  {
+    t2=getCurrentTime();
+    t=t2-t1;
+    eTime=t;    //time elapsed
+    eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+  }
+  while(ramping && ScanState && !Eror)
+  { 
+    for(int k=1;k<=7;k++)
+    {
+      dpGet(HVchannels[k]+\".actual.status\",allChStatus[k]);
+      if (allChStatus[k]==3 || allChStatus[k]==5){
+        ramping &= TRUE;
+      }
+      else
+        ramping &= FALSE;
+    }
+  }*/
+  //****************************************************************/
+  //***************display scanning started massaege ****************/ 
+  msg=\"*** INFO -\";
+  msg=msg+\"HV Scan for \"+ scanChmbrName + \" started\";
+	dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  dpSet(sys+\"fwCU_GEM_ENDCAP_Minus.message\",msg);
+  fwFsmUi_report(msg,\"dist_1\");
+  //*****************************************************************/
+  //************beginning of scanning for 7 HV channels**************/
+  if(ScanState || !Eror)	// check if user terminate the scan by pressing stop bttn or error occurred
+  {
+    for(int i=0; i <= steps; i++)
+    {
+		  for(int j=1;j<=7;j++)
 			{  
-				HVchDp=HVchannels[j];
-      		if(i==steps)
-      			vSet=stop; 
-      		else    
-      			vSet=start+(i*step);
+			  HVchDp=HVchannels[j];
+      	if(i==steps)
+      		vSet=stop; 
+      	else    
+      		vSet=start+(i*step);
+          
 				vSetVal=dividerVoltage(j,vSet);
-				iSetVal=iSetVal+(rand()%10)*0.011111;  //degug line, must remove+++++++++++++++++++++++++++++
-      		if(!scanStop)
-      		{
-        			dpSetWait(HVchDp+\".settings.v0\",vSetVal);
-					dpSetWait(HVchDp+\".actual.iMon\",iSetVal);  //degug line, must remove +++++++++++++++  
-        			t1=getCurrentTime();
-        			dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
-        			eTime=0;
-        			while(vMonVal<=0.98*vSetVal || eTime < (stepTime[j]+holdTime))
-        			{ 
-        		 		if(!scanStop)	// check if user terminate the scan by pressing stop bttn
-         			{
-							dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); ++++
-            		//	dpGet(HVchDp+\".actual.vMon\",vMonVal);
-            			t2=getCurrentTime();
-            			t=t2-t1;
-            			eTime=t;    //time elapsed
-            			eTime=(60*minute(t))+second(t);    //time elapsed in seconds
-          			}
-          			else  
-            			break;      
-        			}
-        			if(write)
-        			{
-			    	//**********show data in the table*************
-						dpGet(HVchDp+\".settings.v0\",vMonVal); //dpGet(HVchDp+\".actual.vMon\",vMonVal); +++++++++++++++
-						//dpGet(HVchDp+\".actual.vMon\",vMonVal);
-						dpGet(HVchDp+\".actual.iMon\",iMonVal);
-						iMonVal=round(iMonVal); //round off the iMonVal value				
+      	if(!scanStop || !Eror)// check if user terminate the scan by pressing stop bttn or error occurred
+      	{
+        	dpSetWait(HVchDp+\".settings.v0\",vSetVal); 
+          t1=getCurrentTime();
+          dpGet(HVchDp+\".actual.vMon\",vMonVal); // get actual vMon value
+        	eTime=0;
+          //************wait until vSetVal and vMonVal values get equal enough**************/
+        	while((( vMonVal>=1.02*vSetVal || vMonVal<=0.98*vSetVal )|| ( eTime < (stepTime[j]+holdTime)))&& !timeExceeded && !Eror)
+        	{ 
+            if(!scanStop)	// check if user terminate the scan by pressing stop bttn
+         		{
+            	dpGet(HVchDp+\".actual.vMon\",vMonVal); // get actual vMon value
+            	t2=getCurrentTime();
+            	t=t2-t1;
+            	eTime=t;    //time elapsed
+            	eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+                  
+             
+              //***sometimes, when we set the voltage to the one channel, some of other HV channels will also go to error state****/
+              //***therefor we have to check all 7 channels to check if there is an error****/
+              //***if there is an error in any channel, scan will be break****/
+              for(int k=1;k<=7;k++)
+              {
+                dpGet(HVchannels[k]+\".actual.status\",allChStatus[k]);
+              }
+              if((allChStatus[1]>8||allChStatus[2]>8||allChStatus[3]>8||allChStatus[4]>8||allChStatus[5]>8||allChStatus[6]>8||allChStatus[7]>8) != (allChStatus[j]>8))
+              {
+                if(!(allChStatus[j]>8))
+                {
+                  
+                  Eror=TRUE;
+                  DebugN(\"allChStatus Eror\",Eror,\"eTime\",eTime);
+                  break;
+                }
+                else if ((eTime > 15*(stepTime[j]+holdTime))&&(allChStatus[j]>8))
+                {
+                  Eror=TRUE;
+                  DebugN(\"channel Eror\",Eror,\"eTime\",eTime);
+                  break;
+                }
+              }
+              //************************************************************************/ 
+              if(eTime > 30*(stepTime[j]+holdTime))
+              {	
+                timeExceeded=TRUE;
+                break;
+              }
+            }
+            else
+            {
+              write=FALSE;
+              break;
+            }     
+          }     
+        	//***sometimes, when we set the voltage to the one channel, some of other HV channels will also go to error state****/
+          //***therefor we have to check all 7 channels to check if there is an error****/
+          //***if there is an error in any channel, scan will be break****/
+          for(int k=1;k<=7;k++){
+            dpGet(HVchannels[k]+\".actual.status\",allChStatus[k]);
+          }
+          if(allChStatus[1]>8||allChStatus[2]>8||allChStatus[3]>8||allChStatus[4]>8||allChStatus[5]>8||allChStatus[6]>8||allChStatus[7]>8)
+          {
+            Eror=TRUE;
+            break;
+          }
+          //************************************************************************/ 	
+        	if(write && !Eror && !timeExceeded) // check if user terminate the scan by pressing stop bttn or error occurred
+        	{
+    			  //**********show data in the table*************
+    				dpGet(HVchDp+\".actual.vMon\",vMonVal); // get actual vMon value
+    				dpGet(HVchDp+\".actual.iMon\",iMonVal);
+            Debug(\"vSetVal=\",vSetVal,\"vMonVal=\",vMonVal);
+                  Debug(\"eTime=\",eTime,\"(stepTime[j]+holdTime)=\",(stepTime[j]+holdTime));
+    				iMonVal=round(iMonVal); //round off the iMonVal value				
 					
-						ScanTable.cellValueRC(rowBegin+i,j*2,vMonVal);							
-						ScanTable.cellValueRC(rowBegin+i,(j*2+1),iMonVal);					
-					//**********end of show data in the table*********
-        			}
-      		}
-    		}
-			rowLast=rowBegin+i;
+    				ScanTable.cellValueRC(rowFirst+i,j*2,vMonVal);							
+    				ScanTable.cellValueRC(rowFirst+i,(j*2+1),iMonVal);					
+    				//*********end of show data in the table*******
+        	}
+      	}
+    	}
 		}
-	}  
+	} 
+  statusChanged[SCNo]=FALSE; // reset after finishing update
+  statusSet[SCNo]=statusCurnt[SCNo];
+  //****clear the user seletions and set back the chamber table to initial state****
+  if((ChmbrInOrExStatus[SCNo*2-1])!=(ChmbrInOrExStatus[SCNo*2]))
+    ChamberTable.cellBackColRC(SCNo-1, \"2\", excludeColor);
+  else
+    ChamberTable.cellBackColRC(SCNo-1, \"2\", \"white\");
+          
+  ChamberTable.cellValueRC(SCNo-1,\"2\",\"Click here\\n to select\");
+              
+  if(ChmbrInOrExStatus[SCNo*2-1])
+    setValue(cellNames[SCNo*2-1], \"backCol\", \"kobaltblau\");	
+  if(ChmbrInOrExStatus[SCNo*2])	
+    setValue(cellNames[SCNo*2], \"backCol\", \"kobaltblau\"); 
+  //********************************************************************************
+  //****message will be displayed if any error occurrs during the scan*******
+  if(timeExceeded){
+    msgText = \"Time Exceeded(10 s) in \"+ scanChmbrName+ \". There may be some problem... Plz check...\";
+    showErrorMsg(msgText);
+  }
+  if(Eror){
+    msgText = \"Error occurred in HV channel/s in \"+ scanChmbrName;
+    showErrorMsg(msgText);
+  }
+  if(timeExceeded || Eror){
+    ErrorChambr[sizeof(ErrorChambr)+1]=scanChmbrName;
+  }
+  //************************************************************************* 
+  //******message will be displayed if scan is successfully completed********
+  else{
+    msg=\"*** INFO -\";
+	  msg=msg + scanChmbrName + \" HV Scan Completed Successfully\";
+    dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  }
+  //*************************************************************************
+  //********turn off the channels if user select \"turn off ch\" button********
 	if(swopt) 
 	{
 		for(int j=1;j<=7;j++) 
 	    	dpSet(HVchannels[j]+\".settings.onOff\",0);
 	}
+  //*************************************************************************
 }
 //***************round***************: 
 /**  round off any value according to the user input decimal places.
@@ -303,6 +401,21 @@ float round(float v)
 	sprintf(val, \"%8.\"+deciPoints+\"f\", v);	//fromat the float value (round off)
 	roundedVal=(float)val;						//convert val (srting value) to float value
 	return roundedVal;
+}
+//***************showErrorMsg***************: 
+/**  popup a new window and show a message **
+      @param msgText: The message to be displayed.
+*/
+showErrorMsg(string msgText)
+{
+  string msg=\"*** INFO -\";
+  msg=msg + msgText;
+  dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  fwFsmUi_report(msg);
+  //---------------popupMessage----------------
+  bool answ;
+  dyn_string exceptionInfo; 
+  fwGeneral_openMessagePanel(msgText, answ , exceptionInfo, \"Message!\", true );
 }
 //************************************:
 drawRingChambers()
@@ -444,7 +557,7 @@ string HVboardClicked(int LayerCellNo)
 
 	CellNo=HvCellNo-1;
 	//---------------------------------------------------
-	if(CellNo <= 15)	
+	if(CellNo <= 8)	
 	{
 		if(CellNo < 10)
 			boardNo=\"0\"+CellNo;
@@ -452,9 +565,9 @@ string HVboardClicked(int LayerCellNo)
 			boardNo=CellNo;
 		GemCaenHvNo=1+CaenHvNo;
 	}
-	else if((CellNo > 15)&&(CellNo <= 17))
+	else if((CellNo > 8)&&(CellNo <= 17))
 	{
-		boardNo=\"0\"+(CellNo-16);
+		boardNo=\"0\"+(CellNo-9);
 		GemCaenHvNo=2+CaenHvNo;
 	}
 	else DebugN(\"Hv Cell Number is not in range\");
@@ -484,9 +597,519 @@ string dividerVoltage(int i,float V)
 	sprintf(divVolt,\"%5.1f\",divVoltage);
 	return (divVolt); 
 }" 0
- 3
+ 4
 "CBRef" "1"
 "EClose" E
+"DragEnter" "string Gchannel,L2channel,L1channel,HvMF,LvMF;
+string ChamberInOrExDp,excludeColor,sys;
+string Endcap,EndcapType,easyBoardName;
+int branchConNo,CaenHvNo,rowBegin,rowLast,noOfRows;
+float start,stop,step,holdTime;
+bool ScanState,swopt,scanStop,write;
+dyn_string ChmbrInOrExDp,HvBrdDp,cellNames,ErrorChambr;
+dyn_bool statusChanged=makeDynBool(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+dyn_bool statusSet,statusCurnt,ChmbrInOrExStatus;
+dyn_bool statusSet=statusChanged;
+
+drawTable(dyn_string Dp,dyn_bool InOrExDp)
+{
+	SelectAllCBox1.state(0,FALSE);
+	ChmbrInOrExStatus=InOrExDp;
+	string includeColor=\"FwStateOKPhysics\";
+	excludeColor=\"FwEquipmentDisabled\";
+	string excludeFontColor=\"{234,234,234}\";
+	for(int i=1;i<=36;i++)
+	{
+		if(InOrExDp[i*2-1] && InOrExDp[i*2])
+		{
+      statusCurnt[i]=TRUE;
+			if(i%2==1){
+				ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+			}
+			if(i%2==0){
+				ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+			}
+			ChamberTable.cellBackColRC(i-1, \"2\", \"white\");
+			ChamberTable.cellValueRC(i-1,\"2\",\"Click here\\n to select\");	
+			ChamberTable.cellForeColRC(i-1,\"1\", \"black\");
+		}
+    else if(InOrExDp[i*2-1] != InOrExDp[i*2])
+		{
+      statusCurnt[i]=TRUE;
+      ChamberTable.cellBackColRC(i-1, \"1\", excludeColor);	
+      ChamberTable.cellBackColRC(i-1, \"2\", excludeColor);
+      ChamberTable.cellValueRC(i-1,\"2\",\"Click here\\n to select\");	
+		}
+		else
+		{
+      statusCurnt[i]=FALSE;
+			ChamberTable.cellBackColRC(i-1, \"1\", excludeColor);
+			ChamberTable.cellBackColRC(i-1, \"2\", excludeColor);
+			ChamberTable.cellForeColRC(i-1, \"2\", excludeFontColor);	
+			ChamberTable.cellValueRC(i-1,\"2\",\"Excluded\");	
+		}
+	}
+}	
+initChamberTable() 
+{
+  // ------------ prepare table ------------
+	ChamberTable.sortOnClick(FALSE);
+	ChamberTable.columnHeader(0, \"     Supper \\n   Chamber\");
+	ChamberTable.columnHeader(1, \"       Select\"\"\\n\");
+	for(int i=1;i<=36;i++)
+	{
+   	ChamberTable.appendLine(\"1\",\"GEMINI \"+i,\"2\",\"\");
+	}
+	for(int i=1;i<=36;i++)
+	{
+		if(i%2==1){
+			ChamberTable.cellBackColRC(i-1, \"1\", \"{222,234,246}\");
+		}
+		if(i%2==0){
+			ChamberTable.cellBackColRC(i-1, \"1\", \"{189,214,238}\");
+		}
+	}
+	ChamberTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+	ChamberTable.columnFormat(\"2\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+initScanTable() 
+{
+// ------------ prepare table ------------
+	ScanTable.sortOnClick(FALSE); // disable sort
+// ------------ table headers------------
+	ScanTable.columnHeader(0, \"    Supper \\n  Chamber\");
+	ScanTable.columnHeader(1,\"  Drift\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(2,\"  Drift\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(3,\"G1_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(4,\"G1_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(5,\"G1_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(6,\"G1_Bot\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(7,\"G2_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(8,\"G2_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(9,\"G2_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(10,\"G2_Bot\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(11,\"G3_Top\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(12,\"G3_Top\\nCurrent\\n   (uA)\");
+	ScanTable.columnHeader(13,\"G3_Bot\\nVoltage\\n    (V)\");
+	ScanTable.columnHeader(14,\"G3_Bot\\nCurrent\\n   (uA)\");
+// ------------ end table headers------------
+	for(int j=1;j<=29;j++)
+	{
+		ScanTable.appendLine(\"1\",\"\",\"2\",\"\",\"3\",\"\",\"4\",\"\",\"5\",\"\");
+		ScanTable.cellBackColRC(j-1, 1, \"{204,204,204}\");
+		for(int i=2;i<=15;i++)
+		{
+			if(i%4==2){
+				ScanTable.cellBackColRC(j-1, i, \"{222,234,246}\");
+				ScanTable.cellBackColRC(j-1, i+1, \"{222,234,246}\");
+			}
+			if(i%4==0){
+				ScanTable.cellBackColRC(j-1, i, \"{205,230,245}\");
+				ScanTable.cellBackColRC(j-1, i+1, \"{205,230,245}\");
+			}
+		}
+	}
+	ScanTable.columnFormat(\"1\",\"[0s,,,ALIGNMENT_CENTER]\");
+}
+//****************************Scan for single channel*************************
+//********************************************************************************
+// For A1526,\"output voltage range is 0 V to 15 kV with 1 V monitor resolution\" (datsheet)
+//The HV RAMP-UP and RAMP-DOWN rates may be selected independently for each channel in the range 1? 500 V/s in 1 V/s steps.
+scanChannel(dyn_string HVchannels, int rowFirst,string scanChmbrName,int SCNo)
+{
+  time t,t1,t2;
+  float eTime,rUp;
+	dyn_float stepTime;
+  float vMonVal,vSetVal,vSet,vSetstart;
+  float iMonVal,steps; 
+	string HVchDp,msg,msgText;
+  int chStatus;
+  dyn_int allChStatus;
+  bool Eror;
+	//float iSetVal=0; //degug line, must remove++++++++++++++++++++++++++++++++++++++++++
+  //***********************************************/  
+  Eror=FALSE;
+	steps=(stop-start)/step;
+	steps=ceil(steps);
+  //***************display scanning started massaege ****************/ 
+  msg=\"*** INFO -\";
+  msg=msg+\"HV Scan for \"+ scanChmbrName + \" started\";
+	dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  fwFsmUi_report(msg,\"dist_1\");
+  //*****************************************************************/
+  //*******display the name of scanning S.chamber on the table*******/    
+	ScanTable.cellValueRC(rowFirst,1,uniSubStr(scanChmbrName,0,5));	//select \"GE1/1\"	 from \"GE1/1+GEMINI_01\"					
+	ScanTable.cellValueRC(rowFirst+1,1,uniSubStr(scanChmbrName,5,10));//select \"+GEMINI_01\"	 from \"GE1/1+GEMINI_01\"
+  //*****************************************************************/
+  //*****initialize the HV chanls and set the corresponding start voltages for 7 HV channels********/
+	for(int j=1;j<=7;j++)
+	{
+		if(ScanState || !Eror) // check if user terminate the scan by pressing stop bttn or error occurred
+  	{
+			HVchDp=HVchannels[j];
+	  	dpGet(HVchDp+\".readBackSettings.rUp\",rUp);    //(deltaV/deltaT)
+//		Debug(\"HVchDp=\",HVchDp);
+      //***check if there is any error occurred on HV cahannel (actual.status)***/
+      dpGet(HVchDp+\".actual.status\",chStatus);
+      if(chStatus > 8){
+        Eror=TRUE;
+      }
+      //************************************************************************/    
+	  	if(rUp==0)
+	  	{
+	    	rUp=50;        //*The HV RAMP-UP and RAMP-DOWN rates may be selected 
+	                   //independently for each channel in 
+	                   //the range 1 - 500 V/s in 1 V/s steps. (datsheet)
+	    	dpSet(HVchDp+\".settings.rUp\",rUp);
+	  	}
+	  	stepTime[j]=(float)dividerVoltage(j,step)/rUp;  //time taken to increase by one voltage step
+			dpSetWait(HVchDp+\".settings.onOff\",1);          //switch on the HV channel
+	  	dpGet(HVchDp+\".actual.vMon\",vMonVal);           //get current vMon value
+      
+      vSetstart=dividerVoltage(j,start);  //get the divider voltage using start value for the corresponding channel
+      
+      //**if current vMon is greater than vSetstart, set and wait until it rampdown upto vSetstart value***/
+			if(vMonVal > vSetstart)
+	  	{ 
+	    	dpSetWait(HVchDp+\".settings.v0\",vSetstart); 
+	    	while(((vMonVal>=1.02*vSetstart) || (vMonVal<=0.98*vSetstart))&& !scanStop)
+	    	{
+				//dpGet(HVchDp+\".settings.v0\",vMonVal); //degug line, must remove +++++++++++++++
+          //dpSetWait(HVchDp+\".settings.v0\",vSetstart); 
+	        dpGet(HVchDp+\".actual.vMon\",vMonVal); // must include in final  +++++++++++++
+	    	}
+	  	}
+      //************************************************************************/ 
+		}
+	}
+  //************beginning of scanning for 7 HV channels**************/
+  if(ScanState || !Eror)	// check if user terminate the scan by pressing stop bttn or error occurred
+  {
+    for(int i=0; i <= steps; i++)
+    {
+		  for(int j=1;j<=7;j++)
+			{  
+			  HVchDp=HVchannels[j];
+      	if(i==steps)
+      		vSet=stop; 
+      	else    
+      		vSet=start+(i*step);
+          
+				vSetVal=dividerVoltage(j,vSet);
+				//iSetVal=iSetVal+(rand()%10)*0.011111;  //degug line, must remove+++++++++++++++++++++++++++++
+      	if(!scanStop || !Eror)// check if user terminate the scan by pressing stop bttn or error occurred
+      	{
+        	dpSetWait(HVchDp+\".settings.v0\",vSetVal);
+					//dpSetWait(HVchDp+\".actual.iMon\",iSetVal);  //degug line, must remove +++++++++++++++  
+          t1=getCurrentTime();
+        	//dpGet(HVchDp+\".settings.v0\",vMonVal); //degug line, must remove +++++++++++++++
+          dpGet(HVchDp+\".actual.vMon\",vMonVal); // must include in final system +++++++++++++
+        	eTime=0;
+          //************wait until vSetVal and vMonVal values get equal enough**************/
+        	while(( vMonVal>=1.02*vSetVal || vMonVal<=0.98*vSetVal || eTime < (stepTime[j]+holdTime))&& !(scanStop || Eror))
+        	{ 
+            if(!scanStop)	// check if user terminate the scan by pressing stop bttn
+         		{
+              dpGet(HVchDp+\".actual.status\",chStatus);
+              //***sometimes, when we set the voltage to the one channel, some of other HV channels will also go to error state****/
+               //***therefor we have to check all 7 channels to check if there is an error****/
+               //***if there is an error in any channel, scan will be break****/
+              for(int k=1;k<=7;k++){
+                dpGet(HVchannels[k]+\".actual.status\",allChStatus[k]);
+              }
+              if(allChStatus[1]>8||allChStatus[2]>8||allChStatus[3]>8||allChStatus[4]>8||allChStatus[5]>8||allChStatus[6]>8||allChStatus[7]>8)
+              {
+                Eror=TRUE;
+                break;
+              }
+              //************************************************************************/ 
+              else
+              {
+                if(chStatus==1) // check the channel state is ON
+                {
+    						  //dpGet(HVchDp+\".settings.v0\",vMonVal); //degug line, must remove ++++
+                	dpGet(HVchDp+\".actual.vMon\",vMonVal); // must include in final system +++++++++++++
+                	t2=getCurrentTime();
+                	t=t2-t1;
+                	eTime=t;    //time elapsed
+                	eTime=(60*minute(t))+second(t);    //time elapsed in seconds
+                }
+               // else if(chStatus > 8)
+               // {
+               //   Eror=TRUE;
+               //   break;
+               // }
+              }
+            }
+            else
+            {
+              write=FALSE;
+              break;
+            }     
+          }     
+        		
+        	if(write && !Eror) // check if user terminate the scan by pressing stop bttn or error occurred
+        	{
+    			  //**********show data in the table*************
+    			  //dpGet(HVchDp+\".settings.v0\",vMonVal); //degug line, must remove +++++++++++++++
+    				dpGet(HVchDp+\".actual.vMon\",vMonVal); // must include in final system  +++++++++++++
+    				dpGet(HVchDp+\".actual.iMon\",iMonVal);
+    				iMonVal=round(iMonVal); //round off the iMonVal value				
+					
+    				ScanTable.cellValueRC(rowFirst+i,j*2,vMonVal);							
+    				ScanTable.cellValueRC(rowFirst+i,(j*2+1),iMonVal);					
+    				//*********end of show data in the table*******
+        	}
+      	}
+    	}
+		}
+	} 
+  statusChanged[SCNo]=FALSE; // reset after finishing update
+  statusSet[SCNo]=statusCurnt[SCNo];
+  //****clear the user seletions and set back the chamber table to initial state****
+  if((ChmbrInOrExStatus[SCNo*2-1])!=(ChmbrInOrExStatus[SCNo*2]))
+    ChamberTable.cellBackColRC(SCNo-1, \"2\", excludeColor);
+  else
+    ChamberTable.cellBackColRC(SCNo-1, \"2\", \"white\");
+          
+  ChamberTable.cellValueRC(SCNo-1,\"2\",\"Click here\\n to select\");
+              
+  if(ChmbrInOrExStatus[SCNo*2-1])
+    setValue(cellNames[SCNo*2-1], \"backCol\", \"kobaltblau\");	
+  if(ChmbrInOrExStatus[SCNo*2])	
+    setValue(cellNames[SCNo*2], \"backCol\", \"kobaltblau\"); 
+  //********************************************************************************
+  //****message will be displayed if any error occurrs during the scan*******
+  if(Eror){
+    ErrorChambr[sizeof(ErrorChambr)+1]=scanChmbrName;
+    msgText = \"Error occurred in HV channel/s in \"+ scanChmbrName;
+    showErrorMsg(msgText);
+  }
+  //************************************************************************* 
+  //******message will be displayed if scan is successfully completed********
+  else{
+    msg=\"*** INFO -\";
+	  msg=msg + scanChmbrName + \" HV Scan Completed Successfully\";
+    dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  }
+  //*************************************************************************
+  //********turn off the channels if user select \"turn off ch\" button********
+	if(swopt) 
+	{
+		for(int j=1;j<=7;j++) 
+	    	dpSet(HVchannels[j]+\".settings.onOff\",0);
+	}
+  //*************************************************************************
+}
+//***************round***************: 
+/**  round off any value according to the user input decimal places.
+      @param v: The value to be converted.
+*/
+float round(float v)
+{
+	int deciPoints;
+	float roundedVal;
+	string val;
+	deciPoints=(int)deciPoints1.text;		//get the user input from spin bttn (no. of deci points)
+	sprintf(val, \"%8.\"+deciPoints+\"f\", v);	//fromat the float value (round off)
+	roundedVal=(float)val;						//convert val (srting value) to float value
+	return roundedVal;
+}
+//***************showErrorMsg***************: 
+/**  popup a new window and show a message **
+      @param msgText: The message to be displayed.
+*/
+showErrorMsg(string msgText)
+{
+  string msg=\"*** INFO -\";
+  msg=msg + msgText;
+  dpSet(sys+\"ENDCAP_Minus.message\",msg);
+  fwFsmUi_report(msg);
+  //---------------popupMessage----------------
+  bool answ;
+  dyn_string exceptionInfo; 
+  fwGeneral_openMessagePanel(msgText, answ , exceptionInfo, \"Message!\", true );
+}
+//************************************:
+drawRingChambers()
+{
+	int i;
+	float k1,k2,k3,x,y,ag,r;
+	float scale,side,angle;
+	dyn_int refCir_x,refCir_y; 
+	string ELLIPSE;
+	string GCellName,L2CellName,NumCellName,L1CellName;
+	string L1HvBrdClicked,L2HvBrdClicked;	
+	int GCellNo,L2CellNo,NumCellNo,L1CellNo;
+ 
+	side=1.0; // positive, should be +1, sorry, this is \"old tail\"  
+	scale=1;
+//	sys=getSystemName();
+	for(i=1; i<=4; i++)
+	{		
+		ELLIPSE=\"ELLIPSE\"+i;
+		getValue(ELLIPSE,\"position\",refCir_x[i],refCir_y[i]); // get ref point of ellipse1-ellipse7
+//		DebugN(\"position=\",refCir_x[i],refCir_y[i]);
+	}  
+//--------------------------------LAYER2 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER2 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L2CellNo=i;
+		L2CellName=Endcap+\"L2_\"+L2CellNo;   
+		  
+		r=refCir_x[1]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L2HvBrdClicked=HVboardClicked(L2CellNo);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2];
+		k1=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/HvLv_Scan_obj/refHvScanL2.pnl\",  
+			L2CellName,makeDynString(\"$dpL2HvBrd:\"+L2HvBrdClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL2CellName:\"+L2CellName,\"$dpL2CellNo:\"+L2CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir4_x+x0=\",refCir_x[4]+x, \"refCir4_y+y0=\",refCir_y[4]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	}	
+//--------------------------------CHAMBER_NUM CELL ----------------
+	ag=0;
+	angle=10; //define CHAMBER_NUM CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		NumCellNo=i;
+		NumCellName=Endcap+\"Num_\"+NumCellNo;   
+		  
+		r=refCir_x[2]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		k2=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsNum.pnl\",  
+			NumCellName,makeDynString(\"$dpNumCellNo:\"+NumCellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+//--------------------------------LAYER1 CELL ----------------
+	ag=0;
+	angle=10; //define LAYER1 CELL angle here
+	for (i=1; i<=36; i++)
+	{  
+		L1CellNo=i;
+		L1CellName=Endcap+\"L1_\"+L1CellNo;   
+		  
+		r=refCir_x[3]-refCir_x[4];
+//      DebugN(\"r=\",r);
+		x=r*cos(deg2rad(ag));
+		y=r*sin(deg2rad(ag));
+//      DebugN(\"x=\",x,\"y=\",y);
+		L1HvBrdClicked=HVboardClicked(L1CellNo);
+		ChamberInOrExDp=ChmbrInOrExDp[i*2-1];
+		k3=addSymbol(myModuleName(),\"\", // chamber itself
+			\"/CMS_GEM_CAEN/objects/HvLv_Scan_obj/refHvScanL1.pnl\",  
+			L1CellName,makeDynString(\"$dpL1HvBrd:\"+L1HvBrdClicked,\"$dpChamberInOrExDp:\"+ChamberInOrExDp,\"$dpL1CellName:\"+L1CellName,\"$dpL1CellNo:\"+L1CellNo,\"$dpEndcapName:\"+Endcap),
+			refCir_x[4]+x,refCir_y[4]-y,ag,scale,scale);
+	
+//		DebugN(\"refCir9_x+x0=\",refCir_x[9]+x, \"refCir9_y+y0=\",refCir_y[9]-y);
+		ag=ag+angle;   
+  //    DebugN(\"ag=\",ag);
+	} 
+}
+drawRingTexts()
+{
+	int refCir4_x,refCir4_y;
+	float k1,k2;
+	string txt1,txt2;
+	txt1=Endcap+\"text\";
+	txt2=Endcap+\"name\";
+	getValue(\"ELLIPSE4\",\"position\",refCir4_x,refCir4_y); // get ref point of ellipse7 
+//	DebugN(\"position=\",refCir9_x,refCir9_y);
+  
+	k1=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/chamber_settings_obj/refChamberSettingsTexts.pnl\",  
+         txt1,makeDynString(),
+         refCir4_x,refCir4_y,0,1,1);
+//	DebugN(\"refCir1_x+x0=\",refCir1_x, \"refCir1_y+y0=\",refCir1_y);
+	k2=addSymbol(myModuleName(),\"\", // chamber itself
+         \"/CMS_GEM_CAEN/objects/GEM_status_obj/refEndcapNames.pnl\",  
+         txt2,makeDynString(\"$dpEndcapTextName:\"+txt2,\"$dpEndcapName:\"+Endcap),
+         refCir4_x,refCir4_y,0,1,1);
+}
+initEndcap()
+{
+	if(Endcap== \"+\")
+	{
+		EndcapType= \"Plus\";
+//		branchConNo=0;
+		CaenHvNo=0;
+	}
+	else if(Endcap== \"-\")
+	{
+		EndcapType= \"Minus\";
+//		branchConNo=2;
+		CaenHvNo=2;
+	}
+	else
+		Debug(\"Endcap name error (should be + or -)\");
+}
+string HVboardClicked(int LayerCellNo)
+{
+	int HvCellNo,GemCaenHvNo,CellNo;	
+	string HvbrdClicked,boardNo;
+	if(LayerCellNo%2==0)
+		HvCellNo=LayerCellNo/2;
+	else
+		HvCellNo=LayerCellNo/2+1;
+
+	CellNo=HvCellNo-1;
+	//---------------------------------------------------
+	if(CellNo <= 8)	
+	{
+		if(CellNo < 10)
+			boardNo=\"0\"+CellNo;
+		else 
+			boardNo=CellNo;
+		GemCaenHvNo=1+CaenHvNo;
+	}
+	else if((CellNo > 8)&&(CellNo <= 17))
+	{
+		boardNo=\"0\"+(CellNo-9);
+		GemCaenHvNo=2+CaenHvNo;
+	}
+	else DebugN(\"Hv Cell Number is not in range\");
+	//---------------------------------------------------
+	HvbrdClicked=(HvMF+\"0\"+GemCaenHvNo+\"/board\"+boardNo);
+	
+//	DebugN(\"HvCellNo=\",HvCellNo,\"HVchannel=\",HvChClicked);
+	return (HvbrdClicked);
+	//return -- //CAEN/GEM_CAEN_HV_01/board00
+	//CAEN/GEM_CAEN_HV_01/board00/channel000.actual.status
+}
+string dividerVoltage(int i,float V)
+{   //************calculate voltages***********************
+	float divVoltage;
+	string divVolt;
+	float Req=625+525+875+550+438+560+1125;
+	switch(i)
+	{
+		case 1: divVoltage=625*V/Req; break;	//VG3bot
+		case 2: divVoltage=525*V/Req; break;	//VG3top	
+		case 3: divVoltage=875*V/Req; break;	//VG2bot	
+		case 4: divVoltage=550*V/Req; break;	//VG2top
+		case 5: divVoltage=438*V/Req; break;	//VG1bot
+		case 6: divVoltage=560*V/Req; break;	//VG1top
+		case 7: divVoltage=1125*V/Req; break;	//Vdrift
+	} 
+	sprintf(divVolt,\"%5.1f\",divVoltage);
+	return (divVolt); 
+}"
 "dpi" "96"
 0 0 0
 ""
@@ -509,7 +1132,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "1"
-E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 165 165
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 141.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 165 165
 7 46
 "ELLIPSE3"
 ""
@@ -525,7 +1148,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "1"
-E E 0 1 3 2 1 E 1 0 1 3.84886234637538 213.8877936324726 1 E 416.284889730696 214.0557715284947 132.5 132.5
+E E 0 1 3 2 1 E 1 0 1 -25.15113765362462 213.8877936324726 1 E 416.284889730696 214.0557715284947 132.5 132.5
 7 47
 "ELLIPSE2"
 ""
@@ -541,7 +1164,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "1"
-E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581277 166.0181117870033 1 E 248.0862068965516 261.4758620689654 117.5 117.5
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 141.9349032581277 166.0181117870033 1 E 248.0862068965516 261.4758620689654 117.5 117.5
 7 49
 "ELLIPSE1"
 ""
@@ -557,7 +1180,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "1"
-E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 170.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 62.5 62.5
+E E 0 1 3 1 1 E 1.004484900240974 1.273509075971901e-010 1.273508937194023e-010 1.004484898796489 141.9349032581279 166.0181117870033 1 E 248.0862068965516 261.4758620689654 62.5 62.5
 25 60
 "ChamberTable"
 ""
@@ -576,52 +1199,55 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
-0  3.333333333333333 3.666666666666667 243.8333333333334 640.6666666666665
+0  3.333333333333333 3.666666666666667 212 640.6666666666665
 E"main(int row, string column, string value)
 {
 	if(statusCurnt[row+1]==TRUE)
 	{
-		if(column==3)
+		if(column==2)
 		{
 			if(statusChanged[row+1]==FALSE)
 			{
-				ChamberTable.cellValueRC(row,\"3\",\"Selected\");
-				ChamberTable.cellBackColRC(row, \"3\", \"red\");
+				ChamberTable.cellValueRC(row,\"2\",\"Selected\");
+				ChamberTable.cellBackColRC(row, \"2\", \"red\");
 				statusSet[row+1]=!statusCurnt[row+1];
-				statusChanged[row+1]=TRUE;				
-				setValue(cellNames[row+1], \"backCol\", \"red\");
+				statusChanged[row+1]=TRUE;
+        if(ChmbrInOrExStatus[(row+1)*2-1])				
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"red\");
+        if(ChmbrInOrExStatus[(row+1)*2])
+          setValue(cellNames[(row+1)*2], \"backCol\", \"red\");
 			return;
 			}
 			if(statusChanged[row+1]==TRUE)
 			{
-				ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
-				ChamberTable.cellBackColRC(row, \"3\", \"white\");
+				ChamberTable.cellValueRC(row,\"2\",\"Click here\\n to select\");
+        if((ChmbrInOrExStatus[(row+1)*2-1])!=(ChmbrInOrExStatus[(row+1)*2]))
+          ChamberTable.cellBackColRC(row, \"2\", excludeColor);
+        else
+				  ChamberTable.cellBackColRC(row, \"2\", \"white\");
 				statusSet[row+1]=statusCurnt[row+1];
 				statusChanged[row+1]=FALSE;
-				setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");			
+        if(ChmbrInOrExStatus[(row+1)*2-1])
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"kobaltblau\");	
+        if(ChmbrInOrExStatus[(row+1)*2])	
+          setValue(cellNames[(row+1)*2], \"backCol\", \"kobaltblau\");		
 			}
 		}
 	}
 }" 0
- 1 0 1 3 0 "1" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+ 1 0 1 2 0 "1" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
 LANG:1 15  Supper Chamber
 E
 1
 LANG:1 0 
 
-80 "2" 4 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
-LANG:1 7   Layer
-E
-1
-LANG:1 0 
-
-55 "3" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
+95 "2" 7 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
 LANG:1 16 Select/ Deselect
 E
 1
 LANG:1 0 
 
-85 
+95 
 30 30 10 50
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
@@ -630,7 +1256,7 @@ LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 20 61
 "SelectAllCBox1"
 ""
-1 176.3333333333336 28.16807606125632 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
+1 140 30 E E E 1 E 1 E N "_3DText" E N "_Transparent" E E
  E E
 60 0 0 0 0 0
 E E E
@@ -642,7 +1268,7 @@ LANG:1 0
 "layoutAlignment" "AlignLeft|AlignLeading"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
-0  148.3333333333336 21.16807606125631 222.3333333333336 39.16807606125632
+0  112 22.99999999999999 186 41
 1
 T 
 1
@@ -659,31 +1285,40 @@ E"main(int button, int state)
   int row;
 	if(state==TRUE)
 	{
-		for(int i=1;i<=72;i++)
+		for(int i=1;i<=36;i++)
 		{
 			row=i-1;
 			if(statusCurnt[i]==TRUE)
 			{
-				ChamberTable.cellBackColRC(row, \"3\", \"red\");
-				ChamberTable.cellValueRC(row,\"3\",\"Selected\");
-				setValue(cellNames[row+1], \"backCol\", \"red\");
+				ChamberTable.cellBackColRC(row, \"2\", \"red\");
+				ChamberTable.cellValueRC(row,\"2\",\"Selected\");
+        if(ChmbrInOrExStatus[(row+1)*2-1])
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"red\");
+        if(ChmbrInOrExStatus[(row+1)*2])
+          setValue(cellNames[(row+1)*2], \"backCol\", \"red\");
 				statusChanged[i]=TRUE;
-				statusSet[i]=!statusCurnt[i];
+				statusSet[i]=FALSE;
 			}
 		}	
 	}
 	if(state==FALSE)
 	{
-		for(int i=1;i<=72;i++)
+		for(int i=1;i<=36;i++)
 		{
 			row=i-1;
 			if(statusCurnt[i]==TRUE)
 			{
-				ChamberTable.cellBackColRC(row, \"3\", \"white\");
-				ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
-				setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");
+        if((ChmbrInOrExStatus[(row+1)*2-1])!=(ChmbrInOrExStatus[(row+1)*2]))
+          ChamberTable.cellBackColRC(row, \"2\", excludeColor);
+        else
+				  ChamberTable.cellBackColRC(row, \"2\", \"white\");
+				ChamberTable.cellValueRC(row,\"2\",\"Click here\\n to select\");
+        if(ChmbrInOrExStatus[(row+1)*2-1])
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"kobaltblau\");
+        if(ChmbrInOrExStatus[(row+1)*2])
+          setValue(cellNames[(row+1)*2], \"backCol\", \"kobaltblau\");
 				statusChanged[i]=FALSE;
-				statusSet[i]=statusCurnt[i];
+				statusSet[i]=TRUE;
 			}
 		}	
 	}
@@ -703,11 +1338,11 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 2 3 2 1 E 0.5495804729214338 0 1.438059888750924 -13.20366132723101 -42.56684352932196 1 E 31 32.49859060541036 468 476.4985906054104
+E E 0 2 3 2 1 E 0.4809305873379097 0 1.438059888750924 -11.07551487414177 -42.56684352932196 1 E 31 32.49859060541036 468 476.4985906054104
 13 66
 "clearSelection"
 ""
-1 705.2650223099354 22.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 676.2650223099354 22.25070469729477 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 65 0 0 0 0 0
 E E E
@@ -719,7 +1354,7 @@ LANG:1 15 Clear Selection
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
-0  260.9999999999999 615.9999999999999 363.9999999999999 638.9999999999999
+0  231.9999999999999 615.9999999999999 334.9999999999999 638.9999999999999
 
 T 
 1
@@ -728,14 +1363,22 @@ LANG:1 15 Clear Selection
 {
 	int row;
 	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
-	for(int i=1;i<=72;i++)
+	for(int i=1;i<=36;i++)
 	{
 		row=i-1;
 		if(statusCurnt[i]==TRUE)
 		{
-			ChamberTable.cellBackColRC(row, \"3\", \"white\");
-			ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
-			setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");	
+			if((ChmbrInOrExStatus[(row+1)*2-1])!=(ChmbrInOrExStatus[(row+1)*2]))
+        ChamberTable.cellBackColRC(row, \"2\", excludeColor);
+      else
+			  ChamberTable.cellBackColRC(row, \"2\", \"white\");
+      
+			ChamberTable.cellValueRC(row,\"2\",\"Click here\\n to select\");
+      
+			if(ChmbrInOrExStatus[(row+1)*2-1])
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"kobaltblau\");	
+        if(ChmbrInOrExStatus[(row+1)*2])	
+          setValue(cellNames[(row+1)*2], \"backCol\", \"kobaltblau\");		
 			statusChanged[i]=FALSE;
 			statusSet[i]=statusCurnt[i];
 		}
@@ -745,7 +1388,7 @@ LANG:1 15 Clear Selection
 13 68
 "Cancel"
 ""
-1 686.6101005834381 434.7999202384544 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 657.6101005834381 434.7999202384544 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 67 0 0 0 0 0
 E E E
@@ -757,7 +1400,7 @@ LANG:1 19 Close HV Scan Panel
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
-0  502.1032608695658 615.798510843865 570.1032608695657 638.798510843865
+0  473.1032608695658 615.798510843865 541.1032608695657 638.798510843865
 
 T 
 1
@@ -782,7 +1425,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1.261648745519713 0 1.882352941176469 233.9068100358424 513.4161579026886 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+E E 0 1 3 2 1 E 1.261648745519713 0 1.882352941176469 204.9068100358424 513.4161579026886 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
 6 71
 "RECTANGLE4"
 ""
@@ -798,7 +1441,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1.261648745519713 0 1.176470588235296 233.9068100358423 164.4901960784313 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+E E 0 1 3 2 1 E 1.261648745519713 0 1.176470588235296 204.9068100358423 164.4901960784313 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
 30 72
 "FRAME1"
 ""
@@ -814,7 +1457,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "white"
 "antiAliased" "0"
-E E 0 2 3 2 1 E 1.624697336561743 0 1.412147505422994 -11.53954802259876 -2.096890817064326 0 E 7 -3 834 459
+E E 0 2 3 2 1 E 1.643058918482647 0 1.412147505422994 -11.66807909604509 -2.096890817064326 0 E 7 -3 834 459
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,50,0,0,0,0,0
 0 1
@@ -834,11 +1477,11 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1.258064516129033 0 1.40227335183494 234.9354838709678 -68.75686127661086 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
+E E 0 1 3 2 1 E 1.258064516129033 0 1.40227335183494 205.9354838709678 -68.75686127661086 4 "[linear,reflect,1,0.518,0.988,1.49,0.128,{0,2,42},0.997,{0,2,126},1,{255,255,255}]" E 8 52 287 69
 2 75
 "vFromTxt"
 ""
-1 253 43.27427037722232 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 224 43.27427037722232 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 74 0 0 0 0 0
 E E E
@@ -851,8 +1494,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 253 43.27427037722232 352 61
-0 2 2 "0s" 0 0 0 192 0 0  253 43.27427037722232 1
+E E 0 1 3 2 1 E U  0 E 224 43.27427037722232 323 61
+0 2 2 "0s" 0 0 0 192 0 0  224 43.27427037722232 1
 1
 LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
 0 1
@@ -860,7 +1503,7 @@ LANG:1 13 Start Voltage
 14 76
 "vFrom"
 ""
-1 120.7222222222222 83.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 91.7222222222222 83.00000000000009 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 75 0 0 0 0 0
 E "float minV=0; 
@@ -890,12 +1533,12 @@ LANG:1 32 Enter a value between 0 V-4000 V
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
-0  351 33.99999999999999 443.9999999999999 70
+0  322 33.99999999999999 414.9999999999999 70
 3 "0s" 0 0 0 0 0 -1  E E E
 2 77
 "stepSizeTxt"
 ""
-1 252.5138888888889 92.8840579710147 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 223.5138888888889 92.8840579710147 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 76 0 0 0 0 0
 E E E
@@ -908,8 +1551,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 252.5138888888889 92.8840579710147 326 111
-0 2 2 "0s" 0 0 0 192 0 0  252.5138888888889 92.8840579710147 1
+E E 0 1 3 2 1 E U  0 E 223.5138888888889 92.8840579710147 297 111
+0 2 2 "0s" 0 0 0 192 0 0  223.5138888888889 92.8840579710147 1
 1
 LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
 0 1
@@ -917,24 +1560,24 @@ LANG:1 9 Step Size
 14 78
 "stepSize"
 ""
-1 120.7222222222222 138.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 91.7222222222222 138.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 77 0 0 0 0 0
 E E E
 0
 1
-LANG:1 9 Step Size
+LANG:1 13 Step Size (V)
 
 1
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
-0  351 83.99999999999999 443.9999999999999 120
+0  322 83.99999999999999 414.9999999999999 120
 3 "0s" 0 0 0 0 0 -1  E E E
 2 79
 "vToTxt"
 ""
-1 253 141.4057971014495 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 224 141.4057971014495 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 78 0 0 0 0 0
 E E E
@@ -947,8 +1590,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 253 141.4057971014495 352 159
-0 2 2 "0s" 0 0 0 192 0 0  253 141.4057971014495 1
+E E 0 1 3 2 1 E U  0 E 224 141.4057971014495 323 159
+0 2 2 "0s" 0 0 0 192 0 0  224 141.4057971014495 1
 1
 LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
 0 1
@@ -956,7 +1599,7 @@ LANG:1 12 Stop Voltage
 14 80
 "vTo"
 ""
-1 119.5 195.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 90.5 195.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 79 0 0 0 0 0
 E "float minV=0; 
@@ -985,12 +1628,12 @@ LANG:1 32 Enter a value between 0 V-4000 V
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
-0  351 132 443.9999999999999 168
+0  322 132 414.9999999999999 168
 3 "0s" 0 0 0 0 0 -1  E E E
 2 81
 "hTimeTxt"
 ""
-1 253.125 191.298510843865 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 224.125 191.298510843865 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 80 0 0 0 0 0
 E E E
@@ -1003,8 +1646,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 253.125 191.298510843865 332 209
-0 2 2 "0s" 0 0 0 192 0 0  253.125 191.298510843865 1
+E E 0 1 3 2 1 E U  0 E 224.125 191.298510843865 303 209
+0 2 2 "0s" 0 0 0 192 0 0  224.125 191.298510843865 1
 1
 LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
 0 1
@@ -1012,7 +1655,7 @@ LANG:1 9 Hold Time
 14 82
 "hTime"
 ""
-1 119.5 258.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 90.5 258.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 81 0 0 0 0 0
 E "float minT=1; 
@@ -1028,18 +1671,18 @@ main()
  E
 0
 1
-LANG:1 9 Hold Time
+LANG:1 32 Hold Time (s). Enter a value > 1
 
 1
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
-0  351 182 443.9999999999999 218
+0  322 182 414.9999999999999 218
 3 "0s" 0 0 0 0 0 -1  E E E
 20 83
 "CHECK_BOX1"
 ""
-1 329.0446798606633 225.6666666666668 E E E 1 E 1 E N "white" E N "_Transparent" E E
+1 300.0446798606633 225.6666666666668 E E E 1 E 1 E N "white" E N "_Transparent" E E
  E E
 82 0 0 0 0 0
 E E E
@@ -1051,7 +1694,7 @@ LANG:1 33 Set 0 to "HvDP.settings.onOff" DP
 "layoutAlignment" "AlignNone"
 1
 LANG:1 35 MS Shell Dlg 2,-1,11,5,75,0,0,0,0,0
-0  327.0446798606632 223.6666666666667 531.9545068134579 247.6666666666667
+0  298.0446798606632 223.6666666666667 502.9545068134579 247.6666666666667
 1
 T 
 1
@@ -1070,7 +1713,7 @@ E"main(int button, int state)
 13 84
 "pbStop"
 ""
-1 134.8902968849898 365.0978260869566 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
+1 105.8902968849898 365.0978260869566 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
  E E
 83 0 0 0 0 0
 E E E
@@ -1082,7 +1725,7 @@ LANG:1 17 Stop Scan process
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
-0  484.3902968849898 130.0978260869565 563.3902968849899 163.0978260869565
+0  455.3902968849898 130.0978260869565 534.3902968849899 163.0978260869565
 
 T 
 1
@@ -1091,20 +1734,33 @@ LANG:1 9 Stop Scan
 {
 	scanStop=TRUE;
 	ScanState=FALSE;  
-  	pbScan.enabled=TRUE;
-  	pbStop.enabled=FALSE;
-  	write=FALSE;
+  pbScan.enabled=TRUE;
+  pbStop.enabled=FALSE;
+  write=FALSE;
+  clearSelection.enabled=TRUE;
+	clearTable.enabled=TRUE;
+  
+  vFrom.editable=TRUE;
+  vTo.editable=TRUE;
+  stepSize.editable=TRUE;
+  hTime.editable=TRUE;
 	
 	int row;
 	setValue(\"SelectAllCBox1\", \"state\", 0, FALSE);
-	for(int i=1;i<=72;i++)
+	for(int i=1;i<=36;i++)
 	{
 		row=i-1;
 		if(statusCurnt[i]==TRUE)
 		{
-			ChamberTable.cellBackColRC(row, \"3\", \"white\");
-			ChamberTable.cellValueRC(row,\"3\",\"Click here\\n to select\");
-			setValue(cellNames[row+1], \"backCol\", \"kobaltblau\");	
+      if((ChmbrInOrExStatus[(row+1)*2-1])!=(ChmbrInOrExStatus[(row+1)*2]))
+          ChamberTable.cellBackColRC(row, \"2\", excludeColor);
+      else
+			  ChamberTable.cellBackColRC(row, \"2\", \"white\");
+			ChamberTable.cellValueRC(row,\"2\",\"Click here\\n to select\");
+			if(ChmbrInOrExStatus[(row+1)*2-1])
+				  setValue(cellNames[(row+1)*2-1], \"backCol\", \"kobaltblau\");	
+        if(ChmbrInOrExStatus[(row+1)*2])	
+          setValue(cellNames[(row+1)*2], \"backCol\", \"kobaltblau\");	
 			statusChanged[i]=FALSE;
 			statusSet[i]=statusCurnt[i];
 		}
@@ -1115,7 +1771,7 @@ LANG:1 9 Stop Scan
 13 85
 "pbScan"
 ""
-1 469.4527968849899 83.80000000000003 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
+1 440.4527968849899 83.80000000000003 E E E 1 E 1 E N "_ButtonText" E N "WF_Text" E E
  E E
 84 0 0 0 0 0
 E E E
@@ -1127,7 +1783,7 @@ LANG:1 18 Start Scan process
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
-0  467.4527968849898 71.00000000000009 580.3277968849899 111.0000000000001
+0  438.4527968849898 71.00000000000009 551.3277968849899 111.0000000000001
 
 T 
 1
@@ -1135,18 +1791,32 @@ LANG:1 31 Start Scan for
 Selected Layers
 "main(mapping event)
 {
-	string mask,SCNumber,LayerNo,msg;
+	string mask,SCNumber,scanChmbrName;
 	dyn_string HvChannels,HvChChmber;
 	int SCNo,chStart;
 	bool statusChangedOk;
-	string sys=getSystemName(); 
-	
+  int scanNo=0;
+  dyn_int ThreadNos;
 	langString msgText;
+  
+  ErrorChambr=\"\";
+  sys=getSystemName();
 	
-	for(int i=1; i<=72; i++)
+	for(int i=1; i<=36; i++)
 		statusChangedOk |= statusChanged[i]; // check if user select any chamber
+  
+  start=(float)vFrom.text;
+	stop=(float)vTo.text;
+	step=(float)stepSize.text;
+	holdTime=(float)hTime.text;
+  
 	if(statusChangedOk==TRUE)
 	{
+    if(start==0 || stop==0 || step==0 || holdTime==0)
+    {
+      msgText = \"Pleace set the correct values\";
+      break;
+    }
 		if(scanStop==TRUE){
 			ScanTable.deleteAllLines();
 			initScanTable();
@@ -1154,73 +1824,96 @@ Selected Layers
 		ScanState=TRUE;
 		scanStop=FALSE;
 		write=TRUE;
-	  	pbScan.enabled=FALSE;
-	  	pbStop.enabled=TRUE;
+	  pbScan.enabled=FALSE;
+	  pbStop.enabled=TRUE;
 		clearTable.enabled=FALSE;
-	
-		start=(float)vFrom.text;
-	  	stop=(float)vTo.text;
-	  	step=(float)stepSize.text;
-	  	holdTime=(float)hTime.text;
-		
-		for(int i=1; i<=72; i++)
+    clearSelection.enabled=FALSE;
+    
+    vFrom.editable=FALSE;
+    vTo.editable=FALSE;
+    stepSize.editable=FALSE;
+    hTime.editable=FALSE;
+  
+    
+	  noOfRows=ceil((stop-start)/step)+2;
+
+		for(int i=1; i<=36; i++)
 		{
 			if(ScanState)	// check if user terminate the scan by pressing stop bttn
-  			{
+  		{
 				if(statusChanged[i]==TRUE)
 				{	
-					if(i%2==1)
-					{
-						SCNo=(i+1)/2;
-						LayerNo=\"Layer 1\";
-						if(SCNo<=9)
-							SCNumber=\"0\"+SCNo;
-						else
-							SCNumber=SCNo;
-					}
+          scanNo = scanNo+1;
+					SCNo=i;
+					if(SCNo<=9)
+						SCNumber=\"0\"+SCNo;
 					else
-					{
-						SCNo=i/2;
-						LayerNo=\"Layer 2\";
-						if(SCNo<=9)
-							SCNumber=\"0\"+SCNo;
-						else
-							SCNumber=SCNo;
-					}
-					scanChmbrName=\"GE1/1\"+Endcap+\"GEMINI_\"+SCNumber+\" \"+LayerNo; //GE1/1+GEMINI_01 Layer 1
-					msg=\"*** INFO -\";
-		     		msg=msg+\"HV Scan for GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" started\";
-		     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
-			
-		     		HvChannels=(dpNames(L1andL2HvBrdDp[i]+\"*channel*\",\"FwCaenChannelA1515\"));
+						SCNumber=SCNo;
+					
+					scanChmbrName=\"GE1/1\"+Endcap+\"GEMINI_\"+SCNumber; //GE1/1+GEMINI_01
+          
+			   // DebugN(\"scanChmbrName=\",scanChmbrName, \"HVBoard=\",HvBrdDp[i]);
+          
+		     	HvChannels=(dpNames(HvBrdDp[i]+\"*channel*\",\"FwCaenChannelA1515\"));
 					if(SCNo%2==1)
 						chStart=1;
 					else if(SCNo%2==0)
 						chStart=8;
-					for(int i=0;i<=6;i++)
-						HvChChmber[i+1]=HvChannels[chStart+i];
-//					Debug(\"HvChChmber=\",HvChChmber);   		
-		       	scanChannel(HvChChmber);
-					rowBegin=rowLast+2; 
-		   
-					msg=\"*** INFO -\";
-		     		msg=msg+\"GE1/1\"+Endcap+\" \"+\"GEMINI \"+SCNumber+\" \"+LayerNo+\" HV Scan Completed Successfully\";
-		     		dpSet(sys+\"ENDCAP_Minus.message\",msg);
-			
-					ChamberTable.cellBackColRC(i-1, \"3\", \"white\");
-					ChamberTable.cellValueRC(i-1,\"3\",\"Click here\\n to select\");
-					setValue(cellNames[i], \"backCol\", \"kobaltblau\");	
-				}
-				statusChanged[i]=FALSE; // reset after finishing update
-				SelectAllCBox1.state(0,FALSE);
-				statusSet[i]=statusCurnt[i];
+					for(int j=0;j<=6;j++)
+						HvChChmber[j+1]=HvChannels[chStart+j];
+          
+          rowBegin=rowLast + noOfRows*(scanNo-1);
+       
+          //********************add new line to end of the table with bacgroud colors if colored lines are finished********
+    			for(int n=0; n <= noOfRows; n++)
+    	    {
+            if(rowBegin+n>=ScanTable.lineCount()) // add new line to end of the table with bacgroud colors
+      			{
+      				ScanTable.appendLine(\"1\",\"\");
+      				ScanTable.cellBackColRC(rowBegin+n, 1, \"{204,204,204}\");
+      				for(int k=2;k<=15;k++)
+      				{
+      					if(k%4==2){
+      						ScanTable.cellBackColRC(rowBegin+n, k, \"{222,234,246}\");
+      						ScanTable.cellBackColRC(rowBegin+n, k+1, \"{222,234,246}\");
+      					}
+      					if(k%4==0){
+      						ScanTable.cellBackColRC(rowBegin+n, k, \"{205,230,245}\");
+      						ScanTable.cellBackColRC(rowBegin+n, k+1, \"{205,230,245}\");
+      					}
+      				}
+      			}
+      			//***********************************************************************************************************
+          }
+          ThreadNos[scanNo] =startThread(\"scanChannel\", HvChChmber,rowBegin,scanChmbrName,SCNo);	//parallel HV scan  
+				}		
 			}
-		}
+		}  
+    for (int s=1; s<=sizeof(ThreadNos);s++){
+      if (!(waitThread(s)==-1)){
+        waitThread(s);
+       // DebugN(\"ThreadNos=\",s);
+      }
+    }
+    rowLast=rowLast + noOfRows*scanNo;
+    
+    SelectAllCBox1.state(0,FALSE);
 		pbScan.enabled=TRUE;
-  		pbStop.enabled=FALSE;
+  	pbStop.enabled=FALSE;
+    clearSelection.enabled=TRUE;
 		clearTable.enabled=TRUE;
-		if(scanStop==FALSE) // check if user terminate the scan by pressing stop bttn
-			msgText = \"HV Scan Completed Successfully\";
+    vFrom.editable=TRUE;
+    vTo.editable=TRUE;
+    stepSize.editable=TRUE;
+    hTime.editable=TRUE;
+    
+    if(scanStop==FALSE){ // check if user terminate the scan by pressing stop bttn
+      //DebugN(\"ErrorChambr=\",ErrorChambr,\"size\",sizeof(ErrorChambr));
+      if(sizeof(ErrorChambr)==1)
+			  msgText = \"HV Scan Completed Successfully\";
+      if(sizeof(ErrorChambr)>1)
+			  msgText = \"HV Scan Completed with errors on \"+ ErrorChambr;
+    }
 		else{
 			msgText = \"HV Scan Terminated By User\";
 			rowBegin=0;	// reset row number if Terminated
@@ -1238,7 +1931,7 @@ Selected Layers
 25 87
 "ScanTable"
 ""
-1 598.0208333333334 6.792019015314055 E E E 1 E 1 E N "_WindowText" E N "white" E E
+1 569.0208333333335 6.792019015314055 E E E 1 E 1 E N "_WindowText" E N "white" E E
  E E
 86 0 0 0 0 0
 E E E
@@ -1253,14 +1946,14 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
-0  596.0208333333334 4.792019015314055 1343.645833333334 641.7920190153141
+0  567.0208333333335 4.792019015314055 1350 641.7920190153141
 EE 1 0 1 15 0 "1" 6 1 0 "[0s,,,ALIGNMENT_CENTER]" 1
 LANG:1 15  Supper Chamber
 E
 1
 LANG:1 0 
 
-70 "2" 4 1 0 "s" 1
+70 "2" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1272,7 +1965,7 @@ E
 1
 LANG:1 0 
 
-50 "4" 4 1 0 "s" 1
+50 "4" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1284,7 +1977,7 @@ E
 1
 LANG:1 0 
 
-50 "6" 4 1 0 "s" 1
+50 "6" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1296,7 +1989,7 @@ E
 1
 LANG:1 0 
 
-50 "8" 4 1 0 "s" 1
+50 "8" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1308,7 +2001,7 @@ E
 1
 LANG:1 0 
 
-50 "10" 4 1 0 "s" 1
+50 "10" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1320,7 +2013,7 @@ E
 1
 LANG:1 0 
 
-50 "12" 4 1 0 "s" 1
+50 "12" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1332,7 +2025,7 @@ E
 1
 LANG:1 0 
 
-50 "14" 4 1 0 "s" 1
+50 "14" 4 1 0 "[0.1f,True,False,ALIGNMENT_END,False]" 1
 LANG:1 7 Voltage
 E
 1
@@ -1348,7 +2041,7 @@ LANG:1 0
 20 20 10 50
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
-0 0 1 1 1 7
+0 0 1 2 1 7
 1 0
 6 88
 "RECTANGLE6"
@@ -1365,11 +2058,11 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 2 3 2 1 E 1.711670480549199 0 1.438059888750924 542.7715484363084 -42.69219587796937 1 E 31 32.49859060541036 468 476.4985906054104
+E E 0 2 3 2 1 E 1.799008390541571 0 1.438059888750924 511.0640732265449 -42.69219587796937 1 E 31 32.49859060541036 468 476.4985906054104
 2 89
 "PRIMITIVE_TEXT1"
 ""
-1 257.7139220415717 7.310019350393376 E E E 1 E 1 E N "white" E N "_Window" E E
+1 228.7139220415717 7.310019350393376 E E E 1 E 1 E N "white" E N "_Window" E E
  E E
 88 0 0 0 0 0
 E E E
@@ -1382,8 +2075,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 257.7139220415717 7.310019350393376 393 25
-0 2 2 "0s" 0 0 0 192 0 0  257.7139220415717 7.310019350393376 1
+E E 0 1 3 2 1 E U  0 E 228.7139220415717 7.310019350393376 364 25
+0 2 2 "0s" 0 0 0 192 0 0  228.7139220415717 7.310019350393376 1
 1
 LANG:1 26 Arial,-1,16,5,75,0,0,0,0,0
 0 1
@@ -1391,7 +2084,7 @@ LANG:1 15 HV Channel Scan
 21 90
 "deciPoints1"
 ""
-1 550.6521739130437 192.8537478399929 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 521.6521739130437 192.8537478399929 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 89 0 0 0 0 0
 E E E
@@ -1403,7 +2096,7 @@ LANG:1 19 # of Decimal Places
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,15,5,50,0,0,0,0,0
-0  548.6521739130436 186.9557921163527 590.0652173913038 213.0442078836474
+0  519.6521739130436 186.9557921163527 561.0652173913038 213.0442078836474
 0
 
 E
@@ -1414,7 +2107,7 @@ N 0 6 1 4 1 1
 2 92
 "PRIMITIVE_TEXT2"
 ""
-1 457.1031360840953 184.3028885805314 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 428.1031360840953 184.3028885805314 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 91 0 0 0 0 0
 E E E
@@ -1427,8 +2120,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 457.1031360840953 184.3028885805314 547 215
-0 2 2 "0s" 0 0 0 192 0 0  457.1031360840953 184.3028885805314 2
+E E 0 1 3 2 1 E U  0 E 428.1031360840953 184.3028885805314 518 215
+0 2 2 "0s" 0 0 0 192 0 0  428.1031360840953 184.3028885805314 2
 1
 LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
 0 1
@@ -1440,7 +2133,7 @@ LANG:1 15    for Currents
 13 94
 "clearTable"
 ""
-1 719.5150223099355 22.04921554115973 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 690.5150223099355 22.04921554115973 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 93 0 0 0 0 0
 E E E
@@ -1452,7 +2145,7 @@ LANG:1 20 Clear Table Contents
 "layoutAlignment" "AlignNone"
 1
 LANG:1 26 Arial,-1,12,5,75,0,0,0,0,0
-0  392.2500000000001 615.7985108438649 475.2500000000001 638.7985108438649
+0  363.2500000000001 615.7985108438649 446.2500000000001 638.7985108438649
 
 T 
 1
@@ -1480,7 +2173,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E U  1 E 252 594 262 604
+E E 0 1 3 2 1 E 1 0 1 -29 0 1 E 252 594 262 604
 6 96
 "RECTANGLE8"
 ""
@@ -1496,11 +2189,11 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1 0 1 0 -19.28571428571433 1 E 252 594 262 604
+E E 0 1 3 2 1 E 1 0 1 -29 -19.28571428571433 1 E 252 594 262 604
 2 98
 "PRIMITIVE_TEXT4"
 ""
-1 292.3749999999998 574.4285714285714 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 263.3749999999998 574.4285714285714 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 97 0 0 0 0 0
 E E E
@@ -1513,8 +2206,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 268 574.4285714285714 316 587
-0 2 2 "0s" 0 0 0 193 0 0  292.3749999999998 574.4285714285714 1
+E E 0 1 3 2 1 E U  0 E 239 574.4285714285714 287 587
+0 2 2 "0s" 0 0 0 193 0 0  263.3749999999998 574.4285714285714 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 0 1
@@ -1522,7 +2215,7 @@ LANG:1 8 Selected
 2 99
 "PRIMITIVE_TEXT5"
 ""
-1 312.142857142857 593.2261904761906 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 283.142857142857 593.2261904761906 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 98 0 0 0 0 0
 E E E
@@ -1535,12 +2228,50 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 268 593.2261904761906 356 606
-0 2 2 "0s" 0 0 0 193 0 0  312.142857142857 593.2261904761906 1
+E E 0 1 3 2 1 E U  0 E 239 593.2261904761906 327 606
+0 2 2 "0s" 0 0 0 193 0 0  283.142857142857 593.2261904761906 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 0 1
 LANG:1 14 Active Chamber
+6 100
+"RECTANGLE9"
+""
+1 252 594 E E E 1 E 1 E N {0,0,0} E N "FwEquipmentDisabled" E E
+ E E
+99 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 1 3 2 1 E 1 0 1 232.8902968849899 -0.3869047619046988 1 E 252 594 262 604
+2 101
+"PRIMITIVE_TEXT6"
+""
+1 525.2652968849897 593.3273809523811 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+100 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+4
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+"transformable" "0"
+E E 0 1 3 2 1 E U  0 E 500 593.3273809523811 550 606
+0 2 2 "0s" 0 0 0 193 0 0  525.2652968849897 593.3273809523811 1
+1
+LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Excluded
 0
 LAYER, 1 
 1

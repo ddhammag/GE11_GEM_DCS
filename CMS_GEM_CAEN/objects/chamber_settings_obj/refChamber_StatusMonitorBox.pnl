@@ -902,7 +902,7 @@ LANG:10001 0
 LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
 LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
 0  926 11 983.9999999999999 38
-2 "0s" 0 0 0 1 0 -1  E "// SimpleCtrlScriptStart {invalid}
+2 "0.4f" 5 0 0 1 0 -1  E "// SimpleCtrlScriptStart {invalid}
 main()
 {
   EP_textFieldIn();
@@ -963,7 +963,7 @@ LANG:10001 0
 LANG:1 35 MS Shell Dlg 2,-1,13,5,50,0,0,0,0,0
 LANG:10001 35 MS Shell Dlg 2,-1,15,5,50,0,0,0,0,0
 0  979.9999999999999 11 1038 38
-2 "0s" 0 0 0 1 0 -1  E "// SimpleCtrlScriptStart {invalid}
+2 "0.4f" 5 0 0 1 0 -1  E "// SimpleCtrlScriptStart {invalid}
 main()
 {
   EP_textFieldIn();

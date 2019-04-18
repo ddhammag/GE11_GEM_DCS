@@ -90,7 +90,10 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\",\"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
  0 1 3 2 1 E 1.925035360678925 0 0.9817351598173519 -1.999999999999697 11.9315068493148 1 E 0 489.0000000000001 707 708
 6 4697
@@ -492,7 +495,7 @@ E E 0 1 3 2 1 E 1 0 1 130.3852813852814 4.999999999999996 1 E 337 9 365 21
 2 2731
 "PRIMITIVE_TEXT982"
 ""
-1 507.3852813852815 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
+1 507.3852813852814 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
  E E
 2701 0 0 0 0 0
 E E E
@@ -506,7 +509,7 @@ LANG:1 0
 "antiAliased" "0"
 "transformable" "0"
 E E 0 1 3 2 1 E U  0 E 499 13.5 515 27
-0 2 2 "0s" 0 0 0 193 0 0  507.3852813852815 13.5 1
+0 2 2 "0s" 0 0 0 193 0 0  507.3852813852814 13.5 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 0 1
@@ -526,7 +529,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 3 2 1 E 1 0 1 197.7315753807182 4.999999999999996 1 E 337 9 365 21
+E E 0 1 3 2 1 E 1 0 1 193.3565753807182 4.999999999999996 1 E 337 9 365 21
 2 2733
 "PRIMITIVE_TEXT983"
 ""
@@ -543,7 +546,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E 1.263348861301249 0 1 -151.5908573418135 -0.5000000000000036 0 E 560 14 636 27
+E E 0 1 3 2 1 E 1.263348861301249 0 1 -152.0778766087565 -0.2499999999999982 0 E 560 14 636 27
 0 2 2 "0s" 0 0 0 193 0 0  597.67962732877 14 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
@@ -568,7 +571,7 @@ E E 0 1 3 2 1 E 1 0 1 309.3245820837894 4.999999999999996 1 E 337 9 365 21
 2 2735
 "PRIMITIVE_TEXT984"
 ""
-1 704.3245820837926 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
+1 704.3245820837927 13.5 E E E 1 E 1 E N "white" E N "_Window" E E
  E E
 2705 0 0 0 0 0
 E E E
@@ -581,8 +584,8 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 679 13.5 729 27
-0 2 2 "0s" 0 0 0 193 0 0  704.3245820837926 13.5 1
+E E 0 1 3 2 1 E 1.074074074074078 0 1 -52.89814814815084 0 0 E 679 13.5 729 27
+0 2 2 "0s" 0 0 0 193 0 0  704.3245820837927 13.5 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
 0 1
@@ -619,7 +622,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E 1.225 0 1 -147.223051948052 -0.5000000000000036 0 E 741 14 777 27
+E E 0 1 3 2 1 E 1.225 0 1 -147.223051948052 -0.25 0 E 741 14 777 27
 0 2 2 "0s" 0 0 0 193 0 0  759.3393893207956 14 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0
@@ -958,7 +961,10 @@ T
 LANG:1 12 CLR HV Alarm
 "main(mapping event)
 {
-  dpSetWait(\"CAEN/GEM_CAEN_HV.Commands.ClearAlarm\",1);
+  dpSetWait(\"CAEN/GEM_CAEN_HV_01.Commands.ClearAlarm\",1);
+  dpSetWait(\"CAEN/GEM_CAEN_HV_02.Commands.ClearAlarm\",1);
+  dpSetWait(\"CAEN/GEM_CAEN_HV_03.Commands.ClearAlarm\",1);
+  dpSetWait(\"CAEN/GEM_CAEN_HV_04.Commands.ClearAlarm\",1);
 }" 0
  E E E
 30 2753
@@ -1203,7 +1209,14 @@ LANG:1 15 Power Cycle
  LV
 "main(mapping event)
 {
-  ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/power_cycle/refLvPowerCycle.pnl\",\"PNL\",makeDynString());
+	dyn_string exceptionInfo;
+	bool hasModify,answ;
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo); 
+	
+	if (hasModify)
+		ChildPanelOnCentralModal(\"/CMS_GEM_CAEN/utils/power_cycle/refLvPowerCycle.pnl\",\"LV Power Cycle\",makeDynString());
+	else
+		fwGeneral_openMessagePanel(\"You do not have expert privileges!\", answ , exceptionInfo, \"Error!\", true );
 }" 0
  E E E
 30 2821
@@ -1246,13 +1259,17 @@ LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
 T 
 1
 LANG:1 7 LV Scan
-"main()
+"main(mapping event)
 {
-	ChildPanelOnCentralModal(\"CMS_GEM_CAEN/utils/HvLv_Scan/refLvScan.pnl\",
-      \"LvScan\",
-      makeDynString(\"\"));
-}
-" 0
+	dyn_string exceptionInfo;
+	bool hasModify,answ;
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo); 
+	
+	if (hasModify)
+		ChildPanelOnCentralModal(\"CMS_GEM_CAEN/utils/HvLv_Scan/refLvScan.pnl\",\"LV Scan\",makeDynString());
+	else
+		fwGeneral_openMessagePanel(\"You do not have expert privileges!\", answ , exceptionInfo, \"Error!\", true );
+}" 0
  E E E
 13 2823
 "PUSH_BUTTON62"
@@ -1274,13 +1291,34 @@ LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
 T 
 1
 LANG:1 7 HV Scan
-"main()
+"main(mapping event)
 {
-	ChildPanelOnCentralModal(\"CMS_GEM_CAEN/utils/HvLv_Scan/refHvScan.pnl\",
-      \"HvScan\",
-      makeDynString(\"\"));
-}
-" 0
+	dyn_string exceptionInfo;
+	bool hasModify,answ;
+	fwAccessControl_isGranted( \"CMS_GEM:Modify\", hasModify, exceptionInfo); 
+	
+  if (hasModify){
+    //*********Opens a new module without connection to the event manager****
+	dyn_anytype params; 
+   params[1] = \"M1\";	// string moduleName
+   params[2] = -2; 	// int x
+   params[3] = -2; 	// int y
+   params[4] = 1360; // int w
+   params[5] = 679; // int h
+   params[6] = 1; 	// int iconbar
+   params[7] = 1; 	// int menubar
+   params[8] = \"Scale\";	//string ResizeMode
+   params[9] = \"CMS_GEM_CAEN/utils/HvLv_Scan/refHvScan.pnl\";//string FileName 
+   params[10] = \"HV Scan\";	//string PanelName
+   params[11] = makeDynString();	//dyn_string Parameter
+   moduleOn(params);
+//**************************************************************************	
+  }
+    
+		//ChildPanelOnCentralModal(\"CMS_GEM_CAEN/utils/HvLv_Scan/refHvScan.pnl\",\"HV Scan\",makeDynString());
+	else
+		fwGeneral_openMessagePanel(\"You do not have expert privileges!\", answ , exceptionInfo, \"Error!\", true );
+}" 0
  E E E
 6 4529
 "RECTANGLE543"
@@ -1314,7 +1352,7 @@ LANG:1 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E 1.225 0 1 -64.56244126884759 -0.5000000000000036 0 E 731 14 787 27
+E E 0 1 3 2 1 E 1.276253573631705 0 1 -99.98268302088815 -0.25 0 E 731 14 787 27
 0 2 2 "0s" 0 0 0 193 0 0  759.3393893207956 14 1
 1
 LANG:1 26 Arial,-1,11,5,75,0,0,0,0,0

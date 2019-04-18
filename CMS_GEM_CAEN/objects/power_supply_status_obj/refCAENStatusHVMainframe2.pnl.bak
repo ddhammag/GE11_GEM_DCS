@@ -46,14 +46,17 @@ drawMainFrames()
 		Endcap=\"-\";  //3rd and 4th main frames are connected to endcap plus
 		j=2;			// just used to generate HV board number
 	}
+  noOfBoards=9;  //every main frame each contains 9 HV boards
+  /*
 	if(HvMfCellNo%2==1)
 		noOfBoards=16;  //1st and 3rd main frame contains 16 HV boards
 	else if(HvMfCellNo%2==0)
 		noOfBoards=2;	//2nd and 4th main frame contains only 2 HV boards
+    */
 	for (i=1; i<=noOfBoards; i++)
 	{  				
 		HVbrdCellNo=i;
-		HVbrdNo=(HvMfCellNo-j-1)*16+HVbrdCellNo;
+		HVbrdNo=((HvMfCellNo-j-1)*noOfBoards) + HVbrdCellNo;
 		HVbrdCellName=Endcap+\"HvMf\"+HvMfCellNo+\"HVbrd_\"+HVbrdCellNo;  
 //		DebugN(\"HVbrdCellName=\",HVbrdCellName); 
 		HVbrdDp=HVboardDpGen(HVbrdNo);
@@ -105,7 +108,7 @@ string HVboardDpGen(int HVbrdNo)
  3
 "CBRef" "1"
 "EClose" E
-"dpi" "96"
+"dpi" "120"
 0 0 0
 ""
 DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
@@ -115,7 +118,7 @@ LANG:1 0
 6 1
 "RECTANGLE1"
 ""
-1 836.3401059877631 640.5964404896253 E E E 1 E 1 E N {0,0,0} E N {113,119,121} E E
+1 839.7106643356652 641.1823849219103 E E E 1 E 1 E N {0,0,0} E N {113,119,121} E E
  E E
 0 0 0 0 0 0
 E E E

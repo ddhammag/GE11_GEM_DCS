@@ -85,7 +85,10 @@ LANG:1 0
 "antiAliased" "1"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName\");	//close previous popup panels	
+  if(shapeExists(\"refName\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName\"); //close previous popup panels	
+  }
 	if(ChmbrInOrExStatus)
 	{
   		int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,size_X,size_Y;

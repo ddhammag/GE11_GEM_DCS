@@ -122,7 +122,10 @@ LANG:1 0
 "antiAliased" "1"
 E "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName\");	//close previous popup panels	
+	if(shapeExists(\"refName\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName\"); //close previous popup panels	
+  }
   	if(LvInOrExStatus)
 	{
 		int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y,size_X,size_Y;
@@ -142,7 +145,7 @@ E "main(mapping event)
 		while(edgeY>targetPnlXY[2])	// check popup y axis is inside the tab area
 		{
 			pos_Y=pos_Y-popupPnlXY[2]/20;
-			edgeY=pos_Y+popupPnlXY[2];	//15 just used for the adjustment
+			edgeY=pos_Y+popupPnlXY[2]-15;	//15 just used for the adjustment
 //			DebugN(\"edgeY\", edgeY);
 		}
 		coordi_Y=pos_Y-20;	//20 just used for adjustment

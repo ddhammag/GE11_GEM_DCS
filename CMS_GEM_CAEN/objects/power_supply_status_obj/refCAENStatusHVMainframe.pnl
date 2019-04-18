@@ -67,11 +67,17 @@ LANG:1 0
 1 590 529 E E E 1 E 1 E N {0,0,0} E N "white" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName2\");
+  if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 }" 0
  "main(mapping event)
 {
-	removeSymbol(myModuleName(), \"\", \"refName2\");
+	if(shapeExists(\"refName2\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+  }
 	ChildPanelOn(\"/CMS_GEM_CAEN/utils/power_supply_status/fwCaenCrateSY1527Operation\", \"GEM CAEN CRATE\",makeDynString(\"$sDpName:\"+HvMFrameName),0,0);
 	//CAEN/GEM_CAEN_HV_01
 }" 0
@@ -90,8 +96,11 @@ E "main(mapping event)
 {
 		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
 		dyn_int targetPnlXY,popupPnlXY;
-  		getCursorPosition(mouseX, mouseY);
-		removeSymbol(myModuleName(), \"\", \"refName2\");		
+    getCursorPosition(mouseX, mouseY);
+    if(shapeExists(\"refName2\"))
+    {
+  	  removeSymbol(myModuleName(), \"\", \"refName2\"); //close previous popup panels	
+    }	
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupLvHvMainFrameStatus.pnl\");
 		getValue(\"FRAME5\",\"position\",FRAME1_x,FRAME1_y); 
 		getValue(\"FRAME5\",\"size\",FRAME2_x,FRAME2_y); 

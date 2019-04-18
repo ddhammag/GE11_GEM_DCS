@@ -75,7 +75,10 @@ LANG:1 0
 1 841 552 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName3\");	
+  if(shapeExists(\"refName3\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+  }
 }" 0
  E
 0 0 0 0 0 0
@@ -90,13 +93,15 @@ LANG:1 0
 "antiAliased" "0"
 E "main(mapping event)
 {
+  if(shapeExists(\"refName3\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+  }
 	if(ChmbrInOrExStatus)
 	{
 		int edgeX,edgeY,pos_X,pos_Y,coordi_X,coordi_Y;
 		dyn_int targetPnlXY,popupPnlXY;
-		
-		removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
-		
+			
 		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_HV.pnl\");	
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupGEMfoilStatus.pnl\");
 		getValue(\"\",\"position\",pos_X,pos_Y);	// get reference point of a clicked cell

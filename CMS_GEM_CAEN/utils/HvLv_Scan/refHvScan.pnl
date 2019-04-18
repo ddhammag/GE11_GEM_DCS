@@ -1,8 +1,16 @@
 V 14
 1
 LANG:1 0 
-PANEL,-1 -1 1361 675 N {134,142,144} 0
-E E E E E 1 -1 -1 0  5 4
+PANEL,-1 -1 1361 760 N {134,142,144} 0
+"main()
+{
+  int ref_Px,ref_Py,ref_Sx,ref_Sy;
+	
+	getValue(\"FrameMassages\",\"position\",ref_Px,ref_Py);
+	getValue(\"FrameMassages\",\"size\",ref_Sx,ref_Sy);
+	fwFsmUi_addMessageBox(ref_Px-7, ref_Py-28,ref_Sx-7,\"dist_1\");
+}" 0
+ E E E E 1 -1 -1 0  5 4
 ""0  1
 E E 3
 "CBRef" "1"
@@ -47,6 +55,26 @@ LANG:1 0
 "$dpHvMFName""\"CAEN/GEM_CAEN_HV_\""
 
 
+30 2
+"FrameMassages"
+""
+1 0.9026651216685808 656.0588235294117 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+1 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+3
+"layoutAlignment" "AlignNone"
+"dashclr"N "_Transparent"
+"antiAliased" "0"
+E E 0 2 3 2 1 E 1.733048609801772 0 1.21666666666667 4.955132964419835 -109.2049019607864 0 E 0 649 780 710
+1
+LANG:1 26 Arial,-1,13,5,75,0,0,0,0,0
+0 1
+LANG:1 0 
 0
 LAYER, 1 
 1

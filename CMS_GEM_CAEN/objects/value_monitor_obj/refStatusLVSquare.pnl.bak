@@ -70,7 +70,10 @@ LANG:1 0
 1 841 552 E E E 1 E 1 E N {0,0,0} E N "FwStateOKPhysics" E E
  "main(mapping event)
 {
-  removeSymbol(myModuleName(), \"\", \"refName3\");	
+  if(shapeExists(\"refName3\"))
+  {
+	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+  }
 }" 0
  E
 0 0 0 0 0 0
@@ -89,8 +92,11 @@ E "main(mapping event)
 	{
 		int mouseX, mouseY,mouseX1, mouseY1,edgeX,edgeY,FRAME1_x,FRAME1_y,FRAME2_x,FRAME2_y;
 		dyn_int targetPnlXY,popupPnlXY;
-  		getCursorPosition(mouseX, mouseY);
-		removeSymbol(myModuleName(), \"\", \"refName3\");	
+  	getCursorPosition(mouseX, mouseY);
+		if(shapeExists(\"refName3\"))
+    {
+  	  removeSymbol(myModuleName(), \"\", \"refName3\"); //close previous popup panels	
+    }	
 		targetPnlXY=getPanelSize(\"/CMS_GEM_CAEN/utils/value_monitor/refValue_monitor_LV.pnl\");	
 		popupPnlXY=getPanelSize(\"/CMS_GEM_CAEN/popup_panels/refPopupGEMLvStatus.pnl\");
 		getValue(\"\",\"position\",FRAME1_x,FRAME1_y); 

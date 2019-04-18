@@ -2,14 +2,16 @@ V 14
 2
 LANG:1 0 
 LANG:10001 0 
-PANEL,-1 -1 958 471 N {240,240,240} 4
+PANEL,-1 -1 958 471 N {240,240,240} 5
 "$LvBrdName"
 "$LvBrdNo"
 "$dpEndcapName"
+"$dpHvMFName"
 "$dpLvBrdClicked"
 "main()
 {
 	LvBrdClicked=$dpLvBrdClicked;
+  HvMF=$dpHvMFName;
 	LvBrdName=$LvBrdName;
 	LvBrdNo=$LvBrdNo;
 	Endcap=$dpEndcapName;
@@ -22,7 +24,7 @@ PANEL,-1 -1 958 471 N {240,240,240} 4
 }" 0
  E E E E 1 -1 -1 0  18 8
 ""0  1
-E "string LvBrdClicked,LvBrdName,Endcap;
+E "string HvMF,LvBrdClicked,LvBrdName,Endcap;
 int LvBrdNo;
 drawPanel()
 {    
